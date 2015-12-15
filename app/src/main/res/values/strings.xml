@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TaxiUser</string>
+
+    <!-- Login screen strings. -->
+    <string name="username_hint">username</string>
+    <string name="password_hint">password</string>
+    <string name="login">Login</string>
+
+</resources>

@@ -1,0 +1,26 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Login screen dimens. -->
+    <dimen name="login_password_width">150dp</dimen>
+    <dimen name="login_password_height">40dp</dimen>
+    <dimen name="login_password_between_margin">10dp</dimen>
+
+    <dimen name="login_button_width">100dp</dimen>
+    <dimen name="login_button_height">40dp</dimen>
+    <dimen name="login_button_top_margin">15dp</dimen>
+
+    <!-- Menu (MainActivity) screen dimens. -->
+    <dimen name="action_bar_height">60dp</dimen>
+    <dimen name="action_button_width">50dp</dimen>
+    <dimen name="menu_padding">12dp</dimen>
+    <dimen name="side_menu_icon_width">30dp</dimen>
+    <dimen name="menu_item_height">50dp</dimen>
+    <dimen name="icon_text_padding">12dp</dimen>
+
+    <!-- Orders screen dimens. -->
+    <dimen name="buttons_text_size">14sp</dimen>
+
+</resources>
