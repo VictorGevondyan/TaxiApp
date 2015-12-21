@@ -4,6 +4,8 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
+    useLibrary  'org.apache.http.legacy'
+
     defaultConfig {
         applicationId "com.flycode.paradox.taxiuser"
         minSdkVersion 15
@@ -21,6 +23,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('libs/cz-httpclient-4.3.6.jar')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.loopj.android:android-async-http:1.4.8'
 }
