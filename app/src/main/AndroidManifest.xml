@@ -16,11 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.MenuActivity" />
-        <activity android:name=".activities.SettingsActivity" />
-        <activity android:name=".activities.HistoryActivity" />
         <activity android:name=".activities.InProgressordersActivity" />
-        <activity android:name=".activities.MakeOrderActivity" />
-        <activity android:name=".activities.OrderDetailsActivity"></activity>
     </application>
 
 </manifest>
