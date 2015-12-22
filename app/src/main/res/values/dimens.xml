@@ -9,4 +9,20 @@
     <dimen name="menu_title_text_size">25sp</dimen>
     <dimen name="close_menu_text_size">40sp</dimen>
 
+    <!-- Settings Fragment Dimens -->
+    <dimen name="name_email_list_height">60dp</dimen>
+    <dimen name="password_list_height">40dp</dimen>
+    <dimen name="credentials_icons_width">40dp</dimen>
+    <dimen name="list_view_margin">55dp</dimen>
+    <dimen name="submit_button_margin">10dp</dimen>
+    <dimen name="languages_between_margin">60dp</dimen>
+    <dimen name="language_button_height">36dp</dimen>
+    <dimen name="languages_list_height">40dp</dimen>
+    <dimen name="rhombus_size">20dp</dimen>
+
+    <dimen name="buttons_text_size">13sp</dimen>
+    <dimen name="big_icon_text_size">60sp</dimen>
+    <dimen name="languages_text_size">17sp</dimen>
+
+
 </resources>

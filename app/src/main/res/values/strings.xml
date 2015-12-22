@@ -21,6 +21,20 @@
     <string name="help">Help</string>
     <string name="logout">Logout</string>
 
+    <!-- Menu -->
+    <string name="name">name</string>
+    <string name="last_name">last name</string>
+    <string name="email">email</string>
+    <string name="submit">SUBMIT</string>
+    <string name="change_password">CHANGE PASSWORD</string>
+    <string name="enter_passsword">Enter Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="language">LANGUAGE</string>
+    <string name="english">English</string>
+    <string name="hayeren">Հայերեն</string>
+    <string name="russkij">Русский</string>
+
+
     <!-- Icons -->
     <string name="icon_about_us">&#xe900;</string>
     <string name="icon_close">&#xe901;</string>

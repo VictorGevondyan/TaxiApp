@@ -1,6 +1,9 @@
 package com.flycode.paradox.taxiuser.activities;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -9,10 +12,12 @@ import android.widget.Button;
 import android.widget.GridView;
 
 import com.flycode.paradox.taxiuser.R;
+import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
 import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
 import com.flycode.paradox.taxiuser.menu_resources.MenuResources;
 import com.flycode.paradox.taxiuser.models.MenuItem;
+import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 import java.util.ArrayList;
@@ -21,9 +26,13 @@ import java.util.ArrayList;
  * Created by victor on 12/14/15.
  */
 public class MenuActivity  extends Activity {
+
+    private final int INDEX_SETTINGS = 6;
+
     private SideMenuLayout sideMenu;
     private MenuGridAdapter menuGridAdapter;
     ArrayList<MenuItem> menuItemsList;
+    private int currentPosition = INDEX_SETTINGS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +56,9 @@ public class MenuActivity  extends Activity {
         GridView menuGridView = (GridView) findViewById(R.id.menu_grid);
         menuGridView.setAdapter(menuGridAdapter);
         menuGridView.setOnItemClickListener(onMenuItemClickListener);
+
+        changeFragment(currentPosition);
+
     }
 
     @Override
@@ -85,6 +97,27 @@ public class MenuActivity  extends Activity {
             menuItem = new MenuItem(MenuResources.menuIcons[i], MenuResources.menuTitles[i]);
             menuItemsList.add(menuItem);
         }
+    }
+
+    public void onLogout( View view ){
+        AppSettings.sharedSettings(this).setIsUserLoggedIn(false);
+
+        Intent loginIntent = new Intent(MenuActivity.this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
+    }
+
+    private void changeFragment( int position ){
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        Fragment fragment = null;
+
+        if( position  == 6 ){
+            SettingsFragment settingsFragment = new SettingsFragment();
+            fragment = settingsFragment;
+        }
+
+        fragmentTransaction.replace(R.id.content_fragment, fragment, "fragment");
+        fragmentTransaction.commit();
     }
 
 }
