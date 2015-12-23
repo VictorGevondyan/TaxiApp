@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
+import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
@@ -24,6 +25,7 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
  */
 public class MenuActivity  extends Activity {
 
+    private final int INDEX_ONGOING = 0;
     private final int INDEX_SETTINGS = 5;
     private final int INDEX_LOGOUT = 9;
 
@@ -57,7 +59,6 @@ public class MenuActivity  extends Activity {
         menuGridView.setAdapter(menuGridAdapter);
         menuGridView.setOnItemClickListener(onMenuItemClickListener);
 
-        changeFragment(currentPosition);
     }
 
     @Override
@@ -97,7 +98,7 @@ public class MenuActivity  extends Activity {
     }
 
     private void changeFragment( int position ) {
-        if (position == currentPosition) {
+        if ( ( position == currentPosition ) && ( position != 0 ) ) {
             sideMenu.toggleMenu();
 
             return;
@@ -108,7 +109,10 @@ public class MenuActivity  extends Activity {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment fragment = null;
 
-        if( position  == INDEX_SETTINGS ) {
+        if( position == INDEX_ONGOING ){
+            OrdersFragment ordersFragment = new OrdersFragment();
+            fragment = ordersFragment;
+        } else if( position  == INDEX_SETTINGS ) {
             SettingsFragment settingsFragment = new SettingsFragment();
             fragment = settingsFragment;
         } else if ( position == INDEX_LOGOUT ) {

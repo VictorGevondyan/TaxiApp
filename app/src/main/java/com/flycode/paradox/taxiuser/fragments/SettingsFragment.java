@@ -64,7 +64,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         nameEditText = (EditText) settingsView.findViewById(R.id.name);
         lastNameEditText = (EditText) settingsView.findViewById(R.id.last_name);
         emailEditText = (EditText) settingsView.findViewById(R.id.email);
-        passwordEditText = (EditText) settingsView.findViewById(R.id.password);
+        passwordEditText = (EditText) settingsView.findViewById(R.id.enter_password);
         confirmPasswordEditText = (EditText) settingsView.findViewById(R.id.confirm_password);
 
         phoneNumberTextView = (TextView) settingsView.findViewById(R.id.phone_number);

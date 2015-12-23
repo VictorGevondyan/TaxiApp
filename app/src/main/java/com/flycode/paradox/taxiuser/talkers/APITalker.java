@@ -2,7 +2,9 @@ package com.flycode.paradox.taxiuser.talkers;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
+import com.flycode.paradox.taxiuser.factory.ModelFactory;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -107,6 +109,48 @@ public class APITalker {
         });
     }
 
+    public void getOwnOrders(Context context, String status , final GetOrdersHandler getOrdersHandler){
+        if (!authenticate(context)) {
+            return;
+        }
+
+        RequestParams params = new RequestParams();
+        params.put(STATUS, status);
+
+        String url = BASE_API_URL + ORDERS_URL + OWN_URL;
+
+        asyncHttpClient.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers,
+                                  JSONObject response) {
+
+                if (getOrdersHandler != null) {
+                    JSONArray orders = response.optJSONArray(ORDERS);
+                    getOrdersHandler.onGetOrdersSuccess(ModelFactory.makeOrders(orders));
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode,
+                                  Header[] headers,
+                                  java.lang.Throwable throwable,
+                                  org.json.JSONObject errorResponse) {
+                if (getOrdersHandler != null) {
+                    getOrdersHandler.onGetOrdersFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (getOrdersHandler != null) {
+                    Log.d("STATUS CODE", statusCode + "");
+                    Log.d("RESPONSE STRING", responseString);
+                    getOrdersHandler.onGetOrdersFailure();
+                }
+            }
+
+        });
+    }
 
     public void pingLocation(Context context, final String order, final String status, final Location geoLocation){
         JSONArray geoLocationJSON;
@@ -171,7 +215,6 @@ public class APITalker {
             }
         });
     }
-
 
     private JSONArray locationToJsonArray(Location location) throws JSONException {
         JSONArray locationJSON = new JSONArray();

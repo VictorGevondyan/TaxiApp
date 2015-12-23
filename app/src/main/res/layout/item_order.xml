@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/orders_list_side_margin"
+            android:layout_marginStart="@dimen/orders_list_side_margin"
+            android:layout_marginRight="@dimen/orders_list_side_margin"
+            android:layout_marginEnd="@dimen/orders_list_side_margin"
+            android:layout_marginTop="@dimen/orders_list_top_margin"
+            android:layout_marginBottom="@dimen/orders_list_bottom_margin"
+            android:paddingBottom="@dimen/orders_list_bottom_padding"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/icon_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/icon_date"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/red"
+                    android:gravity="center"
+                    android:layout_marginRight="@dimen/orders_list_side_margin"
+                    android:layout_marginEnd="@dimen/orders_list_side_margin"
+                    />
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="@dimen/credential_name_width"
+                    android:layout_height="match_parent"
+                    android:text="@string/date"
+                    android:fontFamily=""
+                    android:textColor="@color/white_30_opaque"
+                    android:gravity="center_vertical|start"
+                    android:layout_marginRight="@dimen/field_value_margin"
+                    android:layout_marginEnd="@dimen/field_value_margin"
+                    />
+
+                <TextView
+                    android:id="@+id/date_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/date"
+                    android:textColor="@color/white_30_opaque"
+                    android:gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/orders_entry_margin"
+                >
+
+                <TextView
+                    android:id="@+id/icon_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/icon_location"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/red"
+                    android:gravity="center"
+                    android:layout_marginRight="@dimen/orders_list_side_margin"
+                    android:layout_marginEnd="@dimen/orders_list_side_margin"
+                    />
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="@dimen/credential_name_width"
+                    android:layout_height="match_parent"
+                    android:text="@string/location"
+                    android:textColor="@color/white_30_opaque"
+                    android:gravity="center_vertical|start"
+                    android:layout_marginRight="@dimen/field_value_margin"
+                    android:layout_marginEnd="@dimen/field_value_margin"
+                    />
+                <TextView
+                    android:id="@+id/location_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/date"
+                    android:textColor="@color/white_30_opaque"
+                    android:gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/orders_entry_margin"
+                >
+
+                <TextView
+                    android:id="@+id/icon_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/icon_status"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:gravity="center"
+                    android:layout_marginRight="@dimen/orders_list_side_margin"
+                    android:layout_marginEnd="@dimen/orders_list_side_margin"
+                    />
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="@dimen/credential_name_width"
+                    android:layout_height="match_parent"
+                    android:text="@string/status"
+                    android:textColor="@color/white_30_opaque"
+                    android:gravity="center_vertical|start"
+                    android:layout_marginRight="@dimen/field_value_margin"
+                    android:layout_marginEnd="@dimen/field_value_margin"
+                    />
+                <TextView
+                    android:id="@+id/status_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/date"
+                    android:textColor="@color/white_30_opaque"
+                    android:gravity="center"
+                    />
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/icon_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/icon_arrow"
+            android:textColor="@color/red"
+            android:textSize="@dimen/credentials_icon_size"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/arrow_right_margin"
+            android:layout_alignParentBottom="true"
+            />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_30_opaque"/>
+
+</LinearLayout>
