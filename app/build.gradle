@@ -6,6 +6,10 @@ android {
 
     useLibrary  'org.apache.http.legacy'
 
+    repositories {
+        mavenCentral()
+    }
+
     defaultConfig {
         applicationId "com.flycode.paradox.taxiuser"
         minSdkVersion 15
@@ -27,4 +31,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.loopj.android:android-async-http:1.4.8'
+    compile 'com.google.android.gms:play-services:8.3.0'
+    compile ('com.mapbox.mapboxsdk:mapbox-android-sdk:3.0.0@aar'){
+        transitive=true
+    }
 }

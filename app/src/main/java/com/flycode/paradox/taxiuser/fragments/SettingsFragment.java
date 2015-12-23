@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
+import com.flycode.paradox.taxiuser.settings.AppSettings;
+import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import com.flycode.paradox.taxiuser.views.GenericTriangleView;
 
@@ -25,6 +27,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private EditText confirmPasswordEditText;
 
     private TextView phoneNumberTextView;
+
+    private View armenianRombusView;
+    private View russionRombusView;
+    private View englishRombusView;
 
     @Nullable
     @Override
@@ -64,7 +70,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         nameEditText = (EditText) settingsView.findViewById(R.id.name);
         lastNameEditText = (EditText) settingsView.findViewById(R.id.last_name);
         emailEditText = (EditText) settingsView.findViewById(R.id.email);
-        passwordEditText = (EditText) settingsView.findViewById(R.id.password);
+        passwordEditText = (EditText) settingsView.findViewById(R.id.enter_password);
         confirmPasswordEditText = (EditText) settingsView.findViewById(R.id.confirm_password);
 
         phoneNumberTextView = (TextView) settingsView.findViewById(R.id.phone_number);
@@ -77,6 +83,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         phoneNumberTextView.setTypeface(robotoTypeface);
 
+        armenianRombusView = settingsView.findViewById(R.id.armenian_rombus);
+        englishRombusView = settingsView.findViewById(R.id.english_rombus);
+        russionRombusView = settingsView.findViewById(R.id.russian_rombus);
+
+        View armenianSection = settingsView.findViewById(R.id.armenian);
+        View russianSection = settingsView.findViewById(R.id.russian);
+        View englishSection = settingsView.findViewById(R.id.english);
+
+        armenianSection.setOnClickListener(this);
+        russianSection.setOnClickListener(this);
+        englishSection.setOnClickListener(this);
+
         GenericTriangleView submitPasswordTriangleView = (GenericTriangleView) settingsView.findViewById(R.id.submit_password);
         submitPasswordTriangleView.setClickable(true);
         submitPasswordTriangleView.setOnClickListener(this);
@@ -85,7 +103,20 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         submitAccountTriangleView.setClickable(true);
         submitAccountTriangleView.setOnClickListener(this);
 
+        setupLanguageRombus();
+
         return settingsView;
+    }
+
+    private void setupLanguageRombus() {
+        String language = AppSettings.sharedSettings(getActivity()).getLanguage();
+
+        armenianRombusView.setBackgroundResource(
+                language.equals(AppSettings.LANGUAGES.HY) ? R.drawable.rombus_green : R.drawable.rombus_white);
+        russionRombusView.setBackgroundResource(
+                language.equals(AppSettings.LANGUAGES.RU) ? R.drawable.rombus_green : R.drawable.rombus_white);
+        englishRombusView.setBackgroundResource(
+                language.equals(AppSettings.LANGUAGES.EN) ? R.drawable.rombus_green : R.drawable.rombus_white);
     }
 
     /**
@@ -98,6 +129,21 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         } else if (view.getId() == R.id.submit_password) {
 
+        } else if (view.getId() == R.id.russian) {
+            AppSettings.sharedSettings(getActivity()).setLanguage(AppSettings.LANGUAGES.RU);
+            setupLanguageRombus();
+            LocaleUtils.setLocale(getActivity(), AppSettings.LANGUAGES.RU);
+            getActivity().recreate();
+        } else if (view.getId() == R.id.armenian) {
+            AppSettings.sharedSettings(getActivity()).setLanguage(AppSettings.LANGUAGES.HY);
+            setupLanguageRombus();
+            LocaleUtils.setLocale(getActivity(), AppSettings.LANGUAGES.HY);
+            getActivity().recreate();
+        } else if (view.getId() == R.id.english) {
+            AppSettings.sharedSettings(getActivity()).setLanguage(AppSettings.LANGUAGES.EN);
+            setupLanguageRombus();
+            LocaleUtils.setLocale(getActivity(), AppSettings.LANGUAGES.EN);
+            getActivity().recreate();
         }
     }
 }

@@ -4,4 +4,7 @@
         <attr name="text" format="string" />
         <attr name="borderColor" format="string" />
     </declare-styleable>
+    <declare-styleable name="maximalDimension">
+        <attr name="maxWidth" format="dimension" />
+    </declare-styleable>
 </resources>

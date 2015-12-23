@@ -52,7 +52,8 @@ public class LoginView extends View {
 
         Paint paint = new Paint();
         paint.setStrokeWidth(2);
-        paint.setColor(Color.parseColor("#117F20"));
+//        paint.setColor(Color.parseColor("#117F20"));
+        paint.setColor(Color.parseColor("#7A7A7A"));
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
 

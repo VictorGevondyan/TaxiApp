@@ -3,22 +3,31 @@ package com.flycode.paradox.taxiuser.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Locale;
+
 /**
  * Created by victor on 12/8/15.
  */
 public class AppSettings {
+    public static class LANGUAGES {
+        public static final String EN = "en";
+        public static final String HY = "hy";
+        public static final String RU = "ru";
+    }
+
     private static AppSettings sharedSettings;
 
     private final String PREFERENCES_NAME = "appSettingsPreferences";
     private final String IS_USER_LOGGED_IN = "isUserLoggedIn";
     private final String TOKEN = "token";
+    private final String LANGUAGE = "language";
 
     private final SharedPreferences.Editor settingsEditor;
 
     private boolean isUserLoggedIn;
 
     private String token;
-    private String orderId;
+    private String language;
 
     public static AppSettings sharedSettings(Context context) {
         if (sharedSettings == null) {
@@ -34,6 +43,7 @@ public class AppSettings {
 
         isUserLoggedIn = settingsPreferences.getBoolean(IS_USER_LOGGED_IN, false);
         token = settingsPreferences.getString(TOKEN, "");
+        language = settingsPreferences.getString(LANGUAGE, Locale.getDefault().getLanguage());
     }
 
     public boolean isUserLoggedIn() {
@@ -54,4 +64,12 @@ public class AppSettings {
         settingsEditor.putString(TOKEN, token).commit();
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+        settingsEditor.putString(LANGUAGE, language).commit();
+    }
 }

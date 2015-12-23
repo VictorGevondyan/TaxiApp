@@ -10,14 +10,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/background_map_blurred"
-            android:adjustViewBounds="true"
-            android:scaleType="center"/>
+        android:orientation="vertical"
+        android:background="@drawable/background_map_blurred">
 
         <View
             android:layout_width="match_parent"
@@ -44,8 +38,8 @@
                 android:minHeight="0dp"
                 android:background="@android:color/transparent"
                 android:text="@string/icon_exit"
-                android:textSize="30sp"
-                android:textColor="@color/white"
+                android:textSize="@dimen/action_bar_button_text_size"
+                android:textColor="@color/pure_white"
                 android:onClick="onCloseMenuClicked"/>
 
             <TextView
@@ -54,8 +48,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="@string/menu"
-                android:textSize="20sp"
-                android:textColor="@color/white"/>
+                android:textSize="@dimen/action_bar_title_text_size"
+                android:textColor="@color/pure_white"/>
 
         </RelativeLayout>
 
@@ -88,30 +82,49 @@
             android:background="#000000">
 
             <Button
-                android:id="@+id/open_menu"
+                android:id="@+id/action_bar_left_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/action_bar_button_margin"
+                android:layout_marginStart="@dimen/action_bar_button_margin"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:background="@android:color/transparent"
                 android:text="@string/icon_menu"
-                android:textSize="50sp"
-                android:textColor="@color/white"
-                android:onClick="onOpenMenuClicked"/>
+                android:textSize="@dimen/action_bar_button_text_size"
+                android:textColor="@color/pure_white"
+                android:onClick="onActionBarLeftButtonClicked"/>
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textSize="@dimen/action_bar_title_text_size"
+                android:textColor="@color/pure_white"/>
+
+            <Button
+                android:id="@+id/action_bar_right_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/action_bar_button_margin"
+                android:layout_marginEnd="@dimen/action_bar_button_margin"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@android:color/transparent"
+                android:text="@string/icon_phone"
+                android:textSize="@dimen/action_bar_button_text_size"
+                android:textColor="@color/pure_white"
+                android:onClick="onActionBarRightButtonClicked"
+                android:visibility="gone"/>
 
         </RelativeLayout>
-
-       <!-- <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Logout"
-            android:layout_gravity="center_horizontal"
-            android:onClick="onLogout"
-            />-->
 
         <LinearLayout
             android:id="@+id/content_fragment"

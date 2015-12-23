@@ -22,15 +22,16 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/settings_entry_margin"
             android:text="@string/icon_name"
-            android:textColor="@color/white"
-            android:textSize="@dimen/big_icon_text_size"
+            android:textColor="@color/pure_white"
+            android:textSize="40sp"
             android:gravity="center"/>
 
         <TextView
             android:id="@+id/phone_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"/>
+            android:textColor="@color/pure_white"
+            android:textSize="@dimen/small_text_size"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -206,8 +207,9 @@
                 android:layout_width="110dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="@dimen/settings_entry_margin"
+                android:layout_marginBottom="@dimen/settings_entry_margin"
                 flycode:text="@string/submit"
-                flycode:borderColor="#FF0000"/>
+                flycode:borderColor="#7A7A7A"/>
 
             <TextView
                 android:id="@+id/change_password"
@@ -215,8 +217,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/settings_entry_margin"
                 android:text="@string/change_password"
-                android:textColor="@color/white"
-                android:textSize="@dimen/buttons_text_size"/>
+                android:textColor="@color/pure_white"
+                android:textSize="@dimen/settings_title_text_size"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -330,8 +332,9 @@
                 android:layout_width="110dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="@dimen/settings_entry_margin"
+                android:layout_marginBottom="@dimen/settings_entry_margin"
                 flycode:text="@string/submit"
-                flycode:borderColor="#FF0000" />
+                flycode:borderColor="#7A7A7A" />
 
         </LinearLayout>
 
@@ -342,13 +345,14 @@
             android:layout_marginTop="@dimen/settings_entry_margin"
             android:gravity="center"
             android:text="@string/language"
-            android:textColor="@color/white"
-            android:textSize="@dimen/buttons_text_size"/>
+            android:textColor="@color/pure_white"
+            android:textSize="@dimen/settings_title_text_size"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/settings_entry_margin">
+            android:layout_marginTop="@dimen/settings_entry_margin"
+            android:paddingBottom="40dp">
 
             <LinearLayout
                 android:id="@+id/armenian"
@@ -358,11 +362,13 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_centerHorizontal="true"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:layout_centerHorizontal="true">
+                android:clickable="true">
 
                 <View
+                    android:id="@+id/armenian_rombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size" />
 
@@ -371,20 +377,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/armenian"
-                    android:textSize="@dimen/languages_text_size"
-                    android:textColor="@color/white"/>
+                    android:textSize="@dimen/small_text_size"
+                    android:textColor="@color/pure_white"/>
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/english"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/armenian"
+                android:layout_toStartOf="@id/armenian"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:layout_toLeftOf="@id/armenian"
-                android:layout_toStartOf="@id/armenian">
+                android:clickable="true">
 
                 <View
+                    android:id="@+id/english_rombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size" />
 
@@ -393,21 +402,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/english"
-                    android:textSize="@dimen/languages_text_size"
-                    android:textColor="@color/white"
-                    />
+                    android:textSize="@dimen/small_text_size"
+                    android:textColor="@color/pure_white"/>
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/russian"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/armenian"
+                android:layout_toEndOf="@id/armenian"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:layout_toRightOf="@id/armenian"
-                android:layout_toEndOf="@id/armenian">
+                android:clickable="true">
 
                 <View
+                    android:id="@+id/russian_rombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size"
                     android:layout_gravity="center"/>
@@ -417,8 +428,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/russian"
-                    android:textSize="@dimen/languages_text_size"
-                    android:textColor="@color/white"/>
+                    android:textSize="@dimen/small_text_size"
+                    android:textColor="@color/pure_white"/>
 
             </LinearLayout>
 

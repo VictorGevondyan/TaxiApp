@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -14,9 +15,11 @@ import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
+import com.flycode.paradox.taxiuser.fragments.OrderFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
+import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 /**
@@ -24,16 +27,22 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
  */
 public class MenuActivity  extends Activity {
 
+    private final int INDEX_ORDER = 2;
     private final int INDEX_SETTINGS = 5;
     private final int INDEX_LOGOUT = 9;
 
     private SideMenuLayout sideMenu;
     private MenuGridAdapter menuGridAdapter;
 
+    private TextView actionBarTitleTextView;
+    private Button actionBarRightButton;
+
     private int currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LocaleUtils.setLocale(this, AppSettings.sharedSettings(this).getLanguage());
+
         super.onCreate(savedInstanceState);
 
         sideMenu = (SideMenuLayout) getLayoutInflater().inflate(R.layout.activity_menu, null);
@@ -43,10 +52,15 @@ public class MenuActivity  extends Activity {
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
         Typeface robotoThinTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
 
-        Button openMenuButton = (Button) findViewById(R.id.open_menu);
+        Button actionBarLeftButton = (Button) findViewById(R.id.action_bar_left_button);
+        actionBarRightButton = (Button) findViewById(R.id.action_bar_right_button);
         Button closeMenuButton = (Button) findViewById(R.id.close_menu);
-        openMenuButton.setTypeface(icomoonTypeface);
+        actionBarLeftButton.setTypeface(icomoonTypeface);
+        actionBarRightButton.setTypeface(icomoonTypeface);
         closeMenuButton.setTypeface(icomoonTypeface);
+
+        actionBarTitleTextView = (TextView) findViewById(R.id.title_text);
+        actionBarTitleTextView.setTypeface(robotoThinTypeface);
 
         TextView menuTitleTextView = (TextView) findViewById(R.id.menu_title);
         menuTitleTextView.setTypeface(robotoThinTypeface);
@@ -56,22 +70,38 @@ public class MenuActivity  extends Activity {
         GridView menuGridView = (GridView) findViewById(R.id.menu_grid);
         menuGridView.setAdapter(menuGridAdapter);
         menuGridView.setOnItemClickListener(onMenuItemClickListener);
-
-        changeFragment(currentPosition);
     }
 
     @Override
     public void onBackPressed() {
+        if (sideMenu.isMenuShown()) {
+            sideMenu.toggleMenu();
+            return;
+        }
 
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        recreate();
+        super.onConfigurationChanged(newConfig);
     }
 
     /**
      * Action Bar Button Methods
      */
 
-    public void onOpenMenuClicked(View view) {
+    public void onActionBarLeftButtonClicked(View view) {
         sideMenu.toggleMenu();
     }
+
+    public void onActionBarRightButtonClicked(View view) {
+    }
+
+    /**
+     * Side Menu Methods
+     */
 
     public void onCloseMenuClicked(View view) {
         sideMenu.toggleMenu();
@@ -84,18 +114,6 @@ public class MenuActivity  extends Activity {
         }
     };
 
-    private String getStringResource(int resource) {
-        return getResources().getString(resource);
-    }
-
-    public void onLogout( View view ) {
-        AppSettings.sharedSettings(this).setIsUserLoggedIn(false);
-
-        Intent loginIntent = new Intent(MenuActivity.this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
-    }
-
     private void changeFragment( int position ) {
         if (position == currentPosition) {
             sideMenu.toggleMenu();
@@ -103,12 +121,22 @@ public class MenuActivity  extends Activity {
             return;
         }
 
+        actionBarRightButton.setVisibility(View.GONE);
+
         currentPosition = position;
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment fragment = null;
 
-        if( position  == INDEX_SETTINGS ) {
+        if (position == INDEX_ORDER) {
+            actionBarTitleTextView.setText(R.string.order);
+            actionBarRightButton.setVisibility(View.VISIBLE);
+
+            OrderFragment orderFragment = new OrderFragment();
+            fragment = orderFragment;
+        } else if( position  == INDEX_SETTINGS ) {
+            actionBarTitleTextView.setText(R.string.settings);
+
             SettingsFragment settingsFragment = new SettingsFragment();
             fragment = settingsFragment;
         } else if ( position == INDEX_LOGOUT ) {

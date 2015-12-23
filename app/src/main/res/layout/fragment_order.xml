@@ -1,6 +1,324 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:flycode="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.flycode.paradox.taxiuser.fragments.OrderFragment">
 
-</FrameLayout>
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/credentials_list_margin"
+        flycode:maxWidth="400dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/icon_location"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/pure_white"
+                android:background="@android:color/transparent"/>
+
+            <TextView
+                android:id="@+id/location_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="@string/icon_location"
+                android:textSize="@dimen/credentials_icon_size"
+                android:textColor="@color/pure_white"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_30_opaque"/>
+
+    </com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="@color/black_65_opaque">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/close_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="5dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:text="@string/icon_close"
+                android:textColor="@color/pure_white"
+                android:textSize="@dimen/credentials_icon_size"
+                android:background="@android:color/transparent"/>
+
+        </RelativeLayout>
+
+        <com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout
+            android:id="@+id/order_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            flycode:maxWidth="400dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/settings_entry_margin"
+                android:weightSum="3"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/now"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true">
+
+                    <View
+                        android:id="@+id/now_rombus"
+                        android:layout_width="@dimen/rhombus_size"
+                        android:layout_height="@dimen/rhombus_size" />
+
+                    <TextView
+                        android:id="@+id/now_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/now"
+                        android:textSize="@dimen/small_text_size"
+                        android:textColor="@color/pure_white"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/later"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true">
+
+                    <View
+                        android:id="@+id/later_rombus"
+                        android:layout_width="@dimen/rhombus_size"
+                        android:layout_height="@dimen/rhombus_size" />
+
+                    <TextView
+                        android:id="@+id/later_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/later"
+                        android:textSize="@dimen/small_text_size"
+                        android:textColor="@color/pure_white"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/only_cache"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_toRightOf="@id/later"
+                    android:layout_toEndOf="@id/later"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true">
+
+                    <View
+                        android:id="@+id/only_cache_rombus"
+                        android:layout_width="@dimen/rhombus_size"
+                        android:layout_height="@dimen/rhombus_size"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:id="@+id/only_cache_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/only_cash"
+                        android:textSize="@dimen/small_text_size"
+                        android:textColor="@color/pure_white"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/time_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/black_65_opaque">
+
+                <LinearLayout
+                    android:id="@+id/minutes_section"
+                    android:layout_width="@dimen/order_time_width"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/minutes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/pure_white"
+                        android:textSize="@dimen/small_text_size"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white_30_opaque"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/hours_section"
+                    android:layout_width="@dimen/order_time_width"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/minutes_section"
+                    android:layout_toStartOf="@id/minutes_section"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/hours"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/pure_white"
+                        android:textSize="@dimen/small_text_size"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white_30_opaque"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/day_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/hours_section"
+                    android:layout_toStartOf="@id/hours_section"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/day"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/pure_white"
+                        android:textSize="@dimen/small_text_size"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white_30_opaque"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/location_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/icon_location"
+                        android:textColor="@color/pure_white"
+                        android:textSize="@dimen/small_text_size"/>
+
+                    <TextView
+                        android:id="@+id/location_text_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/icon_location"
+                        android:textColor="@color/pure_white"
+                        android:textSize="@dimen/credentials_icon_size"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white_30_opaque"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/comment_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/icon_location"
+                        android:textColor="@color/pure_white"
+                        android:textSize="@dimen/small_text_size"/>
+
+                    <TextView
+                        android:id="@+id/comment_text_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/icon_location"
+                        android:textColor="@color/pure_white"
+                        android:textSize="@dimen/credentials_icon_size"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white_30_opaque"/>
+
+            </LinearLayout>
+
+        </com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
