@@ -67,5 +67,6 @@
     <string name="icon_arrow">&#xe913;</string>
     <string name="icon_balance">&#xe914;</string>
     <string name="icon_help">&#xe915;</string>
+    <string name="icon_status">&#xe916;</string>
 
 </resources>

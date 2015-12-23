@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
 import com.flycode.paradox.taxiuser.fragments.OrderFragment;
+import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
@@ -25,19 +26,19 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 /**
  * Created by victor on 12/14/15.
  */
-public class MenuActivity  extends Activity {
-
+public class MenuActivity extends Activity {
+    private final int INDEX_ONGOING = 0;
     private final int INDEX_ORDER = 2;
+    private final int INDEX_HISTORY = 2;
     private final int INDEX_SETTINGS = 5;
     private final int INDEX_LOGOUT = 9;
 
     private SideMenuLayout sideMenu;
-    private MenuGridAdapter menuGridAdapter;
 
     private TextView actionBarTitleTextView;
     private Button actionBarRightButton;
 
-    private int currentPosition;
+    private int currentPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +66,13 @@ public class MenuActivity  extends Activity {
         TextView menuTitleTextView = (TextView) findViewById(R.id.menu_title);
         menuTitleTextView.setTypeface(robotoThinTypeface);
 
-        menuGridAdapter = new MenuGridAdapter(this, R.layout.item_menu_grid);
+        MenuGridAdapter menuGridAdapter = new MenuGridAdapter(this, R.layout.item_menu_grid);
 
         GridView menuGridView = (GridView) findViewById(R.id.menu_grid);
         menuGridView.setAdapter(menuGridAdapter);
         menuGridView.setOnItemClickListener(onMenuItemClickListener);
+
+        changeFragment(INDEX_ORDER, false);
     }
 
     @Override
@@ -110,13 +113,15 @@ public class MenuActivity  extends Activity {
     AdapterView.OnItemClickListener onMenuItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            changeFragment(position);
+            changeFragment(position, true);
         }
     };
 
-    private void changeFragment( int position ) {
+    private void changeFragment(int position, boolean needsToggle) {
         if (position == currentPosition) {
-            sideMenu.toggleMenu();
+            if (needsToggle) {
+                sideMenu.toggleMenu();
+            }
 
             return;
         }
@@ -129,17 +134,28 @@ public class MenuActivity  extends Activity {
         Fragment fragment = null;
 
         if (position == INDEX_ORDER) {
-            actionBarTitleTextView.setText(R.string.order);
             actionBarRightButton.setVisibility(View.VISIBLE);
+            actionBarTitleTextView.setText(R.string.order);
+            actionBarRightButton.setText(R.string.icon_phone);
 
-            OrderFragment orderFragment = new OrderFragment();
-            fragment = orderFragment;
-        } else if( position  == INDEX_SETTINGS ) {
+            fragment = new OrderFragment();
+        } else if (position == INDEX_ONGOING) {
+            actionBarRightButton.setVisibility(View.VISIBLE);
+            actionBarRightButton.setText(R.string.icon_refresh);
+            actionBarTitleTextView.setText(R.string.ongoing);
+
+            fragment = new OrdersFragment();
+        } else if (position == INDEX_HISTORY) {
+            actionBarRightButton.setVisibility(View.VISIBLE);
+            actionBarRightButton.setText(R.string.icon_refresh);
+            actionBarTitleTextView.setText(R.string.ongoing);
+
+            fragment = new OrdersFragment();
+        } else if (position == INDEX_SETTINGS) {
             actionBarTitleTextView.setText(R.string.settings);
 
-            SettingsFragment settingsFragment = new SettingsFragment();
-            fragment = settingsFragment;
-        } else if ( position == INDEX_LOGOUT ) {
+            fragment = new SettingsFragment();
+        } else if (position == INDEX_LOGOUT) {
             AppSettings.sharedSettings(this).setIsUserLoggedIn(false);
             AppSettings.sharedSettings(this).setToken(null);
             startActivity(new Intent(this, LoginActivity.class));
@@ -155,6 +171,8 @@ public class MenuActivity  extends Activity {
 
         fragmentTransaction.commit();
 
-        sideMenu.toggleMenu();
+        if (needsToggle) {
+            sideMenu.toggleMenu();
+        }
     }
 }
