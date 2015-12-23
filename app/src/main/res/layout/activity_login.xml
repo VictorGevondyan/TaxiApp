@@ -28,7 +28,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="45dp"
                 android:orientation="horizontal" >
 
                 <LinearLayout
@@ -131,21 +131,19 @@
                 android:layout_marginTop="3dp"
                 android:background="@color/white_30_opaque"/>
 
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:text="@string/login"
-                android:textColor="#FFFFFF"
-                android:onClick="onLoginClicked"
-                android:background="@android:color/transparent"/>
+            <com.flycode.paradox.taxiuser.views.LoginView
+                android:layout_width="150dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="55dp"
+                android:clickable="true"
+                android:onClick="onLoginClicked"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/receive_password"
-                android:textColor="#FFFFFF"
-                android:onClick="onReceivePasswordClicked"
-                android:background="@android:color/transparent"/>
+            <com.flycode.paradox.taxiuser.views.ReceivePasswordView
+                android:layout_width="150dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="5dp"
+                android:clickable="true"
+                android:onClick="onReceivePasswordClicked" />
 
         </LinearLayout>
 

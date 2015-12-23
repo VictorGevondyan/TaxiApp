@@ -7,13 +7,25 @@
     tools:context=".activities.MenuActivity">
 
     <!-- Side Menu -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_map_blurred"
         android:orientation="vertical">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/background_map_blurred"
+            android:adjustViewBounds="true"
+            android:scaleType="center"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_65_opaque"/>
+
         <RelativeLayout
+            android:id="@+id/menu_header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_height"
             android:padding="5dp"
@@ -24,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/action_bar_button_margin"
+                android:layout_marginStart="@dimen/action_bar_button_margin"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
@@ -31,8 +44,8 @@
                 android:minHeight="0dp"
                 android:background="@android:color/transparent"
                 android:text="@string/icon_exit"
-                android:textSize="25sp"
-                android:textColor="@color/white_30_opaque"
+                android:textSize="30sp"
+                android:textColor="@color/white"
                 android:onClick="onCloseMenuClicked"/>
 
             <TextView
@@ -42,21 +55,22 @@
                 android:layout_centerInParent="true"
                 android:text="@string/menu"
                 android:textSize="20sp"
-                android:textColor="@color/white_30_opaque"/>
+                android:textColor="@color/white"/>
 
         </RelativeLayout>
 
         <GridView
             android:id="@+id/menu_grid"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/menu_header"
             android:numColumns="2"
             android:stretchMode="columnWidth"
             android:gravity="center"
-            android:background="@color/black_65_opaque">
+            android:listSelector="@android:color/transparent">
         </GridView>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <!-- Content -->
 
@@ -83,7 +97,7 @@
                 android:background="@android:color/transparent"
                 android:text="@string/icon_menu"
                 android:textSize="50sp"
-                android:textColor="@color/white_30_opaque"
+                android:textColor="@color/white"
                 android:onClick="onOpenMenuClicked"/>
 
         </RelativeLayout>

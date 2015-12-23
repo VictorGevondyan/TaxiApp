@@ -5,8 +5,6 @@
 
     <!-- Menu Grid -->
     <dimen name="grid_column_width">60dp</dimen>
-    <dimen name="menu_icon_text_size">70sp</dimen>
-    <dimen name="menu_title_text_size">25sp</dimen>
     <dimen name="close_menu_text_size">40sp</dimen>
 
 </resources>

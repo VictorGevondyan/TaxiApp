@@ -40,5 +40,9 @@
     <string name="icon_refresh">&#xe90f;</string>
     <string name="icon_services">&#xe910;</string>
     <string name="icon_settings">&#xe911;</string>
+    <string name="icon_mobile_phone">&#xe912;</string>
+    <string name="icon_arrow">&#xe913;</string>
+    <string name="icon_balance">&#xe914;</string>
+    <string name="icon_help">&#xe915;</string>
 
 </resources>

@@ -9,10 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
+import com.flycode.paradox.taxiuser.constants.MenuConstants;
 import com.flycode.paradox.taxiuser.models.MenuItem;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
-
-import java.util.ArrayList;
 
 /**
  * Created by victor on 12/11/15.
@@ -20,23 +19,29 @@ import java.util.ArrayList;
 public class MenuGridAdapter extends ArrayAdapter<MenuItem> {
 
     private Context context;
-    private ArrayList<MenuItem> menuItemsList;
 
-
-    public MenuGridAdapter(Context context, int resource, ArrayList<MenuItem> menuItemsList) {
-        super(context, resource, menuItemsList);
+    public MenuGridAdapter(Context context, int resource) {
+        super(context, resource);
         this.context = context;
-        this.menuItemsList = menuItemsList;
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        MenuItem menuItem = getItem(position);
-
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.item_menu_grid, parent, false);
+        }
+
+        if (position < MenuConstants.menuTitles.length - 2) {
+            convertView.findViewById(R.id.horizontal_space).setVisibility(View.VISIBLE);
+        } else {
+            convertView.findViewById(R.id.horizontal_space).setVisibility(View.GONE);
+        }
+
+        if (position % 2 == 1) {
+            convertView.findViewById(R.id.vertical_space).setVisibility(View.VISIBLE);
+        } else {
+            convertView.findViewById(R.id.vertical_space).setVisibility(View.GONE);
         }
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(context, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
@@ -48,31 +53,14 @@ public class MenuGridAdapter extends ArrayAdapter<MenuItem> {
         menuIconTextView.setTypeface(icomoonTypeface);
         menuTitleTextView.setTypeface(robotoThinTypeface);
 
-        menuIconTextView.setText(menuItem.getIcon());
-        menuTitleTextView.setText(menuItem.getTitle());
+        menuIconTextView.setText(MenuConstants.menuIcons[position]);
+        menuTitleTextView.setText(MenuConstants.menuTitles[position]);
 
         return convertView;
     }
 
     @Override
     public int getCount() {
-        return menuItemsList.size();
+        return MenuConstants.menuTitles.length;
     }
-
-    @Override
-    public MenuItem getItem(int position) {
-        return menuItemsList.get(position);
-    }
-
-    public void setItem( MenuItem menuItem) {
-        menuItemsList.add(0, menuItem);
-        notifyDataSetChanged();
-    }
-
-    public void setItems(ArrayList<MenuItem> menuItemsList) {
-        this.menuItemsList = menuItemsList;
-        notifyDataSetChanged();
-    }
-
-
 }

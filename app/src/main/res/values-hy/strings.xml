@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">TaxiUser</string>
+
+    <!-- Login -->
+    <string name="number">հեռախոսահամար</string>
+    <string name="password">գաղտնաբառ</string>
+    <string name="login">ՄՈՒՏՔ</string>
+    <string name="or">կամ</string>
+    <string name="receive_password">ՍՏԱՆԱԼ\nԳԱՂՏՆԱԲԱՌ</string>
+
+    <!-- Menu -->
+    <string name="menu">Մենյու</string>
+    <string name="ongoing">Ընթացիկ</string>
+    <string name="balance">Բալանս</string>
+    <string name="order">Պատվիրել</string>
+    <string name="history">Պատմություն</string>
+    <string name="favorites">Սիրված</string>
+    <string name="settings">Կարգավորումներ</string>
+    <string name="about_us">Մեր մասին</string>
+    <string name="services">Սերվիսներ</string>
+    <string name="help">Օգնություն</string>
+    <string name="logout">Ելք</string>
+
+</resources>

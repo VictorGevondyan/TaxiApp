@@ -7,15 +7,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
-import com.flycode.paradox.taxiuser.menu_resources.MenuResources;
-import com.flycode.paradox.taxiuser.models.MenuItem;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
-
-import java.util.ArrayList;
 
 /**
  * Created by victor on 12/14/15.
@@ -23,7 +20,6 @@ import java.util.ArrayList;
 public class MenuActivity  extends Activity {
     private SideMenuLayout sideMenu;
     private MenuGridAdapter menuGridAdapter;
-    ArrayList<MenuItem> menuItemsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +30,17 @@ public class MenuActivity  extends Activity {
         setContentView(sideMenu);
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
+        Typeface robotoThinTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
 
         Button openMenuButton = (Button) findViewById(R.id.open_menu);
         Button closeMenuButton = (Button) findViewById(R.id.close_menu);
         openMenuButton.setTypeface(icomoonTypeface);
         closeMenuButton.setTypeface(icomoonTypeface);
 
-        menuItemsList = new ArrayList<>();
-        initializeMenuItems();
-        menuGridAdapter = new MenuGridAdapter(this, R.layout.item_menu_grid, menuItemsList);
+        TextView menuTitleTextView = (TextView) findViewById(R.id.menu_title);
+        menuTitleTextView.setTypeface(robotoThinTypeface);
+
+        menuGridAdapter = new MenuGridAdapter(this, R.layout.item_menu_grid);
 
         GridView menuGridView = (GridView) findViewById(R.id.menu_grid);
         menuGridView.setAdapter(menuGridAdapter);
@@ -70,21 +68,6 @@ public class MenuActivity  extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
         }
     };
-    
-    private String getStringResource( int resource){
-        return getResources().getString(resource);
-    }
-
-    public void initializeMenuItems(){
-        int i;
-        MenuItem menuItem;
-        for( i = 0; i< MenuResources.menuIcons.length; i++){
-            menuItem = new MenuItem(MenuResources.menuIcons[i], MenuResources.menuTitles[i]);
-            menuItemsList.add(menuItem);
-        }
-    }
-
 }
