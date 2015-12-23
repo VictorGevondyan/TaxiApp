@@ -77,7 +77,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000000">
+        android:background="#000000"
+        android:orientation="vertical"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -101,6 +103,22 @@
                 android:onClick="onOpenMenuClicked"/>
 
         </RelativeLayout>
+
+       <!-- <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Logout"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onLogout"
+            />-->
+
+        <LinearLayout
+            android:id="@+id/content_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+        </LinearLayout>
 
     </LinearLayout>
 

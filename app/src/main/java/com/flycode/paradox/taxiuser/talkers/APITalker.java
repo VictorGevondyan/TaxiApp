@@ -70,6 +70,10 @@ public class APITalker {
         return apiTalker;
     }
 
+    /**
+     * Public Methods
+     */
+
     public void login(final Context context, final String username, final String password, final LoginHandler loginHandler) {
         RequestParams params = new RequestParams();
         params.put(USERNAME, username);

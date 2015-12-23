@@ -1,4 +1,9 @@
 <resources>
+    <!-- Generic -->
+    <dimen name="credentials_list_margin">55dp</dimen>
+    <dimen name="credentials_icon_size">20sp</dimen>
+    <dimen name="rhombus_size">20dp</dimen>
+
     <!-- Action Bar -->
     <dimen name="action_bar_height">60dp</dimen>
     <dimen name="action_bar_button_margin">15dp</dimen>
@@ -6,5 +11,11 @@
     <!-- Menu Grid -->
     <dimen name="grid_column_width">60dp</dimen>
     <dimen name="close_menu_text_size">40sp</dimen>
+
+    <!-- Settings -->
+    <dimen name="settings_entry_margin">20dp</dimen>
+    <dimen name="buttons_text_size">13sp</dimen>
+    <dimen name="big_icon_text_size">40sp</dimen>
+    <dimen name="languages_text_size">17sp</dimen>
 
 </resources>

@@ -15,8 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_margin="55dp"
-            android:maxHeight="400dp"
+            android:layout_margin="@dimen/credentials_list_margin"
+            android:maxWidth="400dp"
             android:orientation="vertical"
             android:gravity="center">
 
@@ -40,7 +40,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/icon_password"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/credentials_icon_size"
                         android:textColor="@color/green"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
@@ -97,7 +97,7 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginEnd="5dp"
                         android:text="@string/icon_password"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/credentials_icon_size"
                         android:textColor="@color/green"/>
 
                     <View
