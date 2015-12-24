@@ -67,10 +67,28 @@ public class ModelFactory {
         dateFromString(orderJSON.optString(ORDER_TIME), orderTime);
 
         // Starting Point
-        JSONObject startingPointJSON = orderJSON.optJSONObject(STARTING_POINT);
-        String startingPointName = startingPointJSON.optString(NAME);
+        String startingPointName = null;
 
-        return new Order(id, status, startingPointName, orderTime);
+        JSONObject startingPointJSON = orderJSON.optJSONObject(STARTING_POINT);
+        startingPointName = startingPointJSON.optString(NAME);
+
+
+        // Ending Point
+        String endingPointName = null;
+
+        if (orderJSON.has(ENDING_POINT)) {
+            JSONObject endingPointJSON = orderJSON.optJSONObject(ENDING_POINT);
+            endingPointName = endingPointJSON.optString(NAME);
+        }
+
+        // Transaction
+        JSONObject transactionJSONObject = orderJSON.optJSONObject(TRANSACTION);
+        String paymentType = transactionJSONObject.optString(PAYMENT_TYPE);
+        int moneyAmount = transactionJSONObject.optInt(MONEY_AMOUNT);
+
+        return new Order(id, status,  startingPointName, endingPointName, orderTime,moneyAmount, paymentType,"Standart"
+                );
+
     }
 
     private static void dateFromString(String dateString, Date date) {

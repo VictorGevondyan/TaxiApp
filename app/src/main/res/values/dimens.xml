@@ -34,4 +34,11 @@
     <dimen name="arrow_right_margin">30dp</dimen>
     <dimen name="credential_name_width">60dp</dimen>
 
+    <!-- Order Activity -->
+    <dimen name="delimiter_margin">5dp</dimen>
+    <dimen name="order_activity_credential_name_width">80dp</dimen>
+    <dimen name="credential_value_left_margin">20dp</dimen>
+    <dimen name="cost_type_margin">40dp</dimen>
+    <dimen name="icon_side_margin">10dp</dimen>
+
 </resources>
