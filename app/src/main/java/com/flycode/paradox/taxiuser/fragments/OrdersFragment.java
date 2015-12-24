@@ -51,5 +51,4 @@ public class OrdersFragment extends Fragment implements GetOrdersHandler {
     public void onGetOrdersFailure() {
 
     }
-
 }

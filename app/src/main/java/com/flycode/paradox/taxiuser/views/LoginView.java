@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.flycode.paradox.taxiuser.R;
@@ -18,6 +19,8 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
  * Created by anhaytananun on 22.12.15.
  */
 public class LoginView extends View {
+    private boolean isTouched = false;
+
     public LoginView(Context context) {
         super(context);
     }
@@ -52,8 +55,13 @@ public class LoginView extends View {
 
         Paint paint = new Paint();
         paint.setStrokeWidth(2);
-//        paint.setColor(Color.parseColor("#117F20"));
-        paint.setColor(Color.parseColor("#7A7A7A"));
+
+        if (isTouched) {
+            paint.setColor(Color.parseColor("#117F20"));
+        } else {
+            paint.setColor(Color.parseColor("#7A7A7A"));
+        }
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
 
@@ -100,5 +108,18 @@ public class LoginView extends View {
                 (width - orBounds.width()) / 2,
                 height,
                 textPaint);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            isTouched = true;
+            invalidate();
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            isTouched = false;
+            invalidate();
+        }
+
+        return super.onTouchEvent(event);
     }
 }

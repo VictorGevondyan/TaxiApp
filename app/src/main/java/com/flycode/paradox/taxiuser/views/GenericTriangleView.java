@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.flycode.paradox.taxiuser.R;
@@ -20,6 +21,8 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 public class GenericTriangleView extends View {
     private String text;
     private String borderColor;
+    private String borderHoverColor;
+    private boolean isTouched = false;
 
     public GenericTriangleView(Context context) {
         super(context);
@@ -59,7 +62,13 @@ public class GenericTriangleView extends View {
 
         Paint paint = new Paint();
         paint.setStrokeWidth(2);
-        paint.setColor(Color.parseColor(borderColor));
+
+        if (isTouched) {
+            paint.setColor(Color.parseColor(borderHoverColor));
+        } else {
+            paint.setColor(Color.parseColor(borderColor));
+        }
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
 
@@ -91,14 +100,20 @@ public class GenericTriangleView extends View {
         TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.genericTriangle);
         text = arr.getText(R.styleable.genericTriangle_text).toString();
         borderColor = arr.getText(R.styleable.genericTriangle_borderColor).toString();
+        borderHoverColor = arr.getText(R.styleable.genericTriangle_borderHoverColor).toString();
         arr.recycle();
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            isTouched = true;
+            invalidate();
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            isTouched = false;
+            invalidate();
+        }
 
-    public void setBorderColor(String borderColor) {
-        this.borderColor = borderColor;
+        return super.onTouchEvent(event);
     }
 }

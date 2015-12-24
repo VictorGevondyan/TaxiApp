@@ -29,7 +29,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private TextView phoneNumberTextView;
 
     private View armenianRombusView;
-    private View russionRombusView;
+    private View russianRombusView;
     private View englishRombusView;
 
     @Nullable
@@ -85,7 +85,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         armenianRombusView = settingsView.findViewById(R.id.armenian_rombus);
         englishRombusView = settingsView.findViewById(R.id.english_rombus);
-        russionRombusView = settingsView.findViewById(R.id.russian_rombus);
+        russianRombusView = settingsView.findViewById(R.id.russian_rombus);
 
         View armenianSection = settingsView.findViewById(R.id.armenian);
         View russianSection = settingsView.findViewById(R.id.russian);
@@ -113,7 +113,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         armenianRombusView.setBackgroundResource(
                 language.equals(AppSettings.LANGUAGES.HY) ? R.drawable.rombus_green : R.drawable.rombus_white);
-        russionRombusView.setBackgroundResource(
+        russianRombusView.setBackgroundResource(
                 language.equals(AppSettings.LANGUAGES.RU) ? R.drawable.rombus_green : R.drawable.rombus_white);
         englishRombusView.setBackgroundResource(
                 language.equals(AppSettings.LANGUAGES.EN) ? R.drawable.rombus_green : R.drawable.rombus_white);

@@ -3,6 +3,7 @@
     <declare-styleable name="genericTriangle">
         <attr name="text" format="string" />
         <attr name="borderColor" format="string" />
+        <attr name="borderHoverColor" format="string" />
     </declare-styleable>
     <declare-styleable name="maximalDimension">
         <attr name="maxWidth" format="dimension" />

@@ -209,7 +209,8 @@
                 android:layout_marginTop="@dimen/settings_entry_margin"
                 android:layout_marginBottom="@dimen/settings_entry_margin"
                 flycode:text="@string/submit"
-                flycode:borderColor="#7A7A7A"/>
+                flycode:borderColor="#7A7A7A"
+                flycode:borderHoverColor="#8B0C0C"/>
 
             <TextView
                 android:id="@+id/change_password"
@@ -334,7 +335,8 @@
                 android:layout_marginTop="@dimen/settings_entry_margin"
                 android:layout_marginBottom="@dimen/settings_entry_margin"
                 flycode:text="@string/submit"
-                flycode:borderColor="#7A7A7A" />
+                flycode:borderColor="#7A7A7A"
+                flycode:borderHoverColor="#8B0C0C"/>
 
         </LinearLayout>
 

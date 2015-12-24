@@ -44,6 +44,11 @@
     <string name="comments">comments</string>
     <string name="confirm">CONFIRM</string>
 
+    <!-- Order List -->
+    <string name="date">Date</string>
+    <string name="location">Location</string>
+    <string name="status">Status</string>
+
     <!-- Icons -->
     <string name="icon_about_us">&#xe900;</string>
     <string name="icon_close">&#xe901;</string>

@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.flycode.paradox.taxiuser.R;
@@ -17,6 +18,8 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
  * Created by anhaytananun on 22.12.15.
  */
 public class ReceivePasswordView extends View {
+    private boolean isTouched = false;
+
     public ReceivePasswordView(Context context) {
         super(context);
     }
@@ -46,7 +49,13 @@ public class ReceivePasswordView extends View {
 
         Paint paint = new Paint();
         paint.setStrokeWidth(2);
-        paint.setColor(Color.parseColor("#7A7A7A"));
+
+        if (isTouched) {
+            paint.setColor(Color.parseColor("#117F20"));
+        } else {
+            paint.setColor(Color.parseColor("#7A7A7A"));
+        }
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
 
@@ -81,5 +90,18 @@ public class ReceivePasswordView extends View {
                 textPaint);
 
         canvas.scale(1, 1);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            isTouched = true;
+            invalidate();
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            isTouched = false;
+            invalidate();
+        }
+
+        return super.onTouchEvent(event);
     }
 }
