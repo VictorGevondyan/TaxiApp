@@ -30,6 +30,7 @@ public class PickTimeDialog extends DialogFragment implements View.OnClickListen
     private Activity activity;
     private PickTimeDialogListener listener;
     private PublicTimePicker timePicker;
+    private NumberPicker dayPicker;
 
     public static PickTimeDialog initialize(PickTimeDialogListener listener) {
         Bundle arguments = new Bundle();
@@ -60,7 +61,7 @@ public class PickTimeDialog extends DialogFragment implements View.OnClickListen
         timePicker = (PublicTimePicker) view.findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
 
-        NumberPicker dayPicker = (NumberPicker) view.findViewById(R.id.day_picker);
+        dayPicker = (NumberPicker) view.findViewById(R.id.day_picker);
         dayPicker.setMinValue(0);
         dayPicker.setMaxValue(1);
         dayPicker.setDisplayedValues(new String[]{
@@ -95,6 +96,11 @@ public class PickTimeDialog extends DialogFragment implements View.OnClickListen
 
     private void done() {
         if (listener != null) {
+            listener.onTimePickDone(
+                    dayPicker.getValue() == 0,
+                    timePicker.getHour(),
+                    timePicker.getMinute()
+            );
         }
 
         dismiss();
@@ -114,8 +120,8 @@ public class PickTimeDialog extends DialogFragment implements View.OnClickListen
     }
 
     public interface PickTimeDialogListener {
-        void onCommentDone(String input);
-        void onCommentCancel();
+        void onTimePickDone(boolean isToday, int hour, int minute);
+        void onTimePickCancel();
     }
 
     public void setListener(PickTimeDialogListener listener) {
@@ -123,7 +129,7 @@ public class PickTimeDialog extends DialogFragment implements View.OnClickListen
     }
 
     private void closeDialog() {
-        listener.onCommentCancel();
+        listener.onTimePickCancel();
         dismiss();
     }
 

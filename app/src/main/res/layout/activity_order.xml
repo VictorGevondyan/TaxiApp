@@ -17,8 +17,7 @@
         android:maxWidth="400dp"
         android:orientation="vertical"
         android:background="@color/black_65_opaque"
-        android:layout_alignParentBottom="true"
-        >
+        android:layout_alignParentBottom="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -30,8 +29,7 @@
             <LinearLayout
                 android:id="@+id/date_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/icon_date"
@@ -59,8 +57,7 @@
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/white_30_opaque"
-                    android:layout_marginBottom="@dimen/delimiter_margin"
-                    />
+                    android:layout_marginBottom="@dimen/delimiter_margin"/>
 
             </LinearLayout>
 

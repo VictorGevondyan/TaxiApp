@@ -1,4 +1,4 @@
-package com.flycode.paradox.taxiuser.talkers;
+package com.flycode.paradox.taxiuser.api;
 
 /**
  * Created by victor on 12/9/15.

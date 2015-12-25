@@ -15,13 +15,30 @@ import com.flycode.paradox.taxiuser.activities.OrderActivity;
 import com.flycode.paradox.taxiuser.adapters.OrdersListAdapter;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
 import com.flycode.paradox.taxiuser.models.Order;
-import com.flycode.paradox.taxiuser.talkers.APITalker;
-import com.flycode.paradox.taxiuser.talkers.GetOrdersHandler;
+import com.flycode.paradox.taxiuser.api.APITalker;
+import com.flycode.paradox.taxiuser.api.GetOrdersHandler;
 
 import java.util.ArrayList;
 
 public class OrdersFragment extends Fragment implements GetOrdersHandler {
+    public static class TYPES {
+        public static final String ONGOING = "ongoing";
+        public static final String HISTORY = "history";
+    }
+
+    private static final String TYPE = "type";
+
     private OrdersListAdapter ordersListAdapter;
+
+    public static OrdersFragment initialize(String type) {
+        Bundle arguments = new Bundle();
+        arguments.putString(TYPE, type);
+
+        OrdersFragment ordersFragment = new OrdersFragment();
+        ordersFragment.setArguments(arguments);
+
+        return ordersFragment;
+    }
 
     @Nullable
     @Override
@@ -48,6 +65,10 @@ public class OrdersFragment extends Fragment implements GetOrdersHandler {
             startActivity(orderActivityIntent);
         }
     };
+
+    /**
+     * GetOrdersHandler Methods
+     */
 
     public void onGetOrdersSuccess( ArrayList<Order> ordersList ) {
         ordersListAdapter.setItems(ordersList);

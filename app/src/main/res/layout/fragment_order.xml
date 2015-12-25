@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="@dimen/order_details_list_margin"
+        android:gravity="center"
         flycode:maxWidth="400dp">
 
         <RelativeLayout
@@ -47,14 +48,32 @@
             android:layout_height="1dp"
             android:background="@color/white_30_opaque"/>
 
+        <RelativeLayout
+            android:layout_width="@dimen/order_rhombus_size"
+            android:layout_height="@dimen/order_rhombus_size"
+            android:background="@drawable/order_rhombus">
+
+            <Button
+                android:id="@+id/order_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="20dp"
+                android:gravity="center"
+                android:textSize="@dimen/settings_title_text_size"
+                android:textColor="#000000"
+                android:background="@android:color/transparent"/>
+
+        </RelativeLayout>
+
     </com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout>
 
-    <LinearLayout
+    <com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:background="@color/black_65_opaque">
+        android:background="@color/black_65_opaque"
+        flycode:maxWidth="400dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -72,11 +91,12 @@
                 android:text="@string/icon_close"
                 android:textColor="@color/pure_white"
                 android:textSize="@dimen/credentials_icon_size"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
-        <com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout
+        <LinearLayout
             android:id="@+id/order_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,7 +105,7 @@
             android:layout_marginRight="@dimen/order_details_list_margin"
             android:layout_marginEnd="@dimen/order_details_list_margin"
             android:orientation="vertical"
-            flycode:maxWidth="400dp">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -339,8 +359,30 @@
 
             </LinearLayout>
 
-        </com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout>
+        </LinearLayout>
 
-    </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:id="@+id/car_categories_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/order_details_list_margin"
+                android:layout_marginStart="@dimen/order_details_list_margin"
+                android:layout_marginRight="@dimen/order_details_list_margin"
+                android:layout_marginEnd="@dimen/order_details_list_margin"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout>
 
 </RelativeLayout>

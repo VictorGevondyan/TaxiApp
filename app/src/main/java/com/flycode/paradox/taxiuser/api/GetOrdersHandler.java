@@ -1,4 +1,4 @@
-package com.flycode.paradox.taxiuser.talkers;
+package com.flycode.paradox.taxiuser.api;
 
 import com.flycode.paradox.taxiuser.models.Order;
 

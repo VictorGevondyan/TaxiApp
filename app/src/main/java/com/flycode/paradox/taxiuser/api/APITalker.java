@@ -1,11 +1,11 @@
-package com.flycode.paradox.taxiuser.talkers;
+package com.flycode.paradox.taxiuser.api;
 
 import android.content.Context;
-import android.location.Location;
 import android.util.Log;
 
 import com.flycode.paradox.taxiuser.factory.ModelFactory;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
+import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
@@ -20,37 +20,34 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 /**
  * Created by victor on 12/14/15.
  */
 public class APITalker {
     // Url constants
-    private final String BASE_URL = "http://107.155.108.131:9000";
+//    private final String BASE_URL = "http://107.155.108.131:9000";
+    private final String BASE_URL = "http://192.168.0.110:9000";
     private final String BASE_API_URL = BASE_URL+ "/api";
     private final String LOGIN_URL = "/auth/local";
     private final String ORDERS_URL = "/orders";
     private final String OWN_URL = "/own";
-    private final String CUSTOM_TRIP_URL = "/customTrip";
     private final String POINTS_URL = "/points";
-    private final String STATUS_URL = "/status";
     private final String TRANSACTIONS_URL = "/transactions";
-
+    private final String CAR_CATEGORIES_URL = "/carCategories";
 
     // User specific constants
     private final String USERNAME = "username";
     private final String PASSWORD = "password";
     private final String TOKEN = "token";
-    private final String NAME = "name";
-    private final String GEO = "geo";
-    private final String ORDER = "order";
     private final String ORDERS = "orders";
     private final String STATUS = "status";
-    private final String ID = "_id";
-    private final String DISTANCE = "distance";
-    private final String MONEY_AMOUNT = "moneyAmount";
-    private final String TRANSACTIONS = "transactions";
-
+    private final String STARTING_POINT = "startingPoint";
+    private final String NAME = "name";
+    private final String GEO = "gep";
+    private final String DESCRIPTION = "description";
+    private final String CAR_CATEGORY = "carCategory";
 
     /*
 	 * Singletone
@@ -109,6 +106,26 @@ public class APITalker {
         });
     }
 
+    public void getCarCategories(final CarCategoriesListener listener) {
+        String url = BASE_API_URL + CAR_CATEGORIES_URL;
+
+        asyncHttpClient.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                if (response.length() == 0) {
+                    listener.onGetCarCategoriesFail();
+                }
+
+                listener.onGetCarCategoriesSuccess(ModelFactory.makeCarCategories(response));
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                listener.onGetCarCategoriesFail();
+            }
+        });
+    }
+
     public void getOwnOrders(Context context, String status , final GetOrdersHandler getOrdersHandler){
         if (!authenticate(context)) {
             return;
@@ -152,77 +169,51 @@ public class APITalker {
         });
     }
 
-    public void pingLocation(Context context, final String order, final String status, final Location geoLocation){
-        JSONArray geoLocationJSON;
+    public void makeOrder(Context context, String startingPointName, LatLng startingPointLocation, Date orderTime, String carCategory, String comments, final MakeOrderListener listener) {
+        if (!authenticate(context)) {
+            return;
+        }
+
+        final JSONObject requestJSON = new JSONObject();
 
         try {
-            geoLocationJSON = locationToJsonArray(geoLocation);
+            JSONObject startingPointJSON = new JSONObject();
+            startingPointJSON.put(NAME, startingPointName);
+            startingPointJSON.put(GEO, locationToJsonArray(startingPointLocation));
+            requestJSON.put(STARTING_POINT, startingPointJSON);
+            requestJSON.put(DESCRIPTION, comments);
+            requestJSON.put(CAR_CATEGORY, carCategory);
         } catch (JSONException e) {
             e.printStackTrace();
             return;
         }
 
-        RequestParams params = new RequestParams();
-        params.put(ORDER, order);
-        params.put(STATUS, status);
-        params.put(GEO, geoLocationJSON.toString());
-
-        JSONObject requestJSON = new JSONObject();
+        StringEntity requestEntity;
 
         try {
-            if (order != null && !order.isEmpty()) {
-                requestJSON.put(ORDER, order);
-            }
-
-            requestJSON.put(STATUS, status);
-            requestJSON.put(GEO, geoLocationJSON);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        StringEntity stringEntity;
-
-        try {
-            stringEntity = new StringEntity(requestJSON.toString());
+            requestEntity = new StringEntity(requestJSON.toString());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return;
         }
 
-        String url = BASE_API_URL + POINTS_URL;
+        String url = BASE_API_URL + ORDERS_URL;
 
-        if (!authenticate(context)) {
-            return;
-        }
-
-        asyncHttpClient.post(context, url, stringEntity, "application/json", new JsonHttpResponseHandler() {
+        asyncHttpClient.post(context, url, requestEntity, "application/json", new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers,
-                                  JSONObject response) {
-            }
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
 
-            @Override
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  java.lang.Throwable throwable,
-                                  org.json.JSONObject errorResponse) {
+                listener.onMakeOrderSuccess(ModelFactory.makeOrder(response));
             }
-
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                listener.onMakeOrderFail();
             }
         });
-    }
-
-    private JSONArray locationToJsonArray(Location location) throws JSONException {
-        JSONArray locationJSON = new JSONArray();
-
-        locationJSON.put(location.getLatitude());
-        locationJSON.put(location.getLongitude());
-
-        return locationJSON;
     }
 
     private void setTokenCookie(Context context, String token) {
@@ -240,6 +231,15 @@ public class APITalker {
         }
 
         return false;
+    }
+
+    private JSONArray locationToJsonArray(LatLng location) throws JSONException {
+        JSONArray locationJSON = new JSONArray();
+
+        locationJSON.put(location.latitude);
+        locationJSON.put(location.longitude);
+
+        return locationJSON;
     }
 }
 

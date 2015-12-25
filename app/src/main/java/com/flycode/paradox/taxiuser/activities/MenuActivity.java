@@ -19,6 +19,7 @@ import com.flycode.paradox.taxiuser.fragments.OrderFragment;
 import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
+import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
@@ -26,7 +27,7 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 /**
  * Created by victor on 12/14/15.
  */
-public class MenuActivity extends Activity {
+public class MenuActivity extends Activity implements OrderFragment.OrderFragmentListener {
     private final int INDEX_ONGOING = 0;
     private final int INDEX_ORDER = 2;
     private final int INDEX_HISTORY = 3;
@@ -138,19 +139,19 @@ public class MenuActivity extends Activity {
             actionBarTitleTextView.setText(R.string.order);
             actionBarRightButton.setText(R.string.icon_phone);
 
-            fragment = new OrderFragment();
+            fragment = OrderFragment.initialize(this);
         } else if (position == INDEX_ONGOING) {
             actionBarRightButton.setVisibility(View.VISIBLE);
             actionBarRightButton.setText(R.string.icon_refresh);
             actionBarTitleTextView.setText(R.string.ongoing);
 
-            fragment = new OrdersFragment();
+            fragment = OrdersFragment.initialize(OrdersFragment.TYPES.ONGOING);
         } else if (position == INDEX_HISTORY) {
             actionBarRightButton.setVisibility(View.VISIBLE);
             actionBarRightButton.setText(R.string.icon_refresh);
             actionBarTitleTextView.setText(R.string.ongoing);
 
-            fragment = new OrdersFragment();
+            fragment = OrdersFragment.initialize(OrdersFragment.TYPES.ONGOING);
         } else if (position == INDEX_SETTINGS) {
             actionBarTitleTextView.setText(R.string.settings);
 
@@ -174,5 +175,17 @@ public class MenuActivity extends Activity {
         if (needsToggle) {
             sideMenu.toggleMenu();
         }
+    }
+
+    /**
+     * OrderFragment.OrderFragmentListener Methods
+     */
+
+    @Override
+    public void onOrderMade(Order order) {
+        currentPosition = INDEX_ONGOING;
+
+        Fragment fragment = OrdersFragment.initialize(OrdersFragment.TYPES.ONGOING);
+        getFragmentManager().beginTransaction().replace(R.id.content_fragment, fragment, "fragment").commit();
     }
 }

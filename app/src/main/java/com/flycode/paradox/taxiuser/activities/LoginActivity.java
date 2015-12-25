@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
-import com.flycode.paradox.taxiuser.talkers.APITalker;
-import com.flycode.paradox.taxiuser.talkers.LoginHandler;
+import com.flycode.paradox.taxiuser.api.APITalker;
+import com.flycode.paradox.taxiuser.api.LoginHandler;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 

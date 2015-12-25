@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
-        android:width="16dp"
-        android:height="16dp"
-        android:right="4dp"
-        android:left="4dp"
-        android:top="4dp"
-        android:bottom="4dp">
+        android:width="150dp"
+        android:height="150dp"
+        android:right="30dp"
+        android:left="30dp"
+        android:top="30dp"
+        android:bottom="30dp">
         <rotate
             android:fromDegrees="45"
             android:toDegrees="0" >
