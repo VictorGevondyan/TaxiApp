@@ -49,6 +49,12 @@
     <string name="location">Location</string>
     <string name="status">Status</string>
 
+    <!-- Dialog -->
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="comments_title">Comments</string>
+    <string name="order_time">Order Time</string>
+
     <!-- Icons -->
     <string name="icon_about_us">&#xe900;</string>
     <string name="icon_close">&#xe901;</string>

@@ -13,7 +13,6 @@
     <dimen name="action_bar_title_text_size">20sp</dimen>
 
     <!-- Menu Grid -->
-    <dimen name="grid_column_width">60dp</dimen>
     <dimen name="close_menu_text_size">40sp</dimen>
 
     <!-- Settings -->
@@ -22,6 +21,7 @@
 
     <!-- Ordering -->
     <dimen name="order_time_width">50dp</dimen>
+    <dimen name="order_details_list_margin">35dp</dimen>
 
     <!-- Orders -->
     <dimen name="order_credentials_list_height">110dp</dimen>

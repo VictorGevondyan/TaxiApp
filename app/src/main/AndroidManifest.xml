@@ -22,6 +22,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:theme="@android:style/Theme.Holo"
             android:name=".activities.MenuActivity"
             android:screenOrientation="portrait"
             android:configChanges="locale"/>

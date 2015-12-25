@@ -29,7 +29,7 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 public class MenuActivity extends Activity {
     private final int INDEX_ONGOING = 0;
     private final int INDEX_ORDER = 2;
-    private final int INDEX_HISTORY = 2;
+    private final int INDEX_HISTORY = 3;
     private final int INDEX_SETTINGS = 5;
     private final int INDEX_LOGOUT = 9;
 

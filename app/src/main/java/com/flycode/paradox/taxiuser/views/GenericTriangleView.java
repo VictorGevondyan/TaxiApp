@@ -112,6 +112,9 @@ public class GenericTriangleView extends View {
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             isTouched = false;
             invalidate();
+        } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+            isTouched = false;
+            invalidate();
         }
 
         return super.onTouchEvent(event);

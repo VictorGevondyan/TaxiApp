@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:flycode="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:background="@color/black_65_opaque"
+        flycode:maxWidth="400dp">
+
+        <TextView
+            android:id="@+id/comment_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/comments_title"
+            android:textSize="@dimen/settings_title_text_size"
+            android:textColor="@color/pure_white"
+            android:gravity="center_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="@dimen/order_details_list_margin"
+            android:layout_marginEnd="@dimen/order_details_list_margin"
+            android:layout_marginStart="@dimen/order_details_list_margin"
+            android:layout_marginLeft="@dimen/order_details_list_margin"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/pure_white"
+                android:maxLines="5"
+                android:inputType="text"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/white_30_opaque"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_30_opaque"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cancel"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/pure_white"
+                android:textAllCaps="false"
+                android:background="@android:color/transparent"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/white_30_opaque"/>
+
+            <Button
+                android:id="@+id/done"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/done"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/pure_white"
+                android:textAllCaps="false"
+                android:background="@android:color/transparent"/>
+
+        </LinearLayout>
+
+    </com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout>
+
+</RelativeLayout>
