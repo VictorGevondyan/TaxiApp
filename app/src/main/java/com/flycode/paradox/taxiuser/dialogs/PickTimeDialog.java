@@ -149,7 +149,7 @@ public class PickTimeDialog extends DialogFragment implements View.OnClickListen
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         if (newVal == 0) {
-            
+
         } else {
 
         }

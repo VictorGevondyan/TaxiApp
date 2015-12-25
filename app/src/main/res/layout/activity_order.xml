@@ -2,6 +2,382 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.flycode.paradox.taxiuser.activities.OrderActivity">
+    tools:context="com.flycode.paradox.taxiuser.activities.OrderActivity"
+    android:background="@drawable/background_map_blurred"
+    >
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxWidth="400dp"
+        android:orientation="vertical"
+        android:background="@color/black_65_opaque"
+        android:layout_alignParentBottom="true"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/settings_entry_margin"
+            android:layout_marginBottom="@dimen/settings_entry_margin"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/date_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/icon_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_date"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/red"
+                    android:layout_marginLeft="@dimen/icon_side_margin"
+                    android:layout_marginStart="@dimen/icon_side_margin"
+                    android:layout_marginRight="@dimen/icon_side_margin"
+                    android:layout_marginEnd="@dimen/icon_side_margin"/>
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="@dimen/order_activity_credential_name_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/date"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/pure_white"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_30_opaque"
+                    android:layout_marginBottom="@dimen/delimiter_margin"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/date_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/credential_value_left_margin"
+                android:layout_marginStart="@dimen/credential_value_left_margin"
+                android:layout_toRightOf="@id/date_view"
+                android:textSize="@dimen/credentials_icon_size"
+                android:textColor="@color/pure_white"
+                />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_30_opaque"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/settings_entry_margin"
+            android:layout_marginBottom="@dimen/settings_entry_margin"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/location_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                >
+
+                <TextView
+                    android:id="@+id/icon_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_location"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/red"
+                    android:layout_marginLeft="@dimen/icon_side_margin"
+                    android:layout_marginStart="@dimen/icon_side_margin"
+                    android:layout_marginRight="@dimen/icon_side_margin"
+                    android:layout_marginEnd="@dimen/icon_side_margin"/>
+
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="@dimen/order_activity_credential_name_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/location"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/pure_white"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_30_opaque"
+                    android:layout_marginBottom="@dimen/delimiter_margin"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_toRightOf="@id/location_view"
+                android:layout_marginLeft="@dimen/credential_value_left_margin"
+                android:layout_marginStart="@dimen/credential_value_left_margin"
+
+                >
+
+            <TextView
+                android:id="@+id/start_location_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/credentials_icon_size"
+                android:textColor="@color/pure_white"
+                />
+
+            <TextView
+                android:id="@+id/end_location_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/start_location_value"
+                android:textSize="@dimen/credentials_icon_size"
+                android:textColor="@color/pure_white"
+                />
+
+        </LinearLayout>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_30_opaque"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/cost_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/icon_cost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_cost"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/red"
+                    android:layout_marginLeft="@dimen/icon_side_margin"
+                    android:layout_marginStart="@dimen/icon_side_margin"
+                    android:layout_marginRight="@dimen/icon_side_margin"
+                    android:layout_marginEnd="@dimen/icon_side_margin"/>
+
+                <TextView
+                    android:id="@+id/cost"
+                    android:layout_width="@dimen/order_activity_credential_name_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cost"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/pure_white"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_30_opaque"
+                    android:layout_marginBottom="@dimen/delimiter_margin"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/bonus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="210dp"
+                android:layout_marginStart="210dp"
+                android:layout_marginTop="-5dp"
+                android:layout_alignTop="@+id/cost_value"
+                android:text="bonus"
+                android:textSize="12sp"
+                android:textColor="@color/pure_white"/>
+
+            <TextView
+                android:id="@+id/cost_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/credential_value_left_margin"
+                android:layout_marginStart="@dimen/credential_value_left_margin"
+                android:layout_toRightOf="@id/cost_view"
+                android:textSize="@dimen/credentials_icon_size"
+                android:textColor="@color/pure_white"/>
+
+            <TextView
+                android:id="@+id/cost_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/cost_type_margin"
+                android:layout_marginStart="@dimen/cost_type_margin"
+                android:layout_marginRight="@dimen/cost_type_margin"
+                android:layout_marginEnd="@dimen/cost_type_margin"
+                android:layout_toRightOf="@id/cost_value"
+                android:textSize="@dimen/credentials_icon_size"
+                android:textColor="@color/pure_white"/>
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_30_opaque"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/settings_entry_margin"
+            android:layout_marginBottom="@dimen/settings_entry_margin"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/distance_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/icon_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_distance"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/red"
+                    android:layout_marginLeft="@dimen/icon_side_margin"
+                    android:layout_marginStart="@dimen/icon_side_margin"
+                    android:layout_marginRight="@dimen/icon_side_margin"
+                    android:layout_marginEnd="@dimen/icon_side_margin"/>
+
+                <TextView
+                    android:id="@+id/distance"
+                    android:layout_width="@dimen/order_activity_credential_name_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/distance"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/pure_white"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_30_opaque"
+                    android:layout_marginBottom="@dimen/delimiter_margin"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/distance_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/credential_value_left_margin"
+                android:layout_marginStart="@dimen/credential_value_left_margin"
+                android:layout_toRightOf="@id/distance_view"
+                android:textSize="@dimen/credentials_icon_size"
+                android:textColor="@color/pure_white"
+                />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_30_opaque"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/settings_entry_margin"
+            android:layout_marginBottom="@dimen/settings_entry_margin"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/status_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/icon_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_status"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/red"
+                    android:layout_marginLeft="@dimen/icon_side_margin"
+                    android:layout_marginStart="@dimen/icon_side_margin"
+                    android:layout_marginRight="@dimen/icon_side_margin"
+                    android:layout_marginEnd="@dimen/icon_side_margin"/>
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="@dimen/order_activity_credential_name_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/status"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/pure_white"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_30_opaque"
+                    android:layout_marginBottom="@dimen/delimiter_margin"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/status_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/credential_value_left_margin"
+                android:layout_marginStart="@dimen/credential_value_left_margin"
+                android:layout_toRightOf="@id/status_view"
+                android:textSize="@dimen/credentials_icon_size"
+                android:textColor="@color/pure_white"
+                />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_30_opaque"/>
+
+
+    </LinearLayout>
 
 </RelativeLayout>
+
+
+

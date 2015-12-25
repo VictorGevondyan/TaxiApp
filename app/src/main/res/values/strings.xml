@@ -44,7 +44,7 @@
     <string name="comments">comments</string>
     <string name="confirm">CONFIRM</string>
 
-    <!-- Order List -->
+    <!-- Orders List -->
     <string name="date">Date</string>
     <string name="location">Location</string>
     <string name="status">Status</string>
@@ -54,6 +54,10 @@
     <string name="done">Done</string>
     <string name="comments_title">Comments</string>
     <string name="order_time">Order Time</string>
+
+    <!-- Order Activity -->
+    <string name="cost">Cost</string>
+    <string name="distance">Distance</string>
 
     <!-- Icons -->
     <string name="icon_about_us">&#xe900;</string>
