@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
+import com.flycode.paradox.taxiuser.settings.UserData;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import com.flycode.paradox.taxiuser.views.GenericTriangleView;
@@ -71,15 +72,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         emailEditText = (EditText) settingsView.findViewById(R.id.email);
         passwordEditText = (EditText) settingsView.findViewById(R.id.enter_password);
         confirmPasswordEditText = (EditText) settingsView.findViewById(R.id.confirm_password);
-
         phoneNumberTextView = (TextView) settingsView.findViewById(R.id.phone_number);
+
+        nameEditText.setText(UserData.sharedData(getActivity()).getName());
+        emailEditText.setText(UserData.sharedData(getActivity()).getEmail());
+        phoneNumberTextView.setText(UserData.sharedData(getActivity()).getUsername());
 
         nameEditText.setTypeface(robotoTypeface);
         lastNameEditText.setTypeface(robotoTypeface);
         emailEditText.setTypeface(robotoTypeface);
         passwordEditText.setTypeface(robotoTypeface);
         confirmPasswordEditText.setTypeface(robotoTypeface);
-
         phoneNumberTextView.setTypeface(robotoTypeface);
 
         armenianRombusView = settingsView.findViewById(R.id.armenian_rombus);

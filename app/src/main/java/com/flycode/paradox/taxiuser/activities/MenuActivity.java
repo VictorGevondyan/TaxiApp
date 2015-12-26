@@ -18,11 +18,14 @@ import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
 import com.flycode.paradox.taxiuser.fragments.OrderFragment;
 import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
+import com.flycode.paradox.taxiuser.gcm.GCMSubscriber;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
+
+import java.io.IOException;
 
 /**
  * Created by victor on 12/14/15.
@@ -74,6 +77,12 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         menuGridView.setOnItemClickListener(onMenuItemClickListener);
 
         changeFragment(INDEX_ORDER, false);
+
+        try {
+            GCMSubscriber.registerForGcm(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

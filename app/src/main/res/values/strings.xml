@@ -23,9 +23,9 @@
     <string name="logout">Logout</string>
 
     <!-- Settings -->
-    <string name="name">name</string>
+    <string name="name">Full Name</string>
     <string name="last_name">last name</string>
-    <string name="email">email</string>
+    <string name="email">Email</string>
     <string name="submit">SUBMIT</string>
     <string name="change_password">CHANGE PASSWORD</string>
     <string name="enter_password">Enter Password</string>
@@ -60,6 +60,11 @@
     <!-- Order -->
     <string name="cost">Cost</string>
     <string name="distance">Distance</string>
+
+    <!-- Push Notifications -->
+    <string name="your_order_taken">Your order is taken</string>
+    <string name="your_order_finished">Your order is finished</string>
+    <string name="something_happens">Whoa! Something happens!</string>
 
     <!-- Icons -->
     <string name="icon_about_us">&#xe900;</string>

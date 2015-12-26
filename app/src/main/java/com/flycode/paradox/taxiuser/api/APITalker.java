@@ -7,6 +7,7 @@ import com.flycode.paradox.taxiuser.factory.ModelFactory;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
@@ -36,11 +37,13 @@ public class APITalker {
     private final String POINTS_URL = "/points";
     private final String TRANSACTIONS_URL = "/transactions";
     private final String CAR_CATEGORIES_URL = "/carCategories";
+    private final String DEVICES = "/devices";
+    private final String USER_URL = "/me";
+    private final String USERS_URL = "/users";
 
     // User specific constants
     private final String USERNAME = "username";
     private final String PASSWORD = "password";
-    private final String TOKEN = "token";
     private final String ORDERS = "orders";
     private final String STATUS = "status";
     private final String STARTING_POINT = "startingPoint";
@@ -48,6 +51,10 @@ public class APITalker {
     private final String GEO = "gep";
     private final String DESCRIPTION = "description";
     private final String CAR_CATEGORY = "carCategory";
+    private final String TOKEN = "token";
+    private final String TYPE = "type";
+    private final String ANDROID = "android";
+    private final String DEVICE_ID = "deviceId";
 
     /*
 	 * Singletone
@@ -169,6 +176,45 @@ public class APITalker {
         });
     }
 
+    public void getOrder(Context context, String orderId, final GetOrderHandler getOrderHandler){
+        if (!authenticate(context)) {
+            return;
+        }
+
+        String url = BASE_API_URL + ORDERS_URL +  "/" + orderId;
+
+        asyncHttpClient.get(context, url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                if (getOrderHandler != null) {
+                    getOrderHandler.onGetOrderSuccess(ModelFactory.makeOrder(response));
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode,
+                                  Header[] headers,
+                                  java.lang.Throwable throwable,
+                                  org.json.JSONObject errorResponse) {
+                if (getOrderHandler!= null) {
+                    Log.d("STATUS CODE", statusCode + "");
+                    getOrderHandler.onGetOrderFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (getOrderHandler!= null) {
+                    Log.d("STATUS CODE", statusCode + "");
+                    Log.d("RESPONSE STRING", responseString);
+                    getOrderHandler.onGetOrderFailure();
+                }
+            }
+
+        });
+    }
+
     public void makeOrder(Context context, String startingPointName, LatLng startingPointLocation, Date orderTime, String carCategory, String comments, final MakeOrderListener listener) {
         if (!authenticate(context)) {
             return;
@@ -216,6 +262,93 @@ public class APITalker {
         });
     }
 
+    public void registerGCMToken(Context context, final String registrationId, String androidDeviceId, final OnGCMTokenRegisteredListener listener) {
+        if (!authenticate(context)) {
+            return;
+        }
+
+        final JSONObject requestJSON = new JSONObject();
+
+        try {
+            requestJSON.put(TOKEN, registrationId);
+            requestJSON.put(DEVICE_ID, androidDeviceId);
+            requestJSON.put(TYPE, ANDROID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        StringEntity requestEntity;
+
+        try {
+            requestEntity = new StringEntity(requestJSON.toString());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String url = BASE_API_URL + DEVICES;
+
+        asyncHttpClient.post(context, url, requestEntity, "application/json", new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (listener == null) {
+                    return;
+                }
+
+                listener.onGCMTokenRegistrationSuccess(registrationId);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                if (listener == null) {
+                    return;
+                }
+
+                listener.onGCMTokenRegistrationFailure();
+            }
+        });
+    }
+
+    public void getUser(Context context, final GetUserHandler getUserHandler){
+        if (!authenticate(context)) {
+            return;
+        }
+
+        String url = BASE_API_URL + USERS_URL + USER_URL;
+
+        asyncHttpClient.get(context, url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                if (getUserHandler != null) {
+                    getUserHandler.onGetDriverSuccess(ModelFactory.makeUser(response));
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode,
+                                  Header[] headers,
+                                  Throwable throwable,
+                                  JSONObject errorResponse) {
+                if (getUserHandler != null) {
+                    Log.d("STATUS CODE", statusCode + "");
+                    getUserHandler.onGetDriverFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (getUserHandler != null) {
+                    Log.d("STATUS CODE", statusCode + "");
+                    Log.d("RESPONSE STRING", responseString);
+                    getUserHandler.onGetDriverFailure();
+                }
+            }
+
+        });
+    }
+
     private void setTokenCookie(Context context, String token) {
         CookieStore cookieStore = new PersistentCookieStore(context);
         asyncHttpClient.setCookieStore(cookieStore);
@@ -225,12 +358,12 @@ public class APITalker {
     }
 
     private boolean authenticate(Context context) {
-        if (AppSettings.sharedSettings(context).isUserLoggedIn()) {
-            setTokenCookie(context, AppSettings.sharedSettings(context).getToken());
-            return true;
+        if (AppSettings.sharedSettings(context).getToken() == null) {
+            return false;
         }
 
-        return false;
+        setTokenCookie(context, AppSettings.sharedSettings(context).getToken());
+        return true;
     }
 
     private JSONArray locationToJsonArray(LatLng location) throws JSONException {

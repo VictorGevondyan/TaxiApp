@@ -28,8 +28,9 @@
 
         <TextView
             android:id="@+id/phone_number"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:textColor="@color/pure_white"
             android:textSize="@dimen/small_text_size"/>
 
@@ -99,7 +100,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/settings_entry_margin"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -146,7 +148,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_30_opaque"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"

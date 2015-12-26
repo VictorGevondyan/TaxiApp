@@ -34,6 +34,19 @@
         <activity android:name=".activities.OrderActivity"
             android:screenOrientation="portrait" />
 
+        <receiver
+            android:name=".gcm.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.flycode.paradox.taxiuser" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCXHk9-r0WjxNP4SNfzbGlhCDrm4rkCKVM"/>

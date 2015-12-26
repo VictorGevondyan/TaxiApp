@@ -254,6 +254,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
                 orderDetailsLinerLayout.setVisibility(View.VISIBLE);
                 closeIconButton.setVisibility(View.VISIBLE);
                 googleMap.getUiSettings().setAllGesturesEnabled(false);
+                locationTextView.setText(locationEditText.getText());
                 orderStage++;
             } else {
                 APITalker.sharedTalker().makeOrder(

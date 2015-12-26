@@ -2,6 +2,7 @@ package com.flycode.paradox.taxiuser.factory;
 
 import com.flycode.paradox.taxiuser.models.CarCategory;
 import com.flycode.paradox.taxiuser.models.Order;
+import com.flycode.paradox.taxiuser.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,6 +52,12 @@ public class ModelFactory {
     private static final String ROUT_PRICE = "routPrice";
     private static final String MIN_PRICE = "minPrice";
 
+    private static final String SEX = "sex";
+    private static final String DATE_OF_BIRTH = "dateOfBirth";
+    private static final String BALANCE = "balance";
+    private static final String CAR_NUMBER = "carNumber";
+    private static final String EMAIL = "email";
+
     public static ArrayList<Order> makeOrders(JSONArray ordersJSONArray) {
         ArrayList<Order> orders = new ArrayList<>();
 
@@ -98,21 +105,42 @@ public class ModelFactory {
         for (int index = 0 ; index < carCategoriesArray.length() ; index++) {
             JSONObject carCategoryJSON = carCategoriesArray.optJSONObject(index);
 
-            String id = carCategoryJSON.optString(ID);
-            String name = carCategoryJSON.optString(NAME);
-            String description = carCategoryJSON.optString(DESCRIPTION);
-            double timePrice = carCategoryJSON.optDouble(TIME_PRICE);
-            double routPrice = carCategoryJSON.optDouble(ROUT_PRICE);
-            double minPrice = carCategoryJSON.optDouble(MIN_PRICE, 6 * routPrice);
-            // TODO: TAKE MIN PRICE FROM SERVER ONLY
-
-            carCategories[index] = new CarCategory(id, name, description, timePrice, routPrice, minPrice);
+            carCategories[index] = makeCarCategory(carCategoryJSON);
         }
 
         return carCategories;
     }
 
-    private static void dateFromString(String dateString, Date date) {
+    public static CarCategory makeCarCategory(JSONObject carCategoryJSON) {
+        String id = carCategoryJSON.optString(ID);
+        String name = carCategoryJSON.optString(NAME);
+        String description = carCategoryJSON.optString(DESCRIPTION);
+        double timePrice = carCategoryJSON.optDouble(TIME_PRICE);
+        double routPrice = carCategoryJSON.optDouble(ROUT_PRICE);
+        double minPrice = carCategoryJSON.optDouble(MIN_PRICE, 6 * routPrice);
+        // TODO: TAKE MIN PRICE FROM SERVER ONLY
+
+        return new CarCategory(id, name, description, timePrice, routPrice, minPrice);
+    }
+
+    public static User makeUser(JSONObject userJSON) {
+        String id = userJSON.optString(ID);
+        String role = userJSON.optString(ROLE);
+        String username = userJSON.optString(USERNAME);
+        String name = userJSON.optString(NAME);
+        String sex = userJSON.optString(SEX);
+        String email = userJSON.optString(EMAIL);
+        Date dateOfBirth = new Date();
+        dateFromString(userJSON.optString(DATE_OF_BIRTH), dateOfBirth);
+        String status = userJSON.optString(STATUS);
+        int carNumber = userJSON.optInt(CAR_NUMBER);
+        int balance = userJSON.optInt(BALANCE);
+
+        return new User(id, role, username, name, sex, email, dateOfBirth, status,
+                balance, carNumber);
+    }
+
+    public static void dateFromString(String dateString, Date date) {
         try {
             date = dateFormat.parse(dateString);
         } catch (ParseException e) {
