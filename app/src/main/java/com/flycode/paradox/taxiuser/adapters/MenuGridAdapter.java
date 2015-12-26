@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.constants.MenuConstants;
 import com.flycode.paradox.taxiuser.models.MenuItem;
+import com.flycode.paradox.taxiuser.settings.UserData;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 /**
@@ -55,6 +56,12 @@ public class MenuGridAdapter extends ArrayAdapter<MenuItem> {
 
         menuIconTextView.setText(MenuConstants.menuIcons[position]);
         menuTitleTextView.setText(MenuConstants.menuTitles[position]);
+
+        if( ( MenuConstants.menuTitles[position] ) == R.string.balance ){
+            TextView balanceAmount = ( TextView ) convertView.findViewById(R.id.balance_amount);
+            balanceAmount.setVisibility(View.VISIBLE);
+            balanceAmount.setText(String.valueOf(UserData.sharedData(context).getBalance()));
+        }
 
         return convertView;
     }

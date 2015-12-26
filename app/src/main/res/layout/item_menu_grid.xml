@@ -15,14 +15,33 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/icon"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="15dp"
-            android:gravity="center"
-            android:textColor="@color/pure_white"
-            android:textSize="50sp"/>
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/balance_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:visibility="gone"
+                android:textSize="12sp"
+                android:textColor="@color/pure_white"
+                android:layout_centerInParent="true"
+                />
+
+            <TextView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:gravity="center"
+                android:textColor="@color/pure_white"
+                android:textSize="50sp"
+                android:layout_centerHorizontal="true"
+                />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/title"
