@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
+import com.flycode.paradox.taxiuser.api.APITalker;
+import com.flycode.paradox.taxiuser.api.ChangeNameAndMailHandler;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.settings.UserData;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
@@ -20,10 +22,11 @@ import com.flycode.paradox.taxiuser.views.GenericTriangleView;
 /**
  * Created by victor on 12/22/15.
  */
-public class SettingsFragment extends Fragment implements View.OnClickListener {
+public class SettingsFragment extends Fragment implements View.OnClickListener, ChangeNameAndMailHandler {
     private EditText lastNameEditText;
     private EditText nameEditText;
     private EditText emailEditText;
+    private EditText oldPasswordEditText;
     private EditText passwordEditText;
     private EditText confirmPasswordEditText;
 
@@ -32,6 +35,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private View armenianRombusView;
     private View russianRombusView;
     private View englishRombusView;
+
+    private UserData userData;
+
+    private  String newFullName;
+    private String newEmail;
+    private String newPassword;
 
     @Nullable
     @Override
@@ -70,6 +79,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         nameEditText = (EditText) settingsView.findViewById(R.id.name);
         lastNameEditText = (EditText) settingsView.findViewById(R.id.last_name);
         emailEditText = (EditText) settingsView.findViewById(R.id.email);
+        oldPasswordEditText = (EditText) settingsView.findViewById(R.id.old_password);
         passwordEditText = (EditText) settingsView.findViewById(R.id.enter_password);
         confirmPasswordEditText = (EditText) settingsView.findViewById(R.id.confirm_password);
         phoneNumberTextView = (TextView) settingsView.findViewById(R.id.phone_number);
@@ -81,6 +91,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         nameEditText.setTypeface(robotoTypeface);
         lastNameEditText.setTypeface(robotoTypeface);
         emailEditText.setTypeface(robotoTypeface);
+        oldPasswordEditText.setTypeface(robotoTypeface);
         passwordEditText.setTypeface(robotoTypeface);
         confirmPasswordEditText.setTypeface(robotoTypeface);
         phoneNumberTextView.setTypeface(robotoTypeface);
@@ -107,6 +118,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         setupLanguageRombus();
 
+        userData = UserData.sharedData(getActivity());
+
         return settingsView;
     }
 
@@ -128,8 +141,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.submit_account) {
+            newFullName = nameEditText.getText().toString();
+            newEmail = emailEditText.getText().toString();
+
+            APITalker.sharedTalker().changeNameAndMail(getActivity(), newFullName, newEmail,  this);
 
         } else if (view.getId() == R.id.submit_password) {
+
+            String oldPassword = oldPasswordEditText.getText().toString();
+            newPassword = passwordEditText.getText().toString();
+            APITalker.sharedTalker().changeUserPassword(getActivity(), oldPassword, newPassword);
 
         } else if (view.getId() == R.id.russian) {
             AppSettings.sharedSettings(getActivity()).setLanguage(AppSettings.LANGUAGES.RU);
@@ -147,5 +168,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             LocaleUtils.setLocale(getActivity(), AppSettings.LANGUAGES.EN);
             getActivity().recreate();
         }
+    }
+
+    @Override
+    public void onChangeNameAndMailSuccess() {
+        userData.setName(newFullName);
+        userData.setEmail(newEmail);
+
+    }
+
+    @Override
+    public void onChangeNameAndMailFailure() {
+
     }
 }
