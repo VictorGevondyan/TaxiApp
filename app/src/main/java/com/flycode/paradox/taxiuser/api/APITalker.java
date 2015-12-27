@@ -40,6 +40,8 @@ public class APITalker {
     private final String DEVICES = "/devices";
     private final String USER_URL = "/me";
     private final String USERS_URL = "/users";
+    private final String PASSWORD_URL = "/password";
+
 
     // User specific constants
     private final String USERNAME = "username";
@@ -55,6 +57,12 @@ public class APITalker {
     private final String TYPE = "type";
     private final String ANDROID = "android";
     private final String DEVICE_ID = "deviceId";
+    private final String OLD_PASSWORD = "oldPassword";
+    private final String NEW_PASSWODR = "newPassword";
+    private final String SEX = "sex";
+    private final String EMAIL = "email";
+    private final String DATE_OF_BIRTH = "dateOfBirth";
+
 
     /*
 	 * Singletone
@@ -326,7 +334,7 @@ public class APITalker {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 if (getUserHandler != null) {
-                    getUserHandler.onGetDriverSuccess(ModelFactory.makeUser(response));
+                    getUserHandler.onGetUserSuccess(ModelFactory.makeUser(response));
                 }
             }
 
@@ -337,7 +345,7 @@ public class APITalker {
                                   JSONObject errorResponse) {
                 if (getUserHandler != null) {
                     Log.d("STATUS CODE", statusCode + "");
-                    getUserHandler.onGetDriverFailure();
+                    getUserHandler.onGetUserFailure();
                 }
             }
 
@@ -346,9 +354,87 @@ public class APITalker {
                 if (getUserHandler != null) {
                     Log.d("STATUS CODE", statusCode + "");
                     Log.d("RESPONSE STRING", responseString);
-                    getUserHandler.onGetDriverFailure();
+                    getUserHandler.onGetUserFailure();
                 }
             }
+
+        });
+    }
+
+    public void changeUserPassword(final Context context, final String oldPassword, final String newPassword) {
+        if (!authenticate(context)) {
+            return;
+        }
+
+        RequestParams params = new RequestParams();
+        params.put(OLD_PASSWORD, oldPassword);
+        params.put(NEW_PASSWODR, newPassword);
+
+        String url = BASE_API_URL + USERS_URL + USER_URL + PASSWORD_URL;
+
+        asyncHttpClient.put(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers,
+                                  JSONObject response) {
+            }
+
+            @Override
+            public void onFailure(int statusCode,
+                                  Header[] headers,
+                                  java.lang.Throwable throwable,
+                                  org.json.JSONObject errorResponse) {
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("STATUS CODE", statusCode + "");
+                    Log.d("RESPONSE STRING", responseString);
+            }
+
+
+        });
+    }
+
+    public void changeNameAndMail(final Context context, final String fullName,  final String email , final ChangeNameAndMailHandler changeNameAndMail) {
+        if (!authenticate(context)) {
+            return;
+        }
+
+        RequestParams params = new RequestParams();
+        params.put(NAME, fullName);
+        params.put(EMAIL, email);
+
+        String url = BASE_API_URL + USERS_URL + USER_URL;
+
+        asyncHttpClient.put(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers,
+                                  JSONObject response) {
+
+                if (changeNameAndMail!= null) {
+                    changeNameAndMail.onChangeNameAndMailSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode,
+                                  Header[] headers,
+                                  java.lang.Throwable throwable,
+                                  org.json.JSONObject errorResponse) {
+                if (changeNameAndMail!= null) {
+                    changeNameAndMail.onChangeNameAndMailFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (changeNameAndMail!= null) {
+                    Log.d("STATUS CODE", statusCode + "");
+                    Log.d("RESPONSE STRING", responseString);
+                    changeNameAndMail.onChangeNameAndMailFailure();
+                }
+            }
+
 
         });
     }

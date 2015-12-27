@@ -89,7 +89,7 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
      */
 
     @Override
-    public void onGetDriverSuccess(User user) {
+    public void onGetUserSuccess(User user) {
         startActivity(new Intent(this, MenuActivity.class));
         finish();
         AppSettings.sharedSettings(this).setIsUserLoggedIn(true);
@@ -97,7 +97,7 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
     }
 
     @Override
-    public void onGetDriverFailure() {
+    public void onGetUserFailure() {
         Toast.makeText(this, "NE POVEZLO :(", Toast.LENGTH_SHORT).show();
     }
 
