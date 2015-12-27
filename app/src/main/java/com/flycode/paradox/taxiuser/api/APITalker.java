@@ -133,21 +133,25 @@ public class APITalker {
         });
     }
 
-    public void getOwnOrders(Context context, String status , final GetOrdersHandler getOrdersHandler){
+    public void getOwnOrders(Context context, String[] statuses, final GetOrdersHandler getOrdersHandler){
         if (!authenticate(context)) {
             return;
         }
 
+        JSONArray statusArray = new JSONArray();
+
+        for (String status : statuses) {
+            statusArray.put(status);
+        }
+
         RequestParams params = new RequestParams();
-        params.put(STATUS, status);
+        params.put(STATUS, statusArray.toString());
 
         String url = BASE_API_URL + ORDERS_URL + OWN_URL;
 
         asyncHttpClient.get(url, params, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers,
-                                  JSONObject response) {
-
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 if (getOrdersHandler != null) {
                     JSONArray orders = response.optJSONArray(ORDERS);
                     getOrdersHandler.onGetOrdersSuccess(ModelFactory.makeOrders(orders));
