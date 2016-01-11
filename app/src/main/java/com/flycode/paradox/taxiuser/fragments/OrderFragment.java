@@ -90,9 +90,13 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
         mapView.onCreate(savedInstanceState);
         MapsInitializer.initialize(getActivity());
 
-        googleMap = mapView.getMap();
-        googleMap.setMyLocationEnabled(true);
-        googleMap.setOnCameraChangeListener(this);
+
+        // TODO : change this later
+        if(googleMap != null) {
+            googleMap = mapView.getMap();
+            googleMap.setMyLocationEnabled(true);
+            googleMap.setOnCameraChangeListener(this);
+        }
 
         isNowRhombus = orderView.findViewById(R.id.now_rombus);
         isLaterRhombus = orderView.findViewById(R.id.later_rombus);
