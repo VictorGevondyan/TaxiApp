@@ -24,6 +24,16 @@ public class OrdersFragment extends Fragment implements GetOrdersHandler {
     public static class TYPES {
         public static final String ONGOING = "ongoing";
         public static final String HISTORY = "history";
+
+        public static final String[] HISTORY_STATUSES = {
+                OrderStatusConstants.FINISHED,
+                OrderStatusConstants.CANCELED
+        };
+
+        public static final String[] ONGOING_STATUSES = {
+                OrderStatusConstants.TAKEN,
+                OrderStatusConstants.NOT_TAKEN
+        };
     }
 
     private static final String TYPE = "type";
@@ -50,7 +60,12 @@ public class OrdersFragment extends Fragment implements GetOrdersHandler {
         ordersListView.setAdapter(ordersListAdapter);
         ordersListView.setOnItemClickListener(onOrderListClickListener);
 
-        APITalker.sharedTalker().getOwnOrders(getActivity(), OrderStatusConstants.FINISHED, this);
+        String type = getArguments().getString(TYPE);
+
+        APITalker.sharedTalker().getOwnOrders(
+                getActivity(),
+                type.equals(TYPES.HISTORY) ? TYPES.HISTORY_STATUSES : TYPES.ONGOING_STATUSES,
+                this);
 
         return  ordersView;
     }

@@ -168,7 +168,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
             actionBarRightButton.setText(R.string.icon_refresh);
             actionBarTitleTextView.setText(R.string.ongoing);
 
-            fragment = OrdersFragment.initialize(OrdersFragment.TYPES.ONGOING);
+            fragment = OrdersFragment.initialize(OrdersFragment.TYPES.HISTORY);
         } else if (position == INDEX_SETTINGS) {
             actionBarTitleTextView.setText(R.string.settings);
 
