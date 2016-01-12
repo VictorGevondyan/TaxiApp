@@ -28,8 +28,8 @@ import java.util.Date;
  */
 public class APITalker {
     // Url constants
-//    private final String BASE_URL = "http://107.155.108.131:9000";
-    private final String BASE_URL = "http://192.168.0.110:9000";
+    private final String BASE_URL = "http://107.155.108.131:9000";
+//    private final String BASE_URL = "http://192.168.0.110:9000";
     private final String BASE_API_URL = BASE_URL+ "/api";
     private final String LOGIN_URL = "/auth/local";
     private final String ORDERS_URL = "/orders";

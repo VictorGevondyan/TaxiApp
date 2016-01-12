@@ -428,7 +428,7 @@
                 android:clickable="true">
 
                 <View
-                    android:id="@+id/armenian_rombus"
+                    android:id="@+id/armenian_rhombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size" />
 
@@ -453,7 +453,7 @@
                 android:clickable="true">
 
                 <View
-                    android:id="@+id/english_rombus"
+                    android:id="@+id/english_rhombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size" />
 
@@ -478,7 +478,7 @@
                 android:clickable="true">
 
                 <View
-                    android:id="@+id/russian_rombus"
+                    android:id="@+id/russian_rhombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size"
                     android:layout_gravity="center"/>

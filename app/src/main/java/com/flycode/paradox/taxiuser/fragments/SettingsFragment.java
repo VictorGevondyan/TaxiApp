@@ -32,9 +32,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
 
     private TextView phoneNumberTextView;
 
-    private View armenianRombusView;
-    private View russianRombusView;
-    private View englishRombusView;
+    private View armenianRhombusView;
+    private View russianRhombusView;
+    private View englishRhombusView;
 
     private UserData userData;
 
@@ -96,9 +96,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         confirmPasswordEditText.setTypeface(robotoTypeface);
         phoneNumberTextView.setTypeface(robotoTypeface);
 
-        armenianRombusView = settingsView.findViewById(R.id.armenian_rombus);
-        englishRombusView = settingsView.findViewById(R.id.english_rombus);
-        russianRombusView = settingsView.findViewById(R.id.russian_rombus);
+        armenianRhombusView = settingsView.findViewById(R.id.armenian_rhombus);
+        englishRhombusView = settingsView.findViewById(R.id.english_rhombus);
+        russianRhombusView = settingsView.findViewById(R.id.russian_rhombus);
 
         View armenianSection = settingsView.findViewById(R.id.armenian);
         View russianSection = settingsView.findViewById(R.id.russian);
@@ -116,22 +116,22 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         submitAccountTriangleView.setClickable(true);
         submitAccountTriangleView.setOnClickListener(this);
 
-        setupLanguageRombus();
+        setupLanguageRhombus();
 
         userData = UserData.sharedData(getActivity());
 
         return settingsView;
     }
 
-    private void setupLanguageRombus() {
+    private void setupLanguageRhombus() {
         String language = AppSettings.sharedSettings(getActivity()).getLanguage();
 
-        armenianRombusView.setBackgroundResource(
-                language.equals(AppSettings.LANGUAGES.HY) ? R.drawable.rombus_green : R.drawable.rombus_white);
-        russianRombusView.setBackgroundResource(
-                language.equals(AppSettings.LANGUAGES.RU) ? R.drawable.rombus_green : R.drawable.rombus_white);
-        englishRombusView.setBackgroundResource(
-                language.equals(AppSettings.LANGUAGES.EN) ? R.drawable.rombus_green : R.drawable.rombus_white);
+        armenianRhombusView.setBackgroundResource(
+                language.equals(AppSettings.LANGUAGES.HY) ? R.drawable.rhombus_green : R.drawable.rhombus_white);
+        russianRhombusView.setBackgroundResource(
+                language.equals(AppSettings.LANGUAGES.RU) ? R.drawable.rhombus_green : R.drawable.rhombus_white);
+        englishRhombusView.setBackgroundResource(
+                language.equals(AppSettings.LANGUAGES.EN) ? R.drawable.rhombus_green : R.drawable.rhombus_white);
     }
 
     /**
@@ -154,17 +154,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
 
         } else if (view.getId() == R.id.russian) {
             AppSettings.sharedSettings(getActivity()).setLanguage(AppSettings.LANGUAGES.RU);
-            setupLanguageRombus();
+            setupLanguageRhombus();
             LocaleUtils.setLocale(getActivity(), AppSettings.LANGUAGES.RU);
             getActivity().recreate();
         } else if (view.getId() == R.id.armenian) {
             AppSettings.sharedSettings(getActivity()).setLanguage(AppSettings.LANGUAGES.HY);
-            setupLanguageRombus();
+            setupLanguageRhombus();
             LocaleUtils.setLocale(getActivity(), AppSettings.LANGUAGES.HY);
             getActivity().recreate();
         } else if (view.getId() == R.id.english) {
             AppSettings.sharedSettings(getActivity()).setLanguage(AppSettings.LANGUAGES.EN);
-            setupLanguageRombus();
+            setupLanguageRhombus();
             LocaleUtils.setLocale(getActivity(), AppSettings.LANGUAGES.EN);
             getActivity().recreate();
         }

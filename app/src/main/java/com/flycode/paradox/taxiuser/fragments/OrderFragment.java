@@ -200,12 +200,12 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
      */
 
     private void setupTimeRhombus() {
-        isNowRhombus.setBackgroundResource(isLater ? R.drawable.rombus_white : R.drawable.rombus_green);
-        isLaterRhombus.setBackgroundResource(isLater ? R.drawable.rombus_green : R.drawable.rombus_white);
+        isNowRhombus.setBackgroundResource(isLater ? R.drawable.rhombus_white : R.drawable.rhombus_green);
+        isLaterRhombus.setBackgroundResource(isLater ? R.drawable.rhombus_green : R.drawable.rhombus_white);
     }
 
     private void setupCacheOnlyRhombus() {
-        isCashOnlyRhombus.setBackgroundResource(isCashOnly ? R.drawable.rombus_green : R.drawable.rombus_white);
+        isCashOnlyRhombus.setBackgroundResource(isCashOnly ? R.drawable.rhombus_green : R.drawable.rhombus_white);
     }
 
     private void setupCarCategoryRhombus(View chosenSection) {
@@ -218,10 +218,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
                 CarCategory carCategory = (CarCategory) chosenSection.getTag();
                 currentCarCategory = carCategory;
 
-                rhombus.setBackgroundResource(R.drawable.rombus_green);
+                rhombus.setBackgroundResource(R.drawable.rhombus_green);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
-                rhombus.setBackgroundResource(R.drawable.rombus_white);
+                rhombus.setBackgroundResource(R.drawable.rhombus_white);
                 carCategoryInfoTextView.setText("");
             }
         }
@@ -316,10 +316,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
 
             if (index == 0) {
                 currentCarCategory = carCategory;
-                carCategoryView.findViewById(R.id.rombus).setBackgroundResource(R.drawable.rombus_green);
+                carCategoryView.findViewById(R.id.rombus).setBackgroundResource(R.drawable.rhombus_green);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
-                carCategoryView.findViewById(R.id.rombus).setBackgroundResource(R.drawable.rombus_white);
+                carCategoryView.findViewById(R.id.rombus).setBackgroundResource(R.drawable.rhombus_white);
             }
 
             TextView carCategoryNameTextView = (TextView) carCategoryView.findViewById(R.id.text);

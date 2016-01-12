@@ -27,9 +27,6 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 import java.io.IOException;
 
-/**
- * Created by victor on 12/14/15.
- */
 public class MenuActivity extends Activity implements OrderFragment.OrderFragmentListener {
     private final int INDEX_ONGOING = 0;
     private final int INDEX_ORDER = 2;
@@ -170,6 +167,8 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
             AppSettings.sharedSettings(this).setToken(null);
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+            return;
+        } else {
             return;
         }
 
