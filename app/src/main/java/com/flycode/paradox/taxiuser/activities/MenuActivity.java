@@ -18,6 +18,7 @@ import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
 import com.flycode.paradox.taxiuser.fragments.OrderFragment;
 import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
+import com.flycode.paradox.taxiuser.fragments.TransactionsFragment;
 import com.flycode.paradox.taxiuser.gcm.GCMSubscriber;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
 import com.flycode.paradox.taxiuser.models.Order;
@@ -29,6 +30,7 @@ import java.io.IOException;
 
 public class MenuActivity extends Activity implements OrderFragment.OrderFragmentListener {
     private final int INDEX_ONGOING = 0;
+    private final int INDEX_BALANCE = 1;
     private final int INDEX_ORDER = 2;
     private final int INDEX_HISTORY = 3;
     private final int INDEX_SETTINGS = 5;
@@ -140,7 +142,13 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment fragment = null;
 
-        if (position == INDEX_ORDER) {
+        if (position == INDEX_BALANCE) {
+            actionBarRightButton.setVisibility(View.VISIBLE);
+            actionBarTitleTextView.setText(R.string.transactions);
+            actionBarRightButton.setText(R.string.icon_balance);
+
+            fragment = TransactionsFragment.initialize();
+        } else if (position == INDEX_ORDER) {
             actionBarRightButton.setVisibility(View.VISIBLE);
             actionBarTitleTextView.setText(R.string.order);
             actionBarRightButton.setText(R.string.icon_phone);

@@ -62,6 +62,12 @@
     <string name="cost">Cost</string>
     <string name="distance">Distance</string>
 
+    <!-- Transactions -->
+    <string name="transactions">Transactions</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="loading">Loading</string>
+
     <!-- Push Notifications -->
     <string name="your_order_taken">Your order is taken</string>
     <string name="your_order_finished">Your order is finished</string>
@@ -91,5 +97,6 @@
     <string name="icon_balance">&#xe914;</string>
     <string name="icon_help">&#xe915;</string>
     <string name="icon_status">&#xe916;</string>
+
 
 </resources>

@@ -2,6 +2,7 @@ package com.flycode.paradox.taxiuser.factory;
 
 import com.flycode.paradox.taxiuser.models.CarCategory;
 import com.flycode.paradox.taxiuser.models.Order;
+import com.flycode.paradox.taxiuser.models.Transaction;
 import com.flycode.paradox.taxiuser.models.User;
 
 import org.json.JSONArray;
@@ -138,6 +139,41 @@ public class ModelFactory {
 
         return new User(id, role, username, name, sex, email, dateOfBirth, status,
                 balance, carNumber);
+    }
+
+    public static ArrayList<Transaction> makeTransactions(JSONArray transactionsJSONArray) {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+
+        for (int index = 0 ; index < transactionsJSONArray.length() ; index++) {
+            JSONObject transactionJSON = transactionsJSONArray.optJSONObject(index);
+
+            JSONObject recipient  = transactionJSON.optJSONObject(TO);
+
+            String recipientUsername;
+            String recipientRole;
+            if( recipient != null ) {
+                recipientUsername = recipient.optString(USERNAME);
+                recipientRole = recipient.optString(ROLE);
+            } else{
+                recipientUsername = "Driver";
+                recipientRole = "Driver";
+            }
+            JSONObject sender  = transactionJSON.optJSONObject(FROM);
+            String senderUsername= sender.optString(USERNAME);
+            String senderRole = sender.optString(ROLE);
+
+            Date date = new Date();
+            dateFromString(transactionJSON.optString(DATE), date);
+
+            String description = transactionJSON.optString(DESCRIPTION);
+            String paymentType = transactionJSON.optString(PAYMENT_TYPE);
+            String moneyAmount = transactionJSON.optString(MONEY_AMOUNT);
+
+            transactions.add(new Transaction(recipientUsername, recipientRole, senderUsername, senderRole,
+                    date, description, paymentType, moneyAmount));
+        }
+
+        return transactions;
     }
 
     public static void dateFromString(String dateString, Date date) {

@@ -90,9 +90,13 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
         mapView.onCreate(savedInstanceState);
         MapsInitializer.initialize(getActivity());
 
-        googleMap = mapView.getMap();
-        googleMap.setMyLocationEnabled(true);
-        googleMap.setOnCameraChangeListener(this);
+
+        // TODO : change this later
+        if(googleMap != null) {
+            googleMap = mapView.getMap();
+            googleMap.setMyLocationEnabled(true);
+            googleMap.setOnCameraChangeListener(this);
+        }
 
         isNowRhombus = orderView.findViewById(R.id.now_rombus);
         isLaterRhombus = orderView.findViewById(R.id.later_rombus);
@@ -211,7 +215,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
     private void setupCarCategoryRhombus(View chosenSection) {
         for (int index = 0 ; index < carCategoriesSectionLinearLayout.getChildCount() ; index++) {
             View carCategorySection = carCategoriesSectionLinearLayout.getChildAt(index);
-            View rhombus = carCategorySection.findViewById(R.id.rombus);
+            View rhombus = carCategorySection.findViewById(R.id.rhombus);
             TextView carCategoryInfoTextView = (TextView) carCategorySection.findViewById(R.id.info);
 
             if (chosenSection.equals(carCategorySection)) {
@@ -316,10 +320,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
 
             if (index == 0) {
                 currentCarCategory = carCategory;
-                carCategoryView.findViewById(R.id.rombus).setBackgroundResource(R.drawable.rhombus_green);
+                carCategoryView.findViewById(R.id.rhombus).setBackgroundResource(R.drawable.rhombus_green);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
-                carCategoryView.findViewById(R.id.rombus).setBackgroundResource(R.drawable.rhombus_white);
+                carCategoryView.findViewById(R.id.rhombus).setBackgroundResource(R.drawable.rhombus_white);
             }
 
             TextView carCategoryNameTextView = (TextView) carCategoryView.findViewById(R.id.text);

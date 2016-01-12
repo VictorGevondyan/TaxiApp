@@ -62,6 +62,7 @@ public class APITalker {
     private final String SEX = "sex";
     private final String EMAIL = "email";
     private final String DATE_OF_BIRTH = "dateOfBirth";
+    private final String TRANSACTIONS = "transactions";
 
 
     /*
@@ -221,6 +222,48 @@ public class APITalker {
                     Log.d("STATUS CODE", statusCode + "");
                     Log.d("RESPONSE STRING", responseString);
                     getOrderHandler.onGetOrderFailure();
+                }
+            }
+
+        });
+    }
+
+    public void getOwnTransactions(  Context context, final GetOwnTransactionsHandler getOwnTransactionsHandler){
+        if (!authenticate(context)) {
+            return;
+        }
+
+        RequestParams params = new RequestParams();
+
+        String url = BASE_API_URL + TRANSACTIONS_URL + OWN_URL;
+
+        asyncHttpClient.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers,
+                                  JSONObject response) {
+
+                if (getOwnTransactionsHandler!= null) {
+                    JSONArray transactions = response.optJSONArray(TRANSACTIONS);
+                    getOwnTransactionsHandler.onGetOwnTransactionsSuccess(ModelFactory.makeTransactions(transactions));
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode,
+                                  Header[] headers,
+                                  java.lang.Throwable throwable,
+                                  org.json.JSONObject errorResponse) {
+                if (getOwnTransactionsHandler!= null) {
+                    getOwnTransactionsHandler.onGetOwnTransactionsFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (getOwnTransactionsHandler!= null) {
+                    Log.d("STATUS CODE", statusCode + "");
+                    Log.d("RESPONSE STRING", responseString);
+                    getOwnTransactionsHandler.onGetOwnTransactionsFailure();
                 }
             }
 

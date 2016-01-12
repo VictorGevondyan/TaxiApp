@@ -63,11 +63,26 @@ public class MenuGridAdapter extends ArrayAdapter<MenuItem> {
             balanceAmount.setText(String.valueOf(UserData.sharedData(context).getBalance()));
         }
 
+        if( ( MenuConstants.menuTitles[position] ) == R.string.settings){
+            TextView settingsTitle = ( TextView ) convertView.findViewById( R.id.title );
+//            settingsTitle.setSingleLine(false);
+//            settingsTitle.setLines(1);
+//            settingsTitle.setEllipsize( TextUtils.TruncateAt.MIDDLE );
+//            settingsTitle.setPadding( dpToPixel(10), 0, dpToPixel(10), dpToPixel(15)  );
+
+        }
+
         return convertView;
     }
 
     @Override
     public int getCount() {
         return MenuConstants.menuTitles.length;
+    }
+
+    public int dpToPixel( int dpValue ){
+        final float scale = context.getResources().getDisplayMetrics().density;
+        int pixelValue = (int) (dpValue * scale + 0.5f);
+        return pixelValue;
     }
 }
