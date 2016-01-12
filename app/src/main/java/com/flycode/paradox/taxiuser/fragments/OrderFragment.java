@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,9 +38,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
     private MapView mapView;
     private GoogleMap googleMap;
 
-    private View isNowRhombus;
-    private View isLaterRhombus;
-    private View isCashOnlyRhombus;
+    private ImageView isNowRhombus;
+    private ImageView isLaterRhombus;
+    private ImageView isCashOnlyRhombus;
 
     private TextView locationTextView;
     private TextView commentsTextView;
@@ -90,17 +91,13 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
         mapView.onCreate(savedInstanceState);
         MapsInitializer.initialize(getActivity());
 
+        googleMap = mapView.getMap();
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setOnCameraChangeListener(this);
 
-        // TODO : change this later
-        if(googleMap != null) {
-            googleMap = mapView.getMap();
-            googleMap.setMyLocationEnabled(true);
-            googleMap.setOnCameraChangeListener(this);
-        }
-
-        isNowRhombus = orderView.findViewById(R.id.now_rombus);
-        isLaterRhombus = orderView.findViewById(R.id.later_rombus);
-        isCashOnlyRhombus = orderView.findViewById(R.id.only_cash_rombus);
+        isNowRhombus = (ImageView) orderView.findViewById(R.id.now_rombus);
+        isLaterRhombus = (ImageView) orderView.findViewById(R.id.later_rombus);
+        isCashOnlyRhombus = (ImageView) orderView.findViewById(R.id.only_cash_rombus);
 
         TextView isNowTextView = (TextView) orderView.findViewById(R.id.now_text);
         TextView isLaterTextView = (TextView) orderView.findViewById(R.id.later_text);
@@ -204,18 +201,18 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
      */
 
     private void setupTimeRhombus() {
-        isNowRhombus.setBackgroundResource(isLater ? R.drawable.rhombus_white : R.drawable.rhombus_green);
-        isLaterRhombus.setBackgroundResource(isLater ? R.drawable.rhombus_green : R.drawable.rhombus_white);
+        isNowRhombus.setImageResource(isLater ? R.drawable.rhombus_white : R.drawable.rhombus_green);
+        isLaterRhombus.setImageResource(isLater ? R.drawable.rhombus_green : R.drawable.rhombus_white);
     }
 
     private void setupCacheOnlyRhombus() {
-        isCashOnlyRhombus.setBackgroundResource(isCashOnly ? R.drawable.rhombus_green : R.drawable.rhombus_white);
+        isCashOnlyRhombus.setImageResource(isCashOnly ? R.drawable.rhombus_green : R.drawable.rhombus_white);
     }
 
     private void setupCarCategoryRhombus(View chosenSection) {
         for (int index = 0 ; index < carCategoriesSectionLinearLayout.getChildCount() ; index++) {
             View carCategorySection = carCategoriesSectionLinearLayout.getChildAt(index);
-            View rhombus = carCategorySection.findViewById(R.id.rhombus);
+            ImageView rhombus = (ImageView) carCategorySection.findViewById(R.id.rhombus);
             TextView carCategoryInfoTextView = (TextView) carCategorySection.findViewById(R.id.info);
 
             if (chosenSection.equals(carCategorySection)) {
@@ -225,7 +222,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
                 rhombus.setBackgroundResource(R.drawable.rhombus_green);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
-                rhombus.setBackgroundResource(R.drawable.rhombus_white);
+                rhombus.setImageResource(R.drawable.rhombus_white);
                 carCategoryInfoTextView.setText("");
             }
         }

@@ -50,8 +50,12 @@
 
         <RelativeLayout
             android:layout_width="@dimen/order_rhombus_size"
-            android:layout_height="@dimen/order_rhombus_size"
-            android:background="@drawable/order_rhombus">
+            android:layout_height="@dimen/order_rhombus_size">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/order_rhombus"/>
 
             <Button
                 android:id="@+id/order_button"
@@ -128,7 +132,7 @@
                     android:gravity="center"
                     android:clickable="true">
 
-                    <View
+                    <ImageView
                         android:id="@+id/now_rombus"
                         android:layout_width="@dimen/rhombus_size"
                         android:layout_height="@dimen/rhombus_size" />
@@ -152,7 +156,7 @@
                     android:gravity="center"
                     android:clickable="true">
 
-                    <View
+                    <ImageView
                         android:id="@+id/later_rombus"
                         android:layout_width="@dimen/rhombus_size"
                         android:layout_height="@dimen/rhombus_size" />
@@ -176,7 +180,7 @@
                     android:gravity="center"
                     android:clickable="true">
 
-                    <View
+                    <ImageView
                         android:id="@+id/only_cash_rombus"
                         android:layout_width="@dimen/rhombus_size"
                         android:layout_height="@dimen/rhombus_size"

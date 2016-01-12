@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
@@ -32,9 +33,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
 
     private TextView phoneNumberTextView;
 
-    private View armenianRhombusView;
-    private View russianRhombusView;
-    private View englishRhombusView;
+    private ImageView armenianRhombusView;
+    private ImageView russianRhombusView;
+    private ImageView englishRhombusView;
 
     private UserData userData;
 
@@ -96,9 +97,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         confirmPasswordEditText.setTypeface(robotoTypeface);
         phoneNumberTextView.setTypeface(robotoTypeface);
 
-        armenianRhombusView = settingsView.findViewById(R.id.armenian_rhombus);
-        englishRhombusView = settingsView.findViewById(R.id.english_rhombus);
-        russianRhombusView = settingsView.findViewById(R.id.russian_rhombus);
+        armenianRhombusView = (ImageView) settingsView.findViewById(R.id.armenian_rhombus);
+        englishRhombusView = (ImageView) settingsView.findViewById(R.id.english_rhombus);
+        russianRhombusView = (ImageView) settingsView.findViewById(R.id.russian_rhombus);
 
         View armenianSection = settingsView.findViewById(R.id.armenian);
         View russianSection = settingsView.findViewById(R.id.russian);
@@ -126,11 +127,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     private void setupLanguageRhombus() {
         String language = AppSettings.sharedSettings(getActivity()).getLanguage();
 
-        armenianRhombusView.setBackgroundResource(
+        armenianRhombusView.setImageResource(
                 language.equals(AppSettings.LANGUAGES.HY) ? R.drawable.rhombus_green : R.drawable.rhombus_white);
-        russianRhombusView.setBackgroundResource(
+        russianRhombusView.setImageResource(
                 language.equals(AppSettings.LANGUAGES.RU) ? R.drawable.rhombus_green : R.drawable.rhombus_white);
-        englishRhombusView.setBackgroundResource(
+        englishRhombusView.setImageResource(
                 language.equals(AppSettings.LANGUAGES.EN) ? R.drawable.rhombus_green : R.drawable.rhombus_white);
     }
 

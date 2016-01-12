@@ -236,7 +236,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/enter_password_icon"
+                        android:id="@+id/old_password_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/icon_password"
@@ -427,7 +427,7 @@
                 android:gravity="center"
                 android:clickable="true">
 
-                <View
+                <ImageView
                     android:id="@+id/armenian_rhombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size" />
@@ -452,7 +452,7 @@
                 android:gravity="center"
                 android:clickable="true">
 
-                <View
+                <ImageView
                     android:id="@+id/english_rhombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size" />
@@ -477,7 +477,7 @@
                 android:gravity="center"
                 android:clickable="true">
 
-                <View
+                <ImageView
                     android:id="@+id/russian_rhombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size"
