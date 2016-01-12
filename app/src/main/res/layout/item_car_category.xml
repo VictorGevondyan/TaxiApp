@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:gravity="center">
+    >
 
     <TextView
         android:id="@+id/info"
@@ -21,7 +21,8 @@
     <ImageView
         android:id="@+id/rhombus"
         android:layout_width="@dimen/rhombus_size"
-        android:layout_height="@dimen/rhombus_size"/>
+        android:layout_height="@dimen/rhombus_size"
+        />
 
     <TextView
         android:id="@+id/text"

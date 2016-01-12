@@ -218,8 +218,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
             if (chosenSection.equals(carCategorySection)) {
                 CarCategory carCategory = (CarCategory) chosenSection.getTag();
                 currentCarCategory = carCategory;
-
-                rhombus.setBackgroundResource(R.drawable.rhombus_green);
+                rhombus.setImageResource(R.drawable.rhombus_green);
+//                rhombus.setBackgroundResource(R.drawable.rhombus_green);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
                 rhombus.setImageResource(R.drawable.rhombus_white);
@@ -317,10 +317,12 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Com
 
             if (index == 0) {
                 currentCarCategory = carCategory;
-                carCategoryView.findViewById(R.id.rhombus).setBackgroundResource(R.drawable.rhombus_green);
+                ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
+                carCategoryRhombus.setImageResource(R.drawable.rhombus_green);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
-                carCategoryView.findViewById(R.id.rhombus).setBackgroundResource(R.drawable.rhombus_white);
+                ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
+                carCategoryRhombus.setImageResource(R.drawable.rhombus_white);
             }
 
             TextView carCategoryNameTextView = (TextView) carCategoryView.findViewById(R.id.text);

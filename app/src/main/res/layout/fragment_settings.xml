@@ -412,7 +412,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/settings_entry_margin"
-            android:paddingBottom="40dp">
+            android:paddingBottom="40dp"
+            >
 
             <LinearLayout
                 android:id="@+id/armenian"
