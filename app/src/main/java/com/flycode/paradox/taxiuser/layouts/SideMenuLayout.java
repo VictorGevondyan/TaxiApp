@@ -3,9 +3,9 @@ package com.flycode.paradox.taxiuser.layouts;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
@@ -107,7 +107,7 @@ public class SideMenuLayout extends LinearLayout {
         // Get our 2 child View
         menu = this.getChildAt(0);
         content = this.getChildAt(1);
-        View actionbar = ((LinearLayout) content).getChildAt(0);
+        View actionbar = ((ViewGroup) content).getChildAt(0);
         
 //        // Attach View.OnTouchListener
         actionbar.setOnTouchListener(new OnTouchListener() {

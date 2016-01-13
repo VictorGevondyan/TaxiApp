@@ -1,12 +1,13 @@
 <resources>
 
     <!-- Generic -->
-    <dimen name="credentials_list_margin">55dp</dimen>
+    <dimen name="credentials_list_margin">30dp</dimen>
     <dimen name="credentials_icon_size">20sp</dimen>
     <dimen name="rhombus_size">16dp</dimen>
     <dimen name="order_rhombus_size">150dp</dimen>
     <dimen name="small_text_size">15sp</dimen>
     <dimen name="tiny_text_size">13sp</dimen>
+    <dimen name="medium_text_size">17sp</dimen>
 
     <!-- Action Bar -->
     <dimen name="action_bar_height">60dp</dimen>

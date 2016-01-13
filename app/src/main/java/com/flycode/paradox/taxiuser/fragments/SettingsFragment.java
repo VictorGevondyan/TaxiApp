@@ -1,6 +1,5 @@
 package com.flycode.paradox.taxiuser.fragments;
 
-import android.app.Fragment;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,7 +22,7 @@ import com.flycode.paradox.taxiuser.views.GenericTriangleView;
 /**
  * Created by victor on 12/22/15.
  */
-public class SettingsFragment extends Fragment implements View.OnClickListener, ChangeNameAndMailHandler {
+public class SettingsFragment extends SuperFragment implements View.OnClickListener, ChangeNameAndMailHandler {
     private EditText lastNameEditText;
     private EditText nameEditText;
     private EditText emailEditText;
@@ -31,11 +30,23 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     private EditText passwordEditText;
     private EditText confirmPasswordEditText;
 
+    private TextView nameIconBigTextView;
+    private TextView nameIconTextView;
+    private TextView lastNameIconTextView;
+    private TextView emailIconTextView;
+    private TextView oldPasswordIconTextView;
+    private TextView enterPasswordIconTextView;
+    private TextView confirmPasswordIconTextView;
+
     private TextView phoneNumberTextView;
 
     private ImageView armenianRhombusView;
     private ImageView russianRhombusView;
     private ImageView englishRhombusView;
+
+    private TextView armenianTextView;
+    private TextView russianTextView;
+    private TextView englishTextView;
 
     private UserData userData;
 
@@ -51,31 +62,27 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
         Typeface robotoTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
 
-        TextView nameIconBigTextView = ( TextView )settingsView.findViewById(R.id.name_icon_big);
-        TextView nameIconTextView = ( TextView )settingsView.findViewById(R.id.name_icon);
-        TextView lastNameIconTextView = ( TextView )settingsView.findViewById(R.id.last_name_icon);
-        TextView emailIconTextView = ( TextView )settingsView.findViewById(R.id.email_icon);
-        TextView enterPasswordIconTextView = ( TextView )settingsView.findViewById(R.id.enter_password_icon);
-        TextView confirmPasswordIconTextView = ( TextView )settingsView.findViewById(R.id.confirm_password_icon);
+        nameIconBigTextView = ( TextView )settingsView.findViewById(R.id.name_icon_big);
+        nameIconTextView = ( TextView )settingsView.findViewById(R.id.name_icon);
+        lastNameIconTextView = ( TextView )settingsView.findViewById(R.id.last_name_icon);
+        emailIconTextView = ( TextView )settingsView.findViewById(R.id.email_icon);
+        oldPasswordIconTextView = ( TextView )settingsView.findViewById(R.id.old_password_icon);
+        enterPasswordIconTextView = ( TextView )settingsView.findViewById(R.id.enter_password_icon);
+        confirmPasswordIconTextView = ( TextView )settingsView.findViewById(R.id.confirm_password_icon);
 
         nameIconBigTextView.setTypeface(icomoonTypeface);
         nameIconTextView.setTypeface(icomoonTypeface);
         lastNameIconTextView.setTypeface(icomoonTypeface);
         emailIconTextView.setTypeface(icomoonTypeface);
+        oldPasswordIconTextView.setTypeface(icomoonTypeface);
         enterPasswordIconTextView.setTypeface(icomoonTypeface);
         confirmPasswordIconTextView.setTypeface(icomoonTypeface);
 
         TextView changePasswordTextView = (TextView) settingsView.findViewById(R.id.change_password);
         TextView languageTextView = (TextView) settingsView.findViewById(R.id.language);
-        TextView armenianTextView = (TextView) settingsView.findViewById(R.id.armenian_text);
-        TextView russianTextView = (TextView) settingsView.findViewById(R.id.russian_text);
-        TextView englishTextView = (TextView) settingsView.findViewById(R.id.english_text);
 
         changePasswordTextView.setTypeface(robotoTypeface);
         languageTextView.setTypeface(robotoTypeface);
-        armenianTextView.setTypeface(robotoTypeface);
-        russianTextView.setTypeface(robotoTypeface);
-        englishTextView.setTypeface(robotoTypeface);
 
         nameEditText = (EditText) settingsView.findViewById(R.id.name);
         lastNameEditText = (EditText) settingsView.findViewById(R.id.last_name);
@@ -101,6 +108,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         englishRhombusView = (ImageView) settingsView.findViewById(R.id.english_rhombus);
         russianRhombusView = (ImageView) settingsView.findViewById(R.id.russian_rhombus);
 
+        armenianTextView = (TextView) settingsView.findViewById(R.id.armenian_text);
+        englishTextView = (TextView) settingsView.findViewById(R.id.english_text);
+        russianTextView = (TextView) settingsView.findViewById(R.id.russian_text);
+
+        armenianTextView.setTypeface(robotoTypeface);
+        russianTextView.setTypeface(robotoTypeface);
+        englishTextView.setTypeface(robotoTypeface);
+
         View armenianSection = settingsView.findViewById(R.id.armenian);
         View russianSection = settingsView.findViewById(R.id.russian);
         View englishSection = settingsView.findViewById(R.id.english);
@@ -124,15 +139,27 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         return settingsView;
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+    }
+
     private void setupLanguageRhombus() {
         String language = AppSettings.sharedSettings(getActivity()).getLanguage();
 
-        armenianRhombusView.setImageResource(
-                language.equals(AppSettings.LANGUAGES.HY) ? R.drawable.rhombus_green : R.drawable.rhombus_white);
-        russianRhombusView.setImageResource(
-                language.equals(AppSettings.LANGUAGES.RU) ? R.drawable.rhombus_green : R.drawable.rhombus_white);
-        englishRhombusView.setImageResource(
-                language.equals(AppSettings.LANGUAGES.EN) ? R.drawable.rhombus_green : R.drawable.rhombus_white);
+        armenianRhombusView.setImageDrawable(
+                getResources().getDrawable(language.equals(AppSettings.LANGUAGES.HY) ? R.drawable.rhombus_yellow : R.drawable.rhombus_outline_cyan));
+        russianRhombusView.setImageDrawable(
+                getResources().getDrawable(language.equals(AppSettings.LANGUAGES.RU) ? R.drawable.rhombus_yellow : R.drawable.rhombus_outline_cyan));
+        englishRhombusView.setImageDrawable(
+                getResources().getDrawable(language.equals(AppSettings.LANGUAGES.EN) ? R.drawable.rhombus_yellow : R.drawable.rhombus_outline_cyan));
+
+        armenianTextView.setTextColor(getResources().getColor(
+                language.equals(AppSettings.LANGUAGES.HY) ? R.color.yellow : R.color.white_100));
+        russianTextView.setTextColor(getResources().getColor(
+                language.equals(AppSettings.LANGUAGES.RU) ? R.color.yellow : R.color.white_100));
+        englishTextView.setTextColor(getResources().getColor(
+                language.equals(AppSettings.LANGUAGES.EN) ? R.color.yellow : R.color.white_100));
     }
 
     /**

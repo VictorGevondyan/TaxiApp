@@ -5,7 +5,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.io.IOException;
 import java.nio.BufferOverflowException;
@@ -23,7 +23,7 @@ public class GeocodeUtil {
                 List<Address> addresses;
 
                 try {
-                    addresses = geocoder.getFromLocation(location.latitude, location.longitude,  1);
+                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(),  1);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return "";

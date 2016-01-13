@@ -68,18 +68,23 @@
 
     <!-- Content -->
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000000"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/action_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_height"
-            android:padding="5dp"
-            android:background="#000000">
+            android:background="@color/base_grey_100">
+
+            <View
+                android:id="@+id/action_bar_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/black_30"/>
 
             <Button
                 android:id="@+id/action_bar_left_button"
@@ -95,7 +100,7 @@
                 android:background="@android:color/transparent"
                 android:text="@string/icon_menu"
                 android:textSize="@dimen/action_bar_button_text_size"
-                android:textColor="@color/pure_white"
+                android:textColor="@color/cyan"
                 android:onClick="onActionBarLeftButtonClicked"/>
 
             <TextView
@@ -104,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textSize="@dimen/action_bar_title_text_size"
-                android:textColor="@color/pure_white"/>
+                android:textColor="@color/white_100"/>
 
             <Button
                 android:id="@+id/action_bar_right_button"
@@ -120,7 +125,7 @@
                 android:background="@android:color/transparent"
                 android:text="@string/icon_phone"
                 android:textSize="@dimen/action_bar_button_text_size"
-                android:textColor="@color/pure_white"
+                android:textColor="@color/cyan"
                 android:onClick="onActionBarRightButtonClicked"
                 android:visibility="gone"/>
 
@@ -133,6 +138,6 @@
             android:orientation="vertical" >
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </com.flycode.paradox.taxiuser.layouts.SideMenuLayout>

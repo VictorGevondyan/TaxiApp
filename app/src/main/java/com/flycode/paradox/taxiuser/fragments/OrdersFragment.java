@@ -20,7 +20,7 @@ import com.flycode.paradox.taxiuser.api.GetOrdersHandler;
 
 import java.util.ArrayList;
 
-public class OrdersFragment extends Fragment implements GetOrdersHandler {
+public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
     public static class TYPES {
         public static final String ONGOING = "ongoing";
         public static final String HISTORY = "history";

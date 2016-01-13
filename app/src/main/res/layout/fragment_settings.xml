@@ -8,13 +8,12 @@
     android:orientation="vertical"
     android:scrollbars="none"
     android:layout_alignParentTop="true"
-    android:background="@drawable/background_map_blurred">
+    android:background="@color/base_grey_100">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/black_65_opaque">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/name_icon_big"
@@ -39,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/credentials_list_margin"
             android:layout_marginRight="@dimen/credentials_list_margin"
-            android:maxWidth="400dp"
+            android:maxWidth="500dp"
             android:orientation="vertical"
             android:gravity="center">
 
@@ -59,16 +58,16 @@
                         android:layout_height="wrap_content"
                         android:text="@string/icon_name"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/red"
+                        android:textColor="@color/cyan"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
                         android:layout_marginRight="5dp"
                         android:layout_marginEnd="5dp"/>
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_30_opaque"/>
+                        android:background="@color/white_100"/>
 
                 </LinearLayout>
 
@@ -82,19 +81,20 @@
                     android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:hint="@string/name"
-                    android:textColor="@color/white_30_opaque"
-                    android:textColorHint="@color/white_30_opaque"
-                    android:inputType="text"
+                    android:textColor="@color/white_80"
+                    android:textColorHint="@color/white_80"
                     android:textCursorDrawable="@null"
+                    android:textSize="@dimen/medium_text_size"
+                    android:inputType="text"
                     android:background="@android:color/transparent"/>
 
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_100"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -117,12 +117,12 @@
                         android:layout_marginEnd="5dp"
                         android:text="@string/icon_name"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/red"/>
+                        android:textColor="@color/cyan"/>
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_30_opaque"/>
+                        android:background="@color/white_100"/>
 
                 </LinearLayout>
 
@@ -136,19 +136,20 @@
                     android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:hint="@string/last_name"
-                    android:textColor="@color/white_30_opaque"
-                    android:textColorHint="@color/white_30_opaque"
-                    android:inputType="textWebPassword"
+                    android:textColor="@color/white_80"
+                    android:textColorHint="@color/white_80"
                     android:textCursorDrawable="@null"
+                    android:textSize="@dimen/medium_text_size"
+                    android:inputType="textWebPassword"
                     android:background="@android:color/transparent"/>
 
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_30_opaque"
+                android:background="@color/white_100"
                 android:visibility="gone"/>
 
             <RelativeLayout
@@ -171,12 +172,12 @@
                         android:layout_marginEnd="5dp"
                         android:text="@string/icon_mail"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/red"/>
+                        android:textColor="@color/cyan"/>
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_30_opaque"/>
+                        android:background="@color/white_100"/>
 
                 </LinearLayout>
 
@@ -190,8 +191,9 @@
                     android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:hint="@string/email"
-                    android:textColor="@color/white_30_opaque"
-                    android:textColorHint="@color/white_30_opaque"
+                    android:textColor="@color/white_80"
+                    android:textColorHint="@color/white_80"
+                    android:textSize="@dimen/medium_text_size"
                     android:inputType="textEmailAddress"
                     android:textCursorDrawable="@null"
                     android:background="@android:color/transparent"/>
@@ -200,9 +202,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_100"/>
 
             <com.flycode.paradox.taxiuser.views.GenericTriangleView
                 xmlns:flycode="http://schemas.android.com/apk/res-auto"
@@ -212,18 +214,46 @@
                 android:layout_marginTop="@dimen/settings_entry_margin"
                 android:layout_marginBottom="@dimen/settings_entry_margin"
                 flycode:text="@string/submit"
-                flycode:borderColor="#7A7A7A"
-                flycode:borderHoverColor="#8B0C0C"
-                />
+                flycode:borderColor="#00FFFF"
+                flycode:borderHoverColor="#00FFFF" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/settings_entry_margin">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true"
+                android:background="@color/cyan"/>
 
             <TextView
                 android:id="@+id/change_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/settings_entry_margin"
+                android:layout_centerInParent="true"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
                 android:text="@string/change_password"
-                android:textColor="@color/pure_white"
-                android:textSize="@dimen/settings_title_text_size"/>
+                android:textColor="@color/white_100"
+                android:textSize="@dimen/settings_title_text_size"
+                android:background="@color/base_grey_100"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/credentials_list_margin"
+            android:layout_marginRight="@dimen/credentials_list_margin"
+            android:maxWidth="500dp"
+            android:orientation="vertical"
+            android:gravity="center">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -241,16 +271,16 @@
                         android:layout_height="wrap_content"
                         android:text="@string/icon_password"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/red"
+                        android:textColor="@color/cyan"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
                         android:layout_marginRight="5dp"
                         android:layout_marginEnd="5dp"/>
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_30_opaque"/>
+                        android:background="@color/white_100"/>
 
                 </LinearLayout>
 
@@ -264,19 +294,20 @@
                     android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:hint="@string/old_password"
-                    android:textColor="@color/white_30_opaque"
-                    android:textColorHint="@color/white_30_opaque"
+                    android:textColor="@color/white_80"
+                    android:textColorHint="@color/white_80"
                     android:inputType="textWebPassword"
                     android:textCursorDrawable="@null"
+                    android:textSize="@dimen/medium_text_size"
                     android:background="@android:color/transparent"/>
 
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_100"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -294,16 +325,16 @@
                         android:layout_height="wrap_content"
                         android:text="@string/icon_password"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/red"
+                        android:textColor="@color/cyan"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
                         android:layout_marginRight="5dp"
                         android:layout_marginEnd="5dp"/>
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_30_opaque"/>
+                        android:background="@color/white_100"/>
 
                 </LinearLayout>
 
@@ -317,19 +348,20 @@
                     android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:hint="@string/enter_password"
-                    android:textColor="@color/white_30_opaque"
-                    android:textColorHint="@color/white_30_opaque"
+                    android:textColor="@color/white_80"
+                    android:textColorHint="@color/white_80"
                     android:inputType="textWebPassword"
                     android:textCursorDrawable="@null"
+                    android:textSize="@dimen/medium_text_size"
                     android:background="@android:color/transparent"/>
 
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_100"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -351,12 +383,12 @@
                         android:layout_marginEnd="5dp"
                         android:text="@string/icon_password"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/red"/>
+                        android:textColor="@color/cyan"/>
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_30_opaque"/>
+                        android:background="@color/white_100"/>
 
                 </LinearLayout>
 
@@ -370,19 +402,20 @@
                     android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:hint="@string/confirm_password"
-                    android:textColor="@color/white_30_opaque"
-                    android:textColorHint="@color/white_30_opaque"
+                    android:textColor="@color/white_80"
+                    android:textColorHint="@color/white_80"
                     android:inputType="textWebPassword"
                     android:textCursorDrawable="@null"
+                    android:textSize="@dimen/medium_text_size"
                     android:background="@android:color/transparent"/>
 
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_100"/>
 
             <com.flycode.paradox.taxiuser.views.GenericTriangleView
                 xmlns:flycode="http://schemas.android.com/apk/res-auto"
@@ -392,21 +425,37 @@
                 android:layout_marginTop="@dimen/settings_entry_margin"
                 android:layout_marginBottom="@dimen/settings_entry_margin"
                 flycode:text="@string/submit"
-                flycode:borderColor="#7A7A7A"
-                flycode:borderHoverColor="#8B0C0C"
-                />
+                flycode:borderColor="#00FFFF"
+                flycode:borderHoverColor="#00FFFF" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/language"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/settings_entry_margin"
-            android:gravity="center"
-            android:text="@string/language"
-            android:textColor="@color/pure_white"
-            android:textSize="@dimen/settings_title_text_size"/>
+            android:layout_marginTop="@dimen/settings_entry_margin">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true"
+                android:background="@color/cyan"/>
+
+            <TextView
+                android:id="@+id/language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
+                android:text="@string/language"
+                android:textColor="@color/white_100"
+                android:textSize="@dimen/settings_title_text_size"
+                android:background="@color/base_grey_100"/>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

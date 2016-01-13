@@ -12,6 +12,7 @@ public class TypefaceUtils {
     public static class AVAILABLE_FONTS {
         public static final String ICOMOON = "icomoon.ttf";
         public static final String ROBOTO_THIN = "Roboto-Thin.ttf";
+        public static final String ROBOTO_REGULAR = "Roboto-Regular.ttf";
     }
 
     private static final Hashtable<String, Typeface> cache = new Hashtable<String, Typeface>();

@@ -69,20 +69,20 @@ public class GenericTriangleView extends View {
             paint.setColor(Color.parseColor(borderColor));
         }
 
-        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setAntiAlias(true);
 
         canvas.drawPath(trianglePath, paint);
 
         Paint textPaint = new Paint();
         textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setColor(Color.WHITE);
+        textPaint.setColor(Color.parseColor("#4D4D4D"));
         textPaint.setTextSize(height / 4);
         textPaint.setFakeBoldText(false);
         textPaint.setAntiAlias(true);
         textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
         textPaint.setLinearText(true);
-        textPaint.setTypeface(TypefaceUtils.getTypeface(getContext(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
+        textPaint.setTypeface(TypefaceUtils.getTypeface(getContext(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR));
 
         Rect textBounds = new Rect();
         textPaint.getTextBounds(text, 0, text.length(), textBounds);

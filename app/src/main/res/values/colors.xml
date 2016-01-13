@@ -9,4 +9,19 @@
     <color name="green_light">#00F733</color>
     <color name="pure_white">#FFFFFF</color>
     <color name="red">#8B0C0C</color>
+
+    <color name="base_grey_90">#E64D4D4D</color>
+    <color name="base_grey_100">#FF4D4D4D</color>
+
+    <color name="border_grey">#CCCCCC</color>
+
+    <color name="text_grey">#00A99D</color>
+
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="white_100">#FFFFFFFF</color>
+
+    <color name="cyan">#00FFFF</color>
+    <color name="yellow">#FFEA00</color>
+
+    <color name="black_30">#4D000000</color>
 </resources>

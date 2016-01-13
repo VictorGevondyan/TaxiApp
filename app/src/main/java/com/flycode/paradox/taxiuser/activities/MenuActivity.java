@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
@@ -18,6 +19,7 @@ import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
 import com.flycode.paradox.taxiuser.fragments.OrderFragment;
 import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
+import com.flycode.paradox.taxiuser.fragments.SuperFragment;
 import com.flycode.paradox.taxiuser.fragments.TransactionsFragment;
 import com.flycode.paradox.taxiuser.gcm.GCMSubscriber;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
@@ -40,6 +42,9 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
 
     private TextView actionBarTitleTextView;
     private Button actionBarRightButton;
+    private View contentView;
+    private View actionBarView;
+    private View actionBarOverlayView;
 
     private int currentPosition = -1;
 
@@ -55,6 +60,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
         Typeface robotoThinTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
+        Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
 
         Button actionBarLeftButton = (Button) findViewById(R.id.action_bar_left_button);
         actionBarRightButton = (Button) findViewById(R.id.action_bar_right_button);
@@ -64,7 +70,12 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         closeMenuButton.setTypeface(icomoonTypeface);
 
         actionBarTitleTextView = (TextView) findViewById(R.id.title_text);
-        actionBarTitleTextView.setTypeface(robotoThinTypeface);
+        actionBarTitleTextView.setTypeface(robotoRegularTypeface);
+
+        contentView = findViewById(R.id.content_fragment);
+        actionBarView = findViewById(R.id.action_bar);
+        actionBarOverlayView = actionBarView.findViewById(R.id.action_bar_overlay);
+        actionBarView.bringToFront();
 
         TextView menuTitleTextView = (TextView) findViewById(R.id.menu_title);
         menuTitleTextView.setTypeface(robotoThinTypeface);
@@ -98,6 +109,14 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
     public void onConfigurationChanged(Configuration newConfig) {
         recreate();
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        SuperFragment fragment = (SuperFragment) getFragmentManager().findFragmentById(R.id.content_fragment);
+        fragment.onWindowFocusChanged(hasFocus);
     }
 
     /**
@@ -136,6 +155,8 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         }
 
         actionBarRightButton.setVisibility(View.GONE);
+        actionBarOverlayView.setVisibility(View.GONE);
+        setIsActionBarTransparent(false);
 
         currentPosition = position;
 
@@ -149,6 +170,8 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
 
             fragment = TransactionsFragment.initialize();
         } else if (position == INDEX_ORDER) {
+            setIsActionBarTransparent(true);
+
             actionBarRightButton.setVisibility(View.VISIBLE);
             actionBarTitleTextView.setText(R.string.order);
             actionBarRightButton.setText(R.string.icon_phone);
@@ -167,6 +190,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
 
             fragment = OrdersFragment.initialize(OrdersFragment.TYPES.HISTORY);
         } else if (position == INDEX_SETTINGS) {
+            actionBarOverlayView.setVisibility(View.VISIBLE);
             actionBarTitleTextView.setText(R.string.settings);
 
             fragment = new SettingsFragment();
@@ -191,6 +215,20 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         if (needsToggle) {
             sideMenu.toggleMenu();
         }
+    }
+
+    private void setIsActionBarTransparent(boolean isTransparent) {
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) contentView.getLayoutParams();
+
+        if (isTransparent) {
+            layoutParams.addRule(RelativeLayout.BELOW, 0);
+            actionBarView.setBackgroundColor(getResources().getColor(R.color.base_grey_90));
+        } else {
+            layoutParams.addRule(RelativeLayout.BELOW, R.id.action_bar);
+            actionBarView.setBackgroundColor(getResources().getColor(R.color.base_grey_100));
+        }
+
+        contentView.setLayoutParams(layoutParams);
     }
 
     /**

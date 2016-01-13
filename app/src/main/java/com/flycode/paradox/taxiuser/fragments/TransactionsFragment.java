@@ -1,6 +1,5 @@
 package com.flycode.paradox.taxiuser.fragments;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +15,7 @@ import com.flycode.paradox.taxiuser.models.Transaction;
 
 import java.util.ArrayList;
 
-public class TransactionsFragment extends Fragment implements GetOwnTransactionsHandler{
+public class TransactionsFragment extends SuperFragment implements GetOwnTransactionsHandler{
     private ListView transactionsListView;
     private TransactionsListAdapter transactionsListAdapter;
     private ProgressDialog progressDialog;

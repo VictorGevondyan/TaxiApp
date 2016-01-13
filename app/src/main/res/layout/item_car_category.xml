@@ -13,7 +13,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/tiny_text_size"
-        android:textColor="@color/pure_white"
+        android:textColor="@color/cyan"
         android:gravity="center"
         android:singleLine="true"
         android:ellipsize="none"/>
@@ -28,6 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/tiny_text_size"
-        android:textColor="@color/pure_white"/>
+        android:textColor="@color/cyan"/>
 
 </LinearLayout>
