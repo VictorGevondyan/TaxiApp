@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/orders_list_view"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/base_grey_100">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_grey"/>
+
+    <ListView
+        android:id="@+id/orders_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:listSelector="@color/black_30"
+        android:divider="@drawable/divider_grey"/>
+
+</LinearLayout>
 

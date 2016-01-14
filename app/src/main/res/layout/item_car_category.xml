@@ -21,7 +21,8 @@
     <ImageView
         android:id="@+id/rhombus"
         android:layout_width="@dimen/rhombus_size"
-        android:layout_height="@dimen/rhombus_size"/>
+        android:layout_height="@dimen/rhombus_size"
+        android:scaleType="fitXY"/>
 
     <TextView
         android:id="@+id/text"

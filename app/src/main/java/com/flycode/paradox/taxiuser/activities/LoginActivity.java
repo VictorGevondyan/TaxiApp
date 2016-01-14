@@ -109,7 +109,7 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
         userData.setUsername(user.getUsername());
         userData.setName(user.getName());
         userData.setSex(user.getSex());
-        userData.setDateOfBirth(user.getDateOfBirth());
+//        userData.setDateOfBirth(user.getDateOfBirth());
         userData.setStatus(user.getStatus());
         userData.setBalance(user.getBalance());
     }

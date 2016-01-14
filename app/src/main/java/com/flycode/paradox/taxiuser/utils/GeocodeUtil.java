@@ -42,12 +42,12 @@ public class GeocodeUtil {
             @Override
             protected void onPostExecute(String address) {
                 super.onPostExecute(address);
-                listener.onGeocodeSuccess(address);
+                listener.onGeocodeSuccess(address, location);
             }
         }.execute();
     }
 
     public interface GeocodeListener {
-        void onGeocodeSuccess(String address);
+        void onGeocodeSuccess(String address, LatLng location);
     }
 }

@@ -3,8 +3,6 @@ package com.flycode.paradox.taxiuser.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.flycode.paradox.taxiuser.factory.ModelFactory;
-
 import java.util.Date;
 
 /**
@@ -56,7 +54,7 @@ public class UserData {
         name = dataPreferences.getString(NAME,"");
         sex = dataPreferences.getString(SEX, "");
         email = dataPreferences.getString(EMAIL, "");
-        ModelFactory.dateFromString(dataPreferences.getString(SEX, ""), dateOfBirth);
+//        ModelFactory.dateFromString(dataPreferences.getString(SEX, ""), dateOfBirth);
         status = dataPreferences.getString(STATUS, "");
         balance = dataPreferences.getInt(BALANCE, 0);
     }

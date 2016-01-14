@@ -8,7 +8,8 @@
     android:orientation="vertical"
     android:scrollbars="none"
     android:layout_alignParentTop="true"
-    android:background="@color/base_grey_100">
+    android:background="@color/base_grey_100"
+    android:overScrollMode="never">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -479,7 +480,8 @@
                 <ImageView
                     android:id="@+id/armenian_rhombus"
                     android:layout_width="@dimen/rhombus_size"
-                    android:layout_height="@dimen/rhombus_size" />
+                    android:layout_height="@dimen/rhombus_size"
+                    android:scaleType="fitXY" />
 
                 <TextView
                     android:id="@+id/armenian_text"
@@ -504,7 +506,8 @@
                 <ImageView
                     android:id="@+id/english_rhombus"
                     android:layout_width="@dimen/rhombus_size"
-                    android:layout_height="@dimen/rhombus_size" />
+                    android:layout_height="@dimen/rhombus_size"
+                    android:scaleType="fitXY" />
 
                 <TextView
                     android:id="@+id/english_text"
@@ -530,7 +533,8 @@
                     android:id="@+id/russian_rhombus"
                     android:layout_width="@dimen/rhombus_size"
                     android:layout_height="@dimen/rhombus_size"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY"/>
 
                 <TextView
                     android:id="@+id/russian_text"

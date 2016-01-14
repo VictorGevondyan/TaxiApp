@@ -164,9 +164,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         Fragment fragment = null;
 
         if (position == INDEX_BALANCE) {
-            actionBarRightButton.setVisibility(View.VISIBLE);
             actionBarTitleTextView.setText(R.string.transactions);
-            actionBarRightButton.setText(R.string.icon_balance);
 
             fragment = TransactionsFragment.initialize();
         } else if (position == INDEX_ORDER) {

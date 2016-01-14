@@ -1,16 +1,19 @@
 package com.flycode.paradox.taxiuser.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,24 +24,31 @@ import com.flycode.paradox.taxiuser.api.CarCategoriesListener;
 import com.flycode.paradox.taxiuser.api.MakeOrderListener;
 import com.flycode.paradox.taxiuser.dialogs.CommentDialog;
 import com.flycode.paradox.taxiuser.dialogs.PickTimeDialog;
+import com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout;
 import com.flycode.paradox.taxiuser.models.CarCategory;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.utils.GeocodeUtil;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
+import com.flycode.paradox.taxiuser.views.OrderView;
 import com.mapbox.mapboxsdk.constants.MyLocationTracking;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class OrderFragment extends SuperFragment implements View.OnClickListener, CommentDialog.CommentDialogListener, CarCategoriesListener, GeocodeUtil.GeocodeListener, MakeOrderListener, MapView.OnMyLocationChangeListener, MapView.OnMapChangedListener {
-    private final String COMMENT_DIALOG_TAG = "commentDialogTag";
-    private final String TIME_DIALOG_TAG = "timeDialogTag";
+    private static final Object LOCKER = new Object();
+    private static final String COMMENT_DIALOG_TAG = "commentDialogTag";
+    private static final String TIME_DIALOG_TAG = "timeDialogTag";
 
 //    private MapView mapView;
 //    private GoogleMap googleMap;
     private MapView mapView;
+    private boolean hasMyLocationDetermined;
+
+    private View orderFragmentView;
 
     private ImageView isNowRhombus;
     private ImageView isLaterRhombus;
@@ -51,10 +61,10 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
     private TextView hoursTextView;
     private TextView dayTextView;
 
-    private EditText locationEditText;
+    private TextView locationTopTextView;
 
     private Button closeIconButton;
-    private Button orderButton;
+    private OrderView orderButton;
 
     private LinearLayout carCategoriesSectionLinearLayout;
     private LinearLayout orderDetailsLinerLayout;
@@ -70,7 +80,6 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
     private int orderStage = 0;
 
     private CarCategory currentCarCategory;
-
     private OrderFragmentListener listener;
 
     public static OrderFragment initialize(OrderFragmentListener listener) {
@@ -84,7 +93,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View orderView = inflater.inflate(R.layout.fragment_order, container, false);
+        orderFragmentView = inflater.inflate(R.layout.fragment_order, container, false);
 
         Typeface robotoThinTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
@@ -97,10 +106,11 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 //        googleMap.setMyLocationEnabled(true);
 //        googleMap.setOnCameraChangeListener(this);
 
-        mapView = (MapView) orderView.findViewById(R.id.map_view);
+        hasMyLocationDetermined = false;
+        mapView = (MapView) orderFragmentView.findViewById(R.id.map_view);
         mapView.setStyleUrl(Style.LIGHT);
-        mapView.setCenterCoordinate(new LatLng(40.73581, -73.99155));
-        mapView.setZoomLevel(11);
+        mapView.setCenterCoordinate(new LatLng(40.177570, 44.512549));
+        mapView.setZoomLevel(15);
         mapView.setZoomControlsEnabled(false);
         mapView.setMyLocationEnabled(true);
         mapView.setMyLocationTrackingMode(MyLocationTracking.TRACKING_NONE);
@@ -110,47 +120,47 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         mapView.addOnMapChangedListener(this);
         mapView.onCreate(savedInstanceState);
 
-        isNowRhombus = (ImageView) orderView.findViewById(R.id.now_rombus);
-        isLaterRhombus = (ImageView) orderView.findViewById(R.id.later_rombus);
-        isCashOnlyRhombus = (ImageView) orderView.findViewById(R.id.only_cash_rombus);
+        isNowRhombus = (ImageView) orderFragmentView.findViewById(R.id.now_rombus);
+        isLaterRhombus = (ImageView) orderFragmentView.findViewById(R.id.later_rombus);
+        isCashOnlyRhombus = (ImageView) orderFragmentView.findViewById(R.id.only_cash_rombus);
 
-        TextView isNowTextView = (TextView) orderView.findViewById(R.id.now_text);
-        TextView isLaterTextView = (TextView) orderView.findViewById(R.id.later_text);
-        TextView isCashOnlyTextView = (TextView) orderView.findViewById(R.id.only_cash_text);
+        TextView isNowTextView = (TextView) orderFragmentView.findViewById(R.id.now_text);
+        TextView isLaterTextView = (TextView) orderFragmentView.findViewById(R.id.later_text);
+        TextView isCashOnlyTextView = (TextView) orderFragmentView.findViewById(R.id.only_cash_text);
 
         isNowTextView.setTypeface(robotoThinTypeface);
         isLaterTextView.setTypeface(robotoThinTypeface);
         isCashOnlyTextView.setTypeface(robotoThinTypeface);
 
-        TextView locationTextIconTextView = (TextView) orderView.findViewById(R.id.location_text_icon);
-        TextView locationIconTextView = (TextView) orderView.findViewById(R.id.location_icon);
-        TextView commentTextIconTextView = (TextView) orderView.findViewById(R.id.comment_text_icon);
+        TextView locationTextIconTextView = (TextView) orderFragmentView.findViewById(R.id.location_text_icon);
+        TextView locationIconTextView = (TextView) orderFragmentView.findViewById(R.id.location_icon);
+        TextView commentTextIconTextView = (TextView) orderFragmentView.findViewById(R.id.comment_text_icon);
 
         locationIconTextView.setTypeface(icomoonTypeface);
         locationTextIconTextView.setTypeface(icomoonTypeface);
         commentTextIconTextView.setTypeface(icomoonTypeface);
 
-        orderView.findViewById(R.id.time_section).setOnClickListener(this);
-        orderView.findViewById(R.id.comment_section).setOnClickListener(this);
-        orderView.findViewById(R.id.now).setOnClickListener(this);
-        orderView.findViewById(R.id.later).setOnClickListener(this);
-        orderView.findViewById(R.id.only_cash).setOnClickListener(this);
+        orderFragmentView.findViewById(R.id.time_section).setOnClickListener(this);
+        orderFragmentView.findViewById(R.id.comment_section).setOnClickListener(this);
+        orderFragmentView.findViewById(R.id.now).setOnClickListener(this);
+        orderFragmentView.findViewById(R.id.later).setOnClickListener(this);
+        orderFragmentView.findViewById(R.id.only_cash).setOnClickListener(this);
 
-        dayTextView = (TextView) orderView.findViewById(R.id.day);
-        hoursTextView = (TextView) orderView.findViewById(R.id.hours);
-        minutesTextView = (TextView) orderView.findViewById(R.id.minutes);
+        dayTextView = (TextView) orderFragmentView.findViewById(R.id.day);
+        hoursTextView = (TextView) orderFragmentView.findViewById(R.id.hours);
+        minutesTextView = (TextView) orderFragmentView.findViewById(R.id.minutes);
 
         dayTextView.setTypeface(robotoThinTypeface);
         hoursTextView.setTypeface(robotoThinTypeface);
         minutesTextView.setTypeface(robotoThinTypeface);
 
-        locationTextView = (TextView) orderView.findViewById(R.id.location_text);
-        commentsTextView = (TextView) orderView.findViewById(R.id.comment_text);
-        locationEditText = (EditText) orderView.findViewById(R.id.location);
+        locationTextView = (TextView) orderFragmentView.findViewById(R.id.location_text);
+        commentsTextView = (TextView) orderFragmentView.findViewById(R.id.comment_text);
+        locationTopTextView = (TextView) orderFragmentView.findViewById(R.id.location);
 
         locationTextView.setTypeface(robotoThinTypeface);
         commentsTextView.setTypeface(robotoThinTypeface);
-        locationEditText.setTypeface(robotoThinTypeface);
+        locationTopTextView.setTypeface(robotoThinTypeface);
 
         setupTimeRhombus();
         setupCacheOnlyRhombus();
@@ -167,18 +177,17 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             timeDialog.setListener(null);
         }
 
-        orderButton = (Button) orderView.findViewById(R.id.order_button);
-        orderButton.setTypeface(robotoThinTypeface);
-        orderButton.setText(R.string.order);
+        orderButton = (OrderView) orderFragmentView.findViewById(R.id.order_button);
+        orderButton.setClickable(true);
         orderButton.setOnClickListener(this);
 
-        closeIconButton = (Button) orderView.findViewById(R.id.close_button);
+        closeIconButton = (Button) orderFragmentView.findViewById(R.id.close_button);
         closeIconButton.setTypeface(icomoonTypeface);
         closeIconButton.setTypeface(robotoThinTypeface);
         closeIconButton.setOnClickListener(this);
 
-        carCategoriesSectionLinearLayout = (LinearLayout) orderView.findViewById(R.id.car_categories_container);
-        orderDetailsLinerLayout = (LinearLayout) orderView.findViewById(R.id.order_details);
+        carCategoriesSectionLinearLayout = (LinearLayout) orderFragmentView.findViewById(R.id.car_categories_container);
+        orderDetailsLinerLayout = (LinearLayout) orderFragmentView.findViewById(R.id.order_details);
 
         Calendar calendar = Calendar.getInstance();
         minute = calendar.get(Calendar.MINUTE);
@@ -188,9 +197,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         minutesTextView.setText(String.valueOf(minute));
         hoursTextView.setText(String.valueOf(hour));
 
-        APITalker.sharedTalker().getCarCategories(this);
-
-        return orderView;
+        return orderFragmentView;
     }
 
     @Override
@@ -229,6 +236,13 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         mapView.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        APITalker.sharedTalker().getCarCategories(this);
+    }
+
     /**
      * Rhombus Methods
      */
@@ -251,8 +265,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             if (chosenSection.equals(carCategorySection)) {
                 CarCategory carCategory = (CarCategory) chosenSection.getTag();
                 currentCarCategory = carCategory;
-
-                rhombus.setBackgroundResource(R.drawable.rhombus_cyan);
+                rhombus.setImageResource(R.drawable.rhombus_cyan);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
                 rhombus.setImageResource(R.drawable.rhombus_white);
@@ -282,32 +295,40 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             CommentDialog.initialize(comment, this).show(getFragmentManager(), COMMENT_DIALOG_TAG);
         } else if (view.getId() == R.id.time_section) {
             PickTimeDialog.initialize(null).show(getFragmentManager(), TIME_DIALOG_TAG);
+        } else if (view.getId() == R.id.order_button) {
+            if (orderStage == 0) {
+                orderStage++;
+                orderDetailsLinerLayout.setVisibility(View.VISIBLE);
+                closeIconButton.setVisibility(View.VISIBLE);
+                locationTextView.setText(locationTopTextView.getText());
+                mapView.setAllGesturesEnabled(false);
+                orderButton.setOrderStage(orderStage);
+
+                MaximalLinearLayout headerPanel = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.header_panel);
+                MaximalLinearLayout footerPanel = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.footer_panel);
+
+                float density = getContext().getResources().getDisplayMetrics().density;
+
+                footerPanel.setMaxHeight(mapView.getMeasuredHeight() - footerPanel.getBottom() - (int) (75 * density));
+            } else {
+                APITalker.sharedTalker().makeOrder(
+                        getActivity(),
+                        locationTextView.getText().toString(),
+                        mapView.getCenterCoordinate().getLatitude(),
+                        mapView.getCenterCoordinate().getLongitude(),
+                        new Date(),
+                        currentCarCategory.getId(),
+                        comment,
+                        this
+                );
+            }
+        } else if (view.getId() == R.id.close_button) {
+            orderStage--;
+            orderDetailsLinerLayout.setVisibility(View.GONE);
+            closeIconButton.setVisibility(View.GONE);
+            mapView.setAllGesturesEnabled(true);
+            orderButton.setOrderStage(orderStage);
         }
-//        } else if (view.getId() == R.id.order_button) {
-//            if (orderStage == 0) {
-//                orderButton.setText(R.string.confirm);
-//                orderDetailsLinerLayout.setVisibility(View.VISIBLE);
-//                closeIconButton.setVisibility(View.VISIBLE);
-//                locationTextView.setText(locationEditText.getText());
-//                orderStage++;
-//            } else {
-//                APITalker.sharedTalker().makeOrder(
-//                        getActivity(),
-//                        locationTextView.getText().toString(),
-//                        mapView.getCenterCoordinate(),
-//                        new Date(),
-//                        currentCarCategory.getId(),
-//                        comment,
-//                        this
-//                );
-//            }
-//        } else if (view.getId() == R.id.close_button) {
-//            orderButton.setText(R.string.order);
-//            orderDetailsLinerLayout.setVisibility(View.GONE);
-//            closeIconButton.setVisibility(View.GONE);
-//            googleMap.getUiSettings().setAllGesturesEnabled(true);
-//            orderStage--;
-//        }
     }
 
     /**
@@ -350,10 +371,12 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
             if (index == 0) {
                 currentCarCategory = carCategory;
-                carCategoryView.findViewById(R.id.rhombus).setBackgroundResource(R.drawable.rhombus_cyan);
+                ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
+                carCategoryRhombus.setImageResource(R.drawable.rhombus_cyan);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
-                carCategoryView.findViewById(R.id.rhombus).setBackgroundResource(R.drawable.rhombus_white);
+                ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
+                carCategoryRhombus.setImageResource(R.drawable.rhombus_white);
             }
 
             TextView carCategoryNameTextView = (TextView) carCategoryView.findViewById(R.id.text);
@@ -374,9 +397,12 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
      */
 
     @Override
-    public void onGeocodeSuccess(String address) {
-        locationEditText.setTextColor(Color.BLACK);
-        locationEditText.setText(address);
+    public void onGeocodeSuccess(String address, LatLng location) {
+
+        if (location.equals(mapView.getCenterCoordinate())) {
+            locationTopTextView.setTextColor(Color.BLACK);
+            locationTopTextView.setText(address);
+        }
     }
 
     /**
@@ -402,7 +428,12 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
     @Override
     public void onMyLocationChange(Location location) {
-
+        if (!hasMyLocationDetermined) {
+            hasMyLocationDetermined = true;
+            LatLng center = new LatLng(location.getLatitude(), location.getLongitude());
+            mapView.setCenterCoordinate(center, false);
+            GeocodeUtil.geocode(getActivity(), center, this);
+        }
     }
 
     /**
@@ -411,11 +442,30 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
     @Override
     public void onMapChanged(int change) {
-        if (change == MapView.REGION_DID_CHANGE_ANIMATED) {
-            locationEditText.setText("");
-            GeocodeUtil.geocode(getActivity(), mapView.getCenterCoordinate(), this);
+        if (change == MapView.REGION_DID_CHANGE_ANIMATED
+                || change == MapView.REGION_DID_CHANGE) {
+            synchronized (LOCKER) {
+                locationTopTextView.setText("");
+                mapInteractionHandler.removeCallbacks(mapInteractionRunnable);
+                mapInteractionHandler.postDelayed(mapInteractionRunnable, 500);
+            }
         }
     }
+
+    /**
+     * Map Helpers
+     */
+
+    private Handler mapInteractionHandler = new Handler(Looper.getMainLooper());
+
+    private Runnable mapInteractionRunnable = new Runnable() {
+        @Override
+        public void run() {
+            synchronized (LOCKER) {
+                GeocodeUtil.geocode(getActivity(), mapView.getCenterCoordinate(), OrderFragment.this);
+            }
+        }
+    };
 
     /**
      * OrderFragment Listener

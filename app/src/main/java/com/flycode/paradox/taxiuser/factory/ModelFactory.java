@@ -74,9 +74,7 @@ public class ModelFactory {
         String status = orderJSON.optString(STATUS);
 
         // Time Values
-        Date orderTime = new Date();
-
-        dateFromString(orderJSON.optString(ORDER_TIME), orderTime);
+        Date orderTime = dateFromString(orderJSON.optString(ORDER_TIME));
 
         // Starting Point
         String startingPointName = null;
@@ -131,8 +129,7 @@ public class ModelFactory {
         String name = userJSON.optString(NAME);
         String sex = userJSON.optString(SEX);
         String email = userJSON.optString(EMAIL);
-        Date dateOfBirth = new Date();
-        dateFromString(userJSON.optString(DATE_OF_BIRTH), dateOfBirth);
+        Date dateOfBirth = dateFromString(userJSON.optString(DATE_OF_BIRTH));
         String status = userJSON.optString(STATUS);
         int carNumber = userJSON.optInt(CAR_NUMBER);
         int balance = userJSON.optInt(BALANCE);
@@ -162,8 +159,7 @@ public class ModelFactory {
             String senderUsername= sender.optString(USERNAME);
             String senderRole = sender.optString(ROLE);
 
-            Date date = new Date();
-            dateFromString(transactionJSON.optString(DATE), date);
+            Date date = dateFromString(transactionJSON.optString(DATE));
 
             String description = transactionJSON.optString(DESCRIPTION);
             String paymentType = transactionJSON.optString(PAYMENT_TYPE);
@@ -176,11 +172,11 @@ public class ModelFactory {
         return transactions;
     }
 
-    public static void dateFromString(String dateString, Date date) {
+    public static Date dateFromString(String dateString) {
         try {
-            date = dateFormat.parse(dateString);
+            return dateFormat.parse(dateString);
         } catch (ParseException e) {
-            e.printStackTrace();
+            return null;
         }
     }
 }

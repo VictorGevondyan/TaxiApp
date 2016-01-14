@@ -2,6 +2,7 @@ package com.flycode.paradox.taxiuser.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +22,14 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
 
     private Context context;
     private ArrayList<Order> ordersList;
+    private Typeface robotoTypeface;
 
 
     public OrdersListAdapter(Context context, int resource, ArrayList<Order> ordersList) {
         super(context, resource, ordersList);
         this.context = context;
         this.ordersList = ordersList;
+        this.robotoTypeface = TypefaceUtils.getTypeface(context, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
     }
 
 
@@ -37,19 +40,18 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.item_order, parent, false);
+
+            Typeface icomoonTypeface = TypefaceUtils.getTypeface(context, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
+            TextView iconArrow = ( TextView )convertView.findViewById(R.id.icon_arrow);
+            TextView dateIconTextView = ( TextView )convertView.findViewById(R.id.icon_date);
+            TextView locationIconTextView = ( TextView )convertView.findViewById(R.id.icon_location);
+            TextView statusIconTextView = ( TextView )convertView.findViewById(R.id.icon_status);
+
+            dateIconTextView.setTypeface(icomoonTypeface);
+            locationIconTextView.setTypeface(icomoonTypeface);
+            statusIconTextView.setTypeface(icomoonTypeface);
+            iconArrow.setTypeface(icomoonTypeface);
         }
-
-        Typeface icomoonTypeface = TypefaceUtils.getTypeface(context, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
-        Typeface robotoTypeface = TypefaceUtils.getTypeface(context, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
-
-        TextView dateIconTextView = ( TextView )convertView.findViewById(R.id.icon_date);
-        TextView locationIconTextView = ( TextView )convertView.findViewById(R.id.icon_location);
-        TextView statusIconTextView = ( TextView )convertView.findViewById(R.id.icon_status);
-
-
-        dateIconTextView.setTypeface(icomoonTypeface);
-        locationIconTextView.setTypeface(icomoonTypeface);
-        statusIconTextView.setTypeface(icomoonTypeface);
 
         TextView dateTextView = ( TextView )convertView.findViewById(R.id.date);
         TextView locationTextView = ( TextView )convertView.findViewById(R.id.location);
@@ -59,21 +61,20 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
         TextView locationValueTextView = ( TextView )convertView.findViewById(R.id.location_value);
         TextView statusValueTextView = ( TextView )convertView.findViewById(R.id.status_value);
 
-
         dateTextView.setTypeface(robotoTypeface);
         locationTextView.setTypeface(robotoTypeface);
         statusTextView.setTypeface(robotoTypeface);
-
 
         dateValueTextView.setTypeface(robotoTypeface);
         locationValueTextView.setTypeface(robotoTypeface);
         statusValueTextView.setTypeface(robotoTypeface);
 
-        TextView iconArrow = ( TextView )convertView.findViewById(R.id.icon_arrow);
-
-        iconArrow.setTypeface(icomoonTypeface);
-
-        dateValueTextView.setText(order.getOrderTime().toString());
+        dateValueTextView.setText(DateUtils.formatDateTime(
+                context,
+                order.getOrderTime().getTime(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME
+                        | DateUtils.FORMAT_ABBREV_MONTH | DateUtils.FORMAT_SHOW_YEAR
+                        | DateUtils.FORMAT_24HOUR));
         locationValueTextView.setText(order.getStartingPointName());
         statusValueTextView.setText(order.getStatus());
 
@@ -99,8 +100,4 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
         this.ordersList = ordersList;
         notifyDataSetChanged();
     }
-
-    
-    
-
 }

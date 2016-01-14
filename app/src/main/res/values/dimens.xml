@@ -27,15 +27,10 @@
     <dimen name="order_details_list_margin">35dp</dimen>
 
     <!-- Orders -->
-    <dimen name="order_credentials_list_height">110dp</dimen>
-    <dimen name="orders_list_side_margin">20dp</dimen>
-    <dimen name="orders_list_top_margin">30dp</dimen>
-    <dimen name="orders_list_bottom_margin">25dp</dimen>
-    <dimen name="orders_list_bottom_padding">10dp</dimen>
-    <dimen name="field_value_margin">25dp</dimen>
-    <dimen name="orders_entry_margin">13dp</dimen>
-    <dimen name="arrow_right_margin">30dp</dimen>
-    <dimen name="credential_name_width">60dp</dimen>
+    <dimen name="orders_big_margin">30dp</dimen>
+    <dimen name="orders_small_margin">20dp</dimen>
+    <dimen name="orders_tiny_margin">15dp</dimen>
+    <dimen name="orders_name_width">70dp</dimen>
 
     <!-- Order Activity -->
     <dimen name="delimiter_margin">5dp</dimen>

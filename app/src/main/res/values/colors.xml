@@ -12,16 +12,18 @@
 
     <color name="base_grey_90">#E64D4D4D</color>
     <color name="base_grey_100">#FF4D4D4D</color>
-
     <color name="border_grey">#CCCCCC</color>
-
     <color name="text_grey">#00A99D</color>
+    <color name="divider_grey">#999999</color>
 
     <color name="white_80">#CCFFFFFF</color>
     <color name="white_100">#FFFFFFFF</color>
+    <color name="white_90">#E6FFFFFF</color>
 
     <color name="cyan">#00FFFF</color>
     <color name="yellow">#FFEA00</color>
+    <color name="purple">#673AB7</color>
 
     <color name="black_30">#4D000000</color>
+    <color name="black_70">#B3000000</color>
 </resources>

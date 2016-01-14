@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout
+    <com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -94,6 +94,6 @@
 
         </LinearLayout>
 
-    </com.flycode.paradox.taxiuser.layouts.MaximalWidthLinearLayout>
+    </com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout>
 
 </RelativeLayout>

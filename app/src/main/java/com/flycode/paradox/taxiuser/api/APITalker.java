@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.flycode.paradox.taxiuser.factory.ModelFactory;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
-import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -228,7 +227,7 @@ public class APITalker {
         });
     }
 
-    public void getOwnTransactions(  Context context, final GetOwnTransactionsHandler getOwnTransactionsHandler){
+    public void getOwnTransactions(Context context, final GetOwnTransactionsHandler getOwnTransactionsHandler){
         if (!authenticate(context)) {
             return;
         }
@@ -270,7 +269,7 @@ public class APITalker {
         });
     }
 
-    public void makeOrder(Context context, String startingPointName, LatLng startingPointLocation, Date orderTime, String carCategory, String comments, final MakeOrderListener listener) {
+    public void makeOrder(Context context, String startingPointName, double startingPointLatitude, double startingPointLongitude, Date orderTime, String carCategory, String comments, final MakeOrderListener listener) {
         if (!authenticate(context)) {
             return;
         }
@@ -280,7 +279,7 @@ public class APITalker {
         try {
             JSONObject startingPointJSON = new JSONObject();
             startingPointJSON.put(NAME, startingPointName);
-            startingPointJSON.put(GEO, locationToJsonArray(startingPointLocation));
+            startingPointJSON.put(GEO, locationToJsonArray(startingPointLatitude, startingPointLongitude));
             requestJSON.put(STARTING_POINT, startingPointJSON);
             requestJSON.put(DESCRIPTION, comments);
             requestJSON.put(CAR_CATEGORY, carCategory);
@@ -499,11 +498,11 @@ public class APITalker {
         return true;
     }
 
-    private JSONArray locationToJsonArray(LatLng location) throws JSONException {
+    private JSONArray locationToJsonArray(double latitude, double longitude) throws JSONException {
         JSONArray locationJSON = new JSONArray();
 
-        locationJSON.put(location.latitude);
-        locationJSON.put(location.longitude);
+        locationJSON.put(latitude);
+        locationJSON.put(longitude);
 
         return locationJSON;
     }
