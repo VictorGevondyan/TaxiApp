@@ -9,7 +9,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,8 @@ import com.flycode.paradox.taxiuser.models.CarCategory;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.utils.GeocodeUtil;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
+import com.flycode.paradox.taxiuser.views.LocationPickerView;
+import com.flycode.paradox.taxiuser.views.MaximalScrollView;
 import com.flycode.paradox.taxiuser.views.OrderView;
 import com.mapbox.mapboxsdk.constants.MyLocationTracking;
 import com.mapbox.mapboxsdk.constants.Style;
@@ -96,6 +97,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         orderFragmentView = inflater.inflate(R.layout.fragment_order, container, false);
 
         Typeface robotoThinTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
+        Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
 
 //        mapView = (MapView) orderView.findViewById(R.id.map_view);
@@ -120,9 +122,9 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         mapView.addOnMapChangedListener(this);
         mapView.onCreate(savedInstanceState);
 
-        isNowRhombus = (ImageView) orderFragmentView.findViewById(R.id.now_rombus);
-        isLaterRhombus = (ImageView) orderFragmentView.findViewById(R.id.later_rombus);
-        isCashOnlyRhombus = (ImageView) orderFragmentView.findViewById(R.id.only_cash_rombus);
+        isNowRhombus = (ImageView) orderFragmentView.findViewById(R.id.now_rhombus);
+        isLaterRhombus = (ImageView) orderFragmentView.findViewById(R.id.later_rhombus);
+        isCashOnlyRhombus = (ImageView) orderFragmentView.findViewById(R.id.only_cash_rhombus);
 
         TextView isNowTextView = (TextView) orderFragmentView.findViewById(R.id.now_text);
         TextView isLaterTextView = (TextView) orderFragmentView.findViewById(R.id.later_text);
@@ -150,9 +152,9 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         hoursTextView = (TextView) orderFragmentView.findViewById(R.id.hours);
         minutesTextView = (TextView) orderFragmentView.findViewById(R.id.minutes);
 
-        dayTextView.setTypeface(robotoThinTypeface);
-        hoursTextView.setTypeface(robotoThinTypeface);
-        minutesTextView.setTypeface(robotoThinTypeface);
+        dayTextView.setTypeface(robotoRegularTypeface);
+        hoursTextView.setTypeface(robotoRegularTypeface);
+        minutesTextView.setTypeface(robotoRegularTypeface);
 
         locationTextView = (TextView) orderFragmentView.findViewById(R.id.location_text);
         commentsTextView = (TextView) orderFragmentView.findViewById(R.id.comment_text);
@@ -183,7 +185,6 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
         closeIconButton = (Button) orderFragmentView.findViewById(R.id.close_button);
         closeIconButton.setTypeface(icomoonTypeface);
-        closeIconButton.setTypeface(robotoThinTypeface);
         closeIconButton.setOnClickListener(this);
 
         carCategoriesSectionLinearLayout = (LinearLayout) orderFragmentView.findViewById(R.id.car_categories_container);
@@ -261,15 +262,18 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             View carCategorySection = carCategoriesSectionLinearLayout.getChildAt(index);
             ImageView rhombus = (ImageView) carCategorySection.findViewById(R.id.rhombus);
             TextView carCategoryInfoTextView = (TextView) carCategorySection.findViewById(R.id.info);
+            TextView carCategoryTitleTextView = (TextView) carCategorySection.findViewById(R.id.info);
 
             if (chosenSection.equals(carCategorySection)) {
                 CarCategory carCategory = (CarCategory) chosenSection.getTag();
                 currentCarCategory = carCategory;
                 rhombus.setImageResource(R.drawable.rhombus_cyan);
+                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.cyan));
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
                 rhombus.setImageResource(R.drawable.rhombus_white);
                 carCategoryInfoTextView.setText("");
+                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.white_100));
             }
         }
     }
@@ -304,12 +308,22 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
                 mapView.setAllGesturesEnabled(false);
                 orderButton.setOrderStage(orderStage);
 
-                MaximalLinearLayout headerPanel = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.header_panel);
-                MaximalLinearLayout footerPanel = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.footer_panel);
+                MaximalLinearLayout headerPanelView = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.header_panel);
+                MaximalScrollView orderDetailsView = (MaximalScrollView) orderFragmentView.findViewById(R.id.order_details_container);
+                LocationPickerView locationPickerView = (LocationPickerView) orderFragmentView.findViewById(R.id.picker_view);
 
-                float density = getContext().getResources().getDisplayMetrics().density;
+                headerPanelView.findViewById(R.id.header_panel_location).setVisibility(View.GONE);
 
-                footerPanel.setMaxHeight(mapView.getMeasuredHeight() - footerPanel.getBottom() - (int) (75 * density));
+                float density = getResources().getDisplayMetrics().density;
+
+                mapView.setTranslationY(-mapView.getMeasuredHeight() / 2 + headerPanelView.getBottom()
+                        + (int) (20 * density));
+                locationPickerView.setTranslationY(-mapView.getMeasuredHeight() / 2 + headerPanelView.getBottom()
+                        + (int) (20 * density));
+
+                orderDetailsView.setMaxHeight(
+                        mapView.getMeasuredHeight() - headerPanelView.getBottom()
+                                - (int) (75 * density) - carCategoriesSectionLinearLayout.getMeasuredHeight());
             } else {
                 APITalker.sharedTalker().makeOrder(
                         getActivity(),
@@ -328,6 +342,18 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             closeIconButton.setVisibility(View.GONE);
             mapView.setAllGesturesEnabled(true);
             orderButton.setOrderStage(orderStage);
+
+            MaximalLinearLayout headerPanelView = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.header_panel);
+            LocationPickerView locationPickerView = (LocationPickerView) orderFragmentView.findViewById(R.id.picker_view);
+
+            headerPanelView.findViewById(R.id.header_panel_location).setVisibility(View.VISIBLE);
+
+            float density = getResources().getDisplayMetrics().density;
+
+            mapView.setTranslationY(mapView.getMeasuredHeight() / 2 - headerPanelView.getBottom()
+                    - (int) (20 * density));
+            locationPickerView.setTranslationY(mapView.getMeasuredHeight() / 2 - headerPanelView.getBottom()
+                    - (int) (20 * density));
         }
     }
 
@@ -369,19 +395,21 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             TextView carCategoryInfoTextView = (TextView) carCategoryView.findViewById(R.id.info);
             carCategoryInfoTextView.setTypeface(TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
 
+            TextView carCategoryTitleTextView = (TextView) carCategoryView.findViewById(R.id.text);
+            carCategoryTitleTextView.setText(carCategory.getName().toUpperCase());
+            carCategoryTitleTextView.setTypeface(TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
+
             if (index == 0) {
                 currentCarCategory = carCategory;
                 ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
                 carCategoryRhombus.setImageResource(R.drawable.rhombus_cyan);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
+                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.white_100));
             } else {
                 ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
                 carCategoryRhombus.setImageResource(R.drawable.rhombus_white);
+                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.white_100));
             }
-
-            TextView carCategoryNameTextView = (TextView) carCategoryView.findViewById(R.id.text);
-            carCategoryNameTextView.setText(carCategory.getName().toUpperCase());
-            carCategoryNameTextView.setTypeface(TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
 
             carCategoriesSectionLinearLayout.addView(carCategoryView);
         }
@@ -398,11 +426,12 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
     @Override
     public void onGeocodeSuccess(String address, LatLng location) {
-
-        if (location.equals(mapView.getCenterCoordinate())) {
-            locationTopTextView.setTextColor(Color.BLACK);
-            locationTopTextView.setText(address);
+        if (location == null) {
+            return;
         }
+
+        locationTopTextView.setTextColor(Color.BLACK);
+        locationTopTextView.setText(address);
     }
 
     /**

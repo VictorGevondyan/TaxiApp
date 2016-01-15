@@ -57,9 +57,9 @@ public class LoginView extends View {
         paint.setStrokeWidth(2);
 
         if (isTouched) {
-            paint.setColor(Color.parseColor("#117F20"));
+            paint.setColor(Color.parseColor("#4D4D4D"));
         } else {
-            paint.setColor(Color.parseColor("#7A7A7A"));
+            paint.setColor(Color.parseColor("#4D4D4D"));
         }
 
         paint.setStyle(Paint.Style.STROKE);
@@ -90,7 +90,7 @@ public class LoginView extends View {
         textPaint.setAntiAlias(true);
         textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
         textPaint.setLinearText(true);
-        textPaint.setTypeface(TypefaceUtils.getTypeface(getContext(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
+        textPaint.setTypeface(TypefaceUtils.getTypeface(getContext(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR));
 
         String loginText = getContext().getString(R.string.login);
         String orText = getContext().getString(R.string.or);

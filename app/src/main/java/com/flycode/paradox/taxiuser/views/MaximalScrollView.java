@@ -1,30 +1,30 @@
-package com.flycode.paradox.taxiuser.layouts;
+package com.flycode.paradox.taxiuser.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.flycode.paradox.taxiuser.R;
 
 /**
  * Created by anhaytananun on 23.12.15.
  */
-public class MaximalLinearLayout extends LinearLayout {
+public class MaximalScrollView extends ScrollView {
     private int maxWidth = -1;
     private int maxHeight = -1;
 
-    public MaximalLinearLayout(Context context) {
+    public MaximalScrollView(Context context) {
         super(context);
     }
 
-    public MaximalLinearLayout(Context context, AttributeSet attrs) {
+    public MaximalScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         extractAttributes(context, attrs);
     }
 
-    public MaximalLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MaximalScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         extractAttributes(context, attrs);

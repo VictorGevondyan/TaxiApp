@@ -25,6 +25,8 @@
     <!-- Ordering -->
     <dimen name="order_time_width">50dp</dimen>
     <dimen name="order_details_list_margin">35dp</dimen>
+    <dimen name="order_details_bottom_margin">10dp</dimen>
+    <dimen name="order_details_delimiter_margin">20dp</dimen>
 
     <!-- Orders -->
     <dimen name="orders_big_margin">30dp</dimen>
