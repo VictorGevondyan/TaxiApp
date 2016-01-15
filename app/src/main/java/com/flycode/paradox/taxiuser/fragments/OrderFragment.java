@@ -233,12 +233,6 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
@@ -519,4 +513,21 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
     public interface OrderFragmentListener {
         void onOrderMade(Order order);
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            //Restore the fragment's state here
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+        //Save the fragment's state here
+    }
+
+
 }

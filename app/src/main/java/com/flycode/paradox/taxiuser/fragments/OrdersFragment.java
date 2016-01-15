@@ -1,6 +1,5 @@
 package com.flycode.paradox.taxiuser.fragments;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,10 +12,10 @@ import android.widget.ListView;
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.activities.OrderActivity;
 import com.flycode.paradox.taxiuser.adapters.OrdersListAdapter;
-import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
-import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetOrdersHandler;
+import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
+import com.flycode.paradox.taxiuser.models.Order;
 
 import java.util.ArrayList;
 
@@ -92,5 +91,22 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
     @Override
     public void onGetOrdersFailure() {
 
+
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            //Restore the fragment's state here
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's state here
+    }
+
+
 }
