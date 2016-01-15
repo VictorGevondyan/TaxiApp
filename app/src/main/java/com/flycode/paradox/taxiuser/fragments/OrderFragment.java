@@ -378,6 +378,11 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
     @Override
     public void onGetCarCategoriesSuccess(CarCategory[] carCategories) {
+        if (getActivity() == null) {
+            // TODO: Investigate Reason
+            return;
+        }
+
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         carCategoriesSectionLinearLayout.removeAllViews();
@@ -474,9 +479,14 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         if (change == MapView.REGION_DID_CHANGE_ANIMATED
                 || change == MapView.REGION_DID_CHANGE) {
             synchronized (LOCKER) {
-                locationTopTextView.setText("");
-                mapInteractionHandler.removeCallbacks(mapInteractionRunnable);
-                mapInteractionHandler.postDelayed(mapInteractionRunnable, 500);
+                try {
+                    locationTopTextView.setText("");
+                    mapInteractionHandler.removeCallbacks(mapInteractionRunnable);
+                    mapInteractionHandler.postDelayed(mapInteractionRunnable, 500);
+                } catch (Exception e) {
+                    // TODO: Investigate Reason
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -491,7 +501,12 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         @Override
         public void run() {
             synchronized (LOCKER) {
-                GeocodeUtil.geocode(getActivity(), mapView.getCenterCoordinate(), OrderFragment.this);
+                try {
+                    GeocodeUtil.geocode(getActivity(), mapView.getCenterCoordinate(), OrderFragment.this);
+                } catch (Exception e) {
+                    // TODO: Investigate Reason
+                    e.printStackTrace();
+                }
             }
         }
     };
