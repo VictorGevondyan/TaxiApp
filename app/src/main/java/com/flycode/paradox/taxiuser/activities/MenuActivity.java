@@ -31,6 +31,10 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import java.io.IOException;
 
 public class MenuActivity extends Activity implements OrderFragment.OrderFragmentListener {
+
+    private final String SAVED_CURRENT_POSITION = "savedCurrentPosition";
+    private final String SAVED_CURRENT_FRAGMENT = "savedCurrentFragment";
+
     private final int INDEX_ONGOING = 0;
     private final int INDEX_BALANCE = 1;
     private final int INDEX_ORDER = 2;
@@ -47,6 +51,8 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
     private View actionBarOverlayView;
 
     private int currentPosition = -1;
+
+    Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +92,25 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         menuGridView.setAdapter(menuGridAdapter);
         menuGridView.setOnItemClickListener(onMenuItemClickListener);
 
-        changeFragment(INDEX_ORDER, false);
+        int newPosition = INDEX_ORDER;
+
+        if( savedInstanceState != null ) {
+
+            //Restore the fragment's instance
+            currentFragment = getFragmentManager().getFragment(
+                    savedInstanceState, SAVED_CURRENT_FRAGMENT);
+            newPosition = savedInstanceState.getInt(SAVED_CURRENT_POSITION);
+        }
+
+        currentPosition = -1;
+        changeFragment(newPosition, false, savedInstanceState != null);
 
         try {
             GCMSubscriber.registerForGcm(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -119,6 +137,16 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         fragment.onWindowFocusChanged(hasFocus);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(SAVED_CURRENT_POSITION, currentPosition);
+
+        //Save the fragment's instance
+        getFragmentManager().putFragment(outState, SAVED_CURRENT_FRAGMENT, currentFragment);
+    }
+
     /**
      * Action Bar Button Methods
      */
@@ -141,11 +169,11 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
     AdapterView.OnItemClickListener onMenuItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            changeFragment(position, true);
+            changeFragment(position, true, false);
         }
     };
 
-    private void changeFragment(int position, boolean needsToggle) {
+    private void changeFragment(int position, boolean needsToggle, boolean fromSavedInstanceState) {
         if (position == currentPosition) {
             if (needsToggle) {
                 sideMenu.toggleMenu();
@@ -202,13 +230,16 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
             return;
         }
 
-        if (getFragmentManager().findFragmentByTag("fragment") == null) {
-            fragmentTransaction.add(R.id.content_fragment, fragment, "fragment");
-        } else {
-            fragmentTransaction.replace(R.id.content_fragment, fragment, "fragment");
-        }
+        if (!fromSavedInstanceState) {
+            if (getFragmentManager().findFragmentByTag("fragment") == null) {
+                fragmentTransaction.add(R.id.content_fragment, fragment, "fragment");
+            } else {
+                fragmentTransaction.replace(R.id.content_fragment, fragment, "fragment");
+            }
 
-        fragmentTransaction.commit();
+            fragmentTransaction.commit();
+            currentFragment = fragment;
+        }
 
         if (needsToggle) {
             sideMenu.toggleMenu();
