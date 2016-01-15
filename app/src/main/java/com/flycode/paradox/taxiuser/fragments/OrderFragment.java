@@ -114,6 +114,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         mapView.setCenterCoordinate(new LatLng(40.177570, 44.512549));
         mapView.setZoomLevel(15);
         mapView.setZoomControlsEnabled(false);
+        mapView.setCompassEnabled(false);
         mapView.setMyLocationEnabled(true);
         mapView.setMyLocationTrackingMode(MyLocationTracking.TRACKING_NONE);
         mapView.setOnMyLocationChangeListener(this);
@@ -312,18 +313,18 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
                 MaximalScrollView orderDetailsView = (MaximalScrollView) orderFragmentView.findViewById(R.id.order_details_container);
                 LocationPickerView locationPickerView = (LocationPickerView) orderFragmentView.findViewById(R.id.picker_view);
 
-                headerPanelView.findViewById(R.id.header_panel_location).setVisibility(View.GONE);
-
                 float density = getResources().getDisplayMetrics().density;
+                float maxOrderDetailsHeight = mapView.getMeasuredHeight() - headerPanelView.getBottom()
+                        - (int) (75 * density) - carCategoriesSectionLinearLayout.getMeasuredHeight();
+                float offset = (mapView.getMeasuredHeight() - headerPanelView.getBottom()
+                        - maxOrderDetailsHeight) / 2;
 
-                mapView.setTranslationY(-mapView.getMeasuredHeight() / 2 + headerPanelView.getBottom()
-                        + (int) (20 * density));
-                locationPickerView.setTranslationY(-mapView.getMeasuredHeight() / 2 + headerPanelView.getBottom()
-                        + (int) (20 * density));
+                mapView.setTranslationY(-offset);
+                locationPickerView.setTranslationY(-offset);
 
-                orderDetailsView.setMaxHeight(
-                        mapView.getMeasuredHeight() - headerPanelView.getBottom()
-                                - (int) (75 * density) - carCategoriesSectionLinearLayout.getMeasuredHeight());
+                orderDetailsView.setMaxHeight((int) maxOrderDetailsHeight);
+
+                headerPanelView.findViewById(R.id.header_panel_location).setVisibility(View.GONE);
             } else {
                 APITalker.sharedTalker().makeOrder(
                         getActivity(),
@@ -344,16 +345,12 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             orderButton.setOrderStage(orderStage);
 
             MaximalLinearLayout headerPanelView = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.header_panel);
-            LocationPickerView locationPickerView = (LocationPickerView) orderFragmentView.findViewById(R.id.picker_view);
-
             headerPanelView.findViewById(R.id.header_panel_location).setVisibility(View.VISIBLE);
 
-            float density = getResources().getDisplayMetrics().density;
+            LocationPickerView locationPickerView = (LocationPickerView) orderFragmentView.findViewById(R.id.picker_view);
 
-            mapView.setTranslationY(mapView.getMeasuredHeight() / 2 - headerPanelView.getBottom()
-                    - (int) (20 * density));
-            locationPickerView.setTranslationY(mapView.getMeasuredHeight() / 2 - headerPanelView.getBottom()
-                    - (int) (20 * density));
+            mapView.setY(0);
+            locationPickerView.setY((mapView.getMeasuredHeight() - locationPickerView.getMeasuredHeight()) / 2);
         }
     }
 

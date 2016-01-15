@@ -61,6 +61,8 @@
     <!-- Order -->
     <string name="cost">Cost</string>
     <string name="distance">Distance</string>
+    <string name="type">TYPE</string>
+    <string name="bonus">+BONUS</string>
 
     <!-- Transactions -->
     <string name="transactions">Transactions</string>
@@ -97,6 +99,6 @@
     <string name="icon_balance">&#xe914;</string>
     <string name="icon_help">&#xe915;</string>
     <string name="icon_status">&#xe916;</string>
-
+    <string name="icon_person_tile">&#xe921;</string>
 
 </resources>

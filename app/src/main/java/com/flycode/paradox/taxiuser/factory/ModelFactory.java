@@ -1,5 +1,7 @@
 package com.flycode.paradox.taxiuser.factory;
 
+import android.location.Location;
+
 import com.flycode.paradox.taxiuser.models.CarCategory;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.models.Transaction;
@@ -75,19 +77,34 @@ public class ModelFactory {
 
         // Time Values
         Date orderTime = dateFromString(orderJSON.optString(ORDER_TIME));
+        Date finishTime = dateFromString(orderJSON.optString(FINISH_TIME));
+        Date userPickupTime = dateFromString(orderJSON.optString(orderJSON.optString(USER_PICKUP_TIME)));
 
         // Starting Point
-        String startingPointName = null;
-
         JSONObject startingPointJSON = orderJSON.optJSONObject(STARTING_POINT);
-        startingPointName = startingPointJSON.optString(NAME);
+        String startingPointName = startingPointJSON.optString(NAME);
+        JSONArray startPointGeoArray = startingPointJSON.optJSONArray(GEO);
+        Location startingPointGeo = new Location("Server Provider");
+        startingPointGeo.setLatitude(startPointGeoArray.optDouble(0));
+        startingPointGeo.setLongitude(startPointGeoArray.optDouble(1));
 
         // Ending Point
         String endingPointName = null;
+        Location endingPointGeo = null;
 
         if (orderJSON.has(ENDING_POINT)) {
             JSONObject endingPointJSON = orderJSON.optJSONObject(ENDING_POINT);
             endingPointName = endingPointJSON.optString(NAME);
+            JSONArray endingPointGeoArray = endingPointJSON.optJSONArray(GEO);
+            endingPointGeo = new Location("Server Provider");
+            endingPointGeo.setLatitude(endingPointGeoArray.optDouble(0));
+            endingPointGeo.setLongitude(endingPointGeoArray.optDouble(1));
+        }
+
+        String description = orderJSON.optString(DESCRIPTION);
+
+        if (description == null) {
+            description = "";
         }
 
         // Transaction
@@ -95,7 +112,18 @@ public class ModelFactory {
         String paymentType = transactionJSONObject.optString(PAYMENT_TYPE);
         int moneyAmount = transactionJSONObject.optInt(MONEY_AMOUNT);
 
-        return new Order(id, status,  startingPointName, endingPointName, orderTime,moneyAmount, paymentType,"Standart");
+        // User
+        JSONObject userJSONObject = orderJSON.optJSONObject(USER);
+        String username = "";
+
+        if (userJSONObject != null) {
+            username = userJSONObject.optString(USERNAME);
+        }
+
+        String a = orderJSON.optString(ORDER_TIME);
+        return new Order(id, status, orderTime, startingPointName, endingPointName, finishTime,
+                description, paymentType, moneyAmount, username, userPickupTime,
+                startingPointGeo, endingPointGeo);
     }
 
     public static CarCategory[] makeCarCategories(JSONArray carCategoriesArray) {

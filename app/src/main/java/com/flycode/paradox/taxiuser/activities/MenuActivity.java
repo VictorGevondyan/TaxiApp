@@ -184,7 +184,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         } else if (position == INDEX_HISTORY) {
             actionBarRightButton.setVisibility(View.VISIBLE);
             actionBarRightButton.setText(R.string.icon_refresh);
-            actionBarTitleTextView.setText(R.string.ongoing);
+            actionBarTitleTextView.setText(R.string.history);
 
             fragment = OrdersFragment.initialize(OrdersFragment.TYPES.HISTORY);
         } else if (position == INDEX_SETTINGS) {
