@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".activities.LoginActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +30,7 @@
             android:theme="@android:style/Theme.Holo.NoActionBar"
             android:name=".activities.MenuActivity"
             android:screenOrientation="portrait"
-            android:configChanges="locale"/>
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".activities.OrderActivity"
             android:screenOrientation="portrait" />
 

@@ -11,6 +11,18 @@
         android:layout_height="1dp"
         android:background="@color/divider_grey"/>
 
+    <TextView
+        android:id="@+id/no_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/orders_big_margin"
+        android:layout_marginLeft="@dimen/orders_small_margin"
+        android:layout_marginRight="@dimen/orders_small_margin"
+        android:layout_marginEnd="@dimen/orders_small_margin"
+        android:layout_marginStart="@dimen/orders_small_margin"
+        android:textColor="@color/white_80"
+        android:textSize="@dimen/tiny_text_size"
+        android:visibility="gone"/>
     <ListView
         android:id="@+id/transactions_list_view"
         android:layout_width="match_parent"

@@ -3,6 +3,7 @@ package com.flycode.paradox.taxiuser.factory;
 import android.location.Location;
 
 import com.flycode.paradox.taxiuser.models.CarCategory;
+import com.flycode.paradox.taxiuser.models.Driver;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.models.Transaction;
 import com.flycode.paradox.taxiuser.models.User;
@@ -38,6 +39,7 @@ public class ModelFactory {
     private static final String TRANSACTION = "transaction";
     private static final String PAYMENT_TYPE = "paymentType";
     private static final String MONEY_AMOUNT = "moneyAmount";
+    private static final java.lang.String DISTANCE = "distance";
 
     private static final String USER = "user";
     private static final String USERNAME = "username";
@@ -59,6 +61,7 @@ public class ModelFactory {
     private static final String DATE_OF_BIRTH = "dateOfBirth";
     private static final String BALANCE = "balance";
     private static final String CAR_NUMBER = "carNumber";
+    private static final String DRIVER = "driver";
     private static final String EMAIL = "email";
 
     public static ArrayList<Order> makeOrders(JSONArray ordersJSONArray) {
@@ -78,7 +81,7 @@ public class ModelFactory {
         // Time Values
         Date orderTime = dateFromString(orderJSON.optString(ORDER_TIME));
         Date finishTime = dateFromString(orderJSON.optString(FINISH_TIME));
-        Date userPickupTime = dateFromString(orderJSON.optString(orderJSON.optString(USER_PICKUP_TIME)));
+        Date userPickupTime = dateFromString(orderJSON.optString(USER_PICKUP_TIME));
 
         // Starting Point
         JSONObject startingPointJSON = orderJSON.optJSONObject(STARTING_POINT);
@@ -107,10 +110,20 @@ public class ModelFactory {
             description = "";
         }
 
+        // Driver
+        Driver driver = null;
+        JSONObject driverJSON = orderJSON.optJSONObject(DRIVER);
+
+        if (driverJSON != null) {
+            String carNumber = driverJSON.optString(CAR_NUMBER, "");
+            driver = new Driver(carNumber);
+        }
+
         // Transaction
         JSONObject transactionJSONObject = orderJSON.optJSONObject(TRANSACTION);
         String paymentType = transactionJSONObject.optString(PAYMENT_TYPE);
-        int moneyAmount = transactionJSONObject.optInt(MONEY_AMOUNT);
+        int moneyAmount = transactionJSONObject.optInt(MONEY_AMOUNT, 0);
+        float distance = transactionJSONObject.optInt(DISTANCE, 0);
 
         // User
         JSONObject userJSONObject = orderJSON.optJSONObject(USER);
@@ -120,10 +133,13 @@ public class ModelFactory {
             username = userJSONObject.optString(USERNAME);
         }
 
-        String a = orderJSON.optString(ORDER_TIME);
-        return new Order(id, status, orderTime, startingPointName, endingPointName, finishTime,
-                description, paymentType, moneyAmount, username, userPickupTime,
-                startingPointGeo, endingPointGeo);
+        return new Order(
+                id, status, description, username,
+                orderTime, userPickupTime, finishTime,
+                startingPointName, endingPointName,
+                startingPointGeo, endingPointGeo,
+                paymentType, moneyAmount, distance,
+                driver);
     }
 
     public static CarCategory[] makeCarCategories(JSONArray carCategoriesArray) {
@@ -204,6 +220,7 @@ public class ModelFactory {
         try {
             return dateFormat.parse(dateString);
         } catch (ParseException e) {
+            e.printStackTrace();
             return null;
         }
     }

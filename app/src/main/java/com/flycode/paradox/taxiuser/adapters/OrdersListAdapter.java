@@ -42,10 +42,10 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
             convertView = layoutInflater.inflate(R.layout.item_order, parent, false);
 
             Typeface icomoonTypeface = TypefaceUtils.getTypeface(context, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
-            TextView iconArrow = ( TextView )convertView.findViewById(R.id.icon_arrow);
-            TextView dateIconTextView = ( TextView )convertView.findViewById(R.id.icon_date);
-            TextView locationIconTextView = ( TextView )convertView.findViewById(R.id.icon_location);
-            TextView statusIconTextView = ( TextView )convertView.findViewById(R.id.icon_status);
+            TextView iconArrow = (TextView) convertView.findViewById(R.id.icon_arrow);
+            TextView dateIconTextView = (TextView) convertView.findViewById(R.id.icon_date);
+            TextView locationIconTextView = (TextView) convertView.findViewById(R.id.icon_location);
+            TextView statusIconTextView = (TextView) convertView.findViewById(R.id.icon_status);
 
             dateIconTextView.setTypeface(icomoonTypeface);
             locationIconTextView.setTypeface(icomoonTypeface);
@@ -53,13 +53,13 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
             iconArrow.setTypeface(icomoonTypeface);
         }
 
-        TextView dateTextView = ( TextView )convertView.findViewById(R.id.date);
-        TextView locationTextView = ( TextView )convertView.findViewById(R.id.location);
-        TextView statusTextView = ( TextView )convertView.findViewById(R.id.status);
+        TextView dateTextView = (TextView) convertView.findViewById(R.id.date);
+        TextView locationTextView = (TextView) convertView.findViewById(R.id.location);
+        TextView statusTextView = (TextView) convertView.findViewById(R.id.status);
 
-        TextView dateValueTextView = ( TextView )convertView.findViewById(R.id.date_value);
-        TextView locationValueTextView = ( TextView )convertView.findViewById(R.id.location_value);
-        TextView statusValueTextView = ( TextView )convertView.findViewById(R.id.status_value);
+        TextView dateValueTextView = (TextView) convertView.findViewById(R.id.date_value);
+        TextView locationValueTextView = (TextView) convertView.findViewById(R.id.location_value);
+        TextView statusValueTextView = (TextView) convertView.findViewById(R.id.status_value);
 
         dateTextView.setTypeface(robotoTypeface);
         locationTextView.setTypeface(robotoTypeface);
@@ -91,7 +91,7 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
         return ordersList.get(position);
     }
 
-    public void setItem( Order order ) {
+    public void setItem(Order order) {
         ordersList.add(0, order);
         notifyDataSetChanged();
     }

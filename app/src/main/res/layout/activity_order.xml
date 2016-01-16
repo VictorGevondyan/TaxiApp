@@ -129,7 +129,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/white_80"/>
+                android:background="@color/white_40"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -189,7 +189,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/white_80"/>
+                android:background="@color/white_40"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -241,7 +241,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="-20dp"
-                        android:layout_marginStart="-20dp"
+                        android:layout_marginStart="-10dp"
                         android:layout_marginBottom="-8dp"
                         android:layout_above="@+id/cost_value"
                         android:layout_toRightOf="@+id/cost_value"
@@ -257,7 +257,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/white_80"/>
+                android:background="@color/white_40"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -300,7 +300,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/white_80"/>
+                android:background="@color/white_40"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -344,104 +344,127 @@
 
     </com.flycode.paradox.taxiuser.views.MaximalScrollView>
 
-    <com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout
+    <LinearLayout
         android:id="@+id/driver_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:weightSum="3"
-        android:visibility="gone"
-        flycode:maxWidth="330dp">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@color/base_grey_90">
-
-            <TextView
-                android:id="@+id/type_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginBottom="5dp"
-                android:text="@string/type"
-                android:textSize="@dimen/tiny_text_size"
-                android:textColor="@color/cyan" />
-
-            <TextView
-                android:id="@+id/type_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="@dimen/medium_text_size"
-                android:textColor="@color/white_100"/>
-
-        </LinearLayout>
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <RelativeLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <com.flycode.paradox.taxiuser.views.CarBackView
+                android:id="@+id/car_back"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_toLeftOf="@id/car_back"
+                android:layout_toStartOf="@id/car_back"
+                android:paddingTop="10dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@color/base_grey_90">
+
+                <TextView
+                    android:id="@+id/type_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type"
+                    android:textColor="@color/cyan"
+                    android:textSize="@dimen/tiny_text_size"/>
+
+                <TextView
+                    android:id="@+id/type_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white_100"
+                    android:textSize="@dimen/small_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/car_back"
+                android:layout_toEndOf="@id/car_back"
+                android:paddingTop="10dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@color/base_grey_90">
+
+                <Button
+                    android:id="@+id/cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:textColor="@color/cyan"
+                    android:textSize="@dimen/tiny_text_size"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/order_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white_100"
+                    android:textSize="@dimen/small_text_size" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/car"
+                android:layout_width="120dp"
+                android:layout_height="70dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/car"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:orientation="horizontal"
             android:background="@color/base_grey_90">
 
             <TextView
                 android:id="@+id/car_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_alignParentBottom="true"
-                android:textSize="@dimen/medium_text_size"
+                android:layout_marginTop="-4dp"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/small_text_size"
                 android:textColor="@color/white_100"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:cropToPadding="false"
-                android:scaleType="fitXY"
-                android:adjustViewBounds="true"/>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@color/base_grey_90">
-
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:gravity="center"
-                android:text="@string/cancel"
-                android:textSize="@dimen/tiny_text_size"
-                android:textColor="@color/cyan" />
 
             <TextView
-                android:id="@+id/status"
+                android:id="@+id/car_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="@dimen/medium_text_size"
-                android:textColor="@color/white_100"/>
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/white_100" />
 
         </LinearLayout>
 
-    </com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
-
-
-

@@ -257,7 +257,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             View carCategorySection = carCategoriesSectionLinearLayout.getChildAt(index);
             ImageView rhombus = (ImageView) carCategorySection.findViewById(R.id.rhombus);
             TextView carCategoryInfoTextView = (TextView) carCategorySection.findViewById(R.id.info);
-            TextView carCategoryTitleTextView = (TextView) carCategorySection.findViewById(R.id.info);
+            TextView carCategoryTitleTextView = (TextView) carCategorySection.findViewById(R.id.text);
 
             if (chosenSection.equals(carCategorySection)) {
                 CarCategory carCategory = (CarCategory) chosenSection.getTag();
@@ -400,7 +400,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
                 ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
                 carCategoryRhombus.setImageResource(R.drawable.rhombus_cyan);
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
-                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.white_100));
+                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.cyan));
             } else {
                 ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
                 carCategoryRhombus.setImageResource(R.drawable.rhombus_white);
@@ -528,6 +528,4 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         mapView.onSaveInstanceState(outState);
         //Save the fragment's state here
     }
-
-
 }

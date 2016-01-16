@@ -3,19 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_map_blurred"
     tools:context=".activities.LoginActivity">
 
-    <RelativeLayout
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_65_opaque">
+        android:src="@drawable/yerevan"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/base_grey_50"/>
+
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:scrollbars="none"-->
+        <!--android:overScrollMode="never"-->
+        <!--android:background="@color/base_grey_50">-->
 
         <com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout
             xmlns:flycode="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_margin="@dimen/credentials_list_margin"
             android:orientation="vertical"
             android:gravity="center"
@@ -42,16 +55,16 @@
                         android:layout_height="wrap_content"
                         android:text="@string/icon_password"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/green"
+                        android:textColor="@color/cyan"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
                         android:layout_marginRight="5dp"
                         android:layout_marginEnd="5dp"/>
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_30_opaque"/>
+                        android:background="@color/white_40"/>
 
                 </LinearLayout>
 
@@ -65,8 +78,8 @@
                     android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:hint="@string/number"
-                    android:textColor="@color/white_30_opaque"
-                    android:textColorHint="@color/white_30_opaque"
+                    android:textColor="@color/white_80"
+                    android:textColorHint="@color/white_80"
                     android:inputType="phone"
                     android:textCursorDrawable="@null"
                     android:background="@android:color/transparent"/>
@@ -75,9 +88,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_40"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -99,12 +112,12 @@
                         android:layout_marginEnd="5dp"
                         android:text="@string/icon_password"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/green"/>
+                        android:textColor="@color/cyan"/>
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_30_opaque"/>
+                        android:background="@color/white_40"/>
 
                 </LinearLayout>
 
@@ -118,8 +131,8 @@
                     android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:hint="@string/password"
-                    android:textColor="@color/white_30_opaque"
-                    android:textColorHint="@color/white_30_opaque"
+                    android:textColor="@color/white_80"
+                    android:textColorHint="@color/white_80"
                     android:inputType="textWebPassword"
                     android:textCursorDrawable="@null"
                     android:background="@android:color/transparent"/>
@@ -128,9 +141,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_40"/>
 
             <com.flycode.paradox.taxiuser.views.LoginView
                 android:layout_width="150dp"
@@ -148,6 +161,6 @@
 
         </com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout>
 
-    </RelativeLayout>
+    <!--</ScrollView>-->
 
 </RelativeLayout>

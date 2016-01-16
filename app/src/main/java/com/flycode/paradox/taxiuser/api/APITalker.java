@@ -41,15 +41,13 @@ public class APITalker {
     private final String USERS_URL = "/users";
     private final String PASSWORD_URL = "/password";
 
-
-    // User specific constants
     private final String USERNAME = "username";
     private final String PASSWORD = "password";
     private final String ORDERS = "orders";
     private final String STATUS = "status";
     private final String STARTING_POINT = "startingPoint";
     private final String NAME = "name";
-    private final String GEO = "gep";
+    private final String GEO = "geo";
     private final String DESCRIPTION = "description";
     private final String CAR_CATEGORY = "carCategory";
     private final String TOKEN = "token";
@@ -62,7 +60,6 @@ public class APITalker {
     private final String EMAIL = "email";
     private final String DATE_OF_BIRTH = "dateOfBirth";
     private final String TRANSACTIONS = "transactions";
-
 
     /*
 	 * Singletone

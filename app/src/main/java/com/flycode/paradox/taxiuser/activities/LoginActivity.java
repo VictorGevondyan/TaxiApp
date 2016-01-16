@@ -34,7 +34,8 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
         setContentView(R.layout.activity_login);
 
         if(AppSettings.sharedSettings(this).isUserLoggedIn()){
-                startActivity(new Intent(this, MenuActivity.class));
+            startActivity(new Intent(this, MenuActivity.class));
+            finish();
         }
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
@@ -63,7 +64,6 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
         String passwordText = passwordEditText.getText().toString();
 
         APITalker.sharedTalker().login(this, number, passwordText, this);
-
     }
 
     public void onReceivePasswordClicked(View view) {

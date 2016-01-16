@@ -46,28 +46,13 @@ public class LoginView extends View {
         Point d = new Point(width / 2 + radius, height);
         Point e = new Point(width / 2 - radius, height);
 
-        Path trianglePath = new Path();
-        trianglePath.moveTo(e.x, e.y);
-        trianglePath.lineTo(a.x, a.y);
-        trianglePath.lineTo(b.x, b.y);
-        trianglePath.lineTo(c.x, c.y);
-        trianglePath.lineTo(d.x, d.y);
-
-        Paint paint = new Paint();
-        paint.setStrokeWidth(2);
-
-        if (isTouched) {
-            paint.setColor(Color.parseColor("#4D4D4D"));
-        } else {
-            paint.setColor(Color.parseColor("#4D4D4D"));
-        }
-
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-
-        canvas.drawPath(trianglePath, paint);
-
         RectF oval = new RectF();
+//        oval.set(
+//                width / 2 - radius,
+//                height / 2 - radius,
+//                width / 2 + radius,
+//                height / 2 + radius
+//        );
         oval.set(
                 width / 2 - radius,
                 height - radius,
@@ -75,39 +60,64 @@ public class LoginView extends View {
                 height + radius
         );
 
-        canvas.drawArc(
-                oval,
-                180,
-                360,
-                true,
-                paint);
+        Path trianglePath = new Path();
+        trianglePath.moveTo(e.x, e.y);
+        trianglePath.lineTo(a.x, a.y);
+        trianglePath.lineTo(b.x, b.y);
+        trianglePath.lineTo(c.x, c.y);
+        trianglePath.lineTo(d.x, d.y);
+        trianglePath.arcTo(oval, 0, -180);
 
-        Paint textPaint = new Paint();
-        textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setColor(Color.WHITE);
-        textPaint.setTextSize(height / 6);
-        textPaint.setFakeBoldText(false);
-        textPaint.setAntiAlias(true);
-        textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setLinearText(true);
-        textPaint.setTypeface(TypefaceUtils.getTypeface(getContext(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR));
+        Paint paint = new Paint();
+        paint.setStrokeWidth(2);
+
+        if (isTouched) {
+            paint.setColor(Color.parseColor("#66FFFFFF"));
+        } else {
+            paint.setColor(Color.parseColor("#66FFFFFF"));
+        }
+
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+
+        canvas.drawPath(trianglePath, paint);
+
+        Paint loginTextPaint = new Paint();
+        loginTextPaint.setStyle(Paint.Style.FILL);
+        loginTextPaint.setColor(Color.parseColor("#CCFFFFFF"));
+        loginTextPaint.setTextSize(height / 6);
+        loginTextPaint.setFakeBoldText(false);
+        loginTextPaint.setAntiAlias(true);
+        loginTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        loginTextPaint.setLinearText(true);
+        loginTextPaint.setTypeface(TypefaceUtils.getTypeface(getContext(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR));
+
+        Paint orTextPaint = new Paint();
+        orTextPaint.setStyle(Paint.Style.FILL);
+        orTextPaint.setColor(Color.parseColor("#CCFFFFFF"));
+        orTextPaint.setTextSize(height / 6);
+        orTextPaint.setFakeBoldText(false);
+        orTextPaint.setAntiAlias(true);
+        orTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        orTextPaint.setLinearText(true);
+        orTextPaint.setTypeface(TypefaceUtils.getTypeface(getContext(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
 
         String loginText = getContext().getString(R.string.login);
         String orText = getContext().getString(R.string.or);
         Rect loginBounds = new Rect();
         Rect orBounds = new Rect();
-        textPaint.getTextBounds(loginText, 0, loginText.length(), loginBounds);
-        textPaint.getTextBounds(orText, 0, orText.length(), orBounds);
+        loginTextPaint.getTextBounds(loginText, 0, loginText.length(), loginBounds);
+        orTextPaint.getTextBounds(orText, 0, orText.length(), orBounds);
 
         canvas.drawText(
                 loginText,
                 (width - loginBounds.width()) / 2,
                 (height - loginBounds.height()) / 2 + loginBounds.height(),
-                textPaint);
+                loginTextPaint);
         canvas.drawText(orText,
                 (width - orBounds.width()) / 2,
                 height,
-                textPaint);
+                orTextPaint);
     }
 
     @Override

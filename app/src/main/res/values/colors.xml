@@ -12,6 +12,7 @@
 
     <color name="base_grey_90">#E64D4D4D</color>
     <color name="base_grey_100">#FF4D4D4D</color>
+    <color name="base_grey_50">#804D4D4D</color>
     <color name="border_grey">#CCCCCC</color>
     <color name="text_grey">#00A99D</color>
     <color name="divider_grey">#999999</color>

@@ -4,6 +4,8 @@ import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
+
 import java.util.Date;
 
 /**
@@ -21,6 +23,7 @@ public class Order implements Parcelable {
     private Date userPickupTime;
 
     private int moneyAmount;
+    private double distance;
     private String paymentType;
 
     private String username;
@@ -28,25 +31,34 @@ public class Order implements Parcelable {
     private Location startingPointGeo;
     private Location endingPointGeo;
 
-    public Order(String id, String status, Date orderTime, String startingPointName, String endingPointName, Date finishTime,
-                 String description, String paymentType, int moneyAmount, String username, Date userPickupTime,
-                 Location startingPointGeo, Location endingPointGeo) {
+    private Driver driver;
+
+    public Order(String id, String status, String description, String username,
+                 Date orderTime, Date userPickupTime, Date finishTime,
+                 String startingPointName, String endingPointName,
+                 Location startingPointGeo, Location endingPointGeo,
+                 String paymentType, int moneyAmount, double distance,
+                 Driver driver) {
         this.id = id;
         this.status = status;
+        this.description = description;
+        this.username = username;
+
         this.orderTime = orderTime;
+        this.userPickupTime = userPickupTime;
+        this.finishTime = finishTime;
+
         this.startingPointName = startingPointName;
         this.endingPointName = endingPointName;
-        this.finishTime = finishTime;
-        this.description = description;
-
-        this.paymentType = paymentType;
-        this.moneyAmount = moneyAmount;
-
-        this.username = username;
-        this.userPickupTime = userPickupTime;
 
         this.startingPointGeo = startingPointGeo;
         this.endingPointGeo = endingPointGeo;
+
+        this.paymentType = paymentType;
+        this.moneyAmount = moneyAmount;
+        this.distance = distance;
+
+        this.driver = driver;
     }
 
     public Order(Parcel in) {
@@ -81,6 +93,11 @@ public class Order implements Parcelable {
         if (!location.getProvider().equals("Null Provider")) {
             endingPointGeo = location;
         }
+
+        if (!status.equals(OrderStatusConstants.NOT_TAKEN)
+                && !status.equals(OrderStatusConstants.CANCELED)) {
+            driver = in.readParcelable(Driver.class.getClassLoader());
+        }
     }
 
     public String getId() {
@@ -107,20 +124,12 @@ public class Order implements Parcelable {
         return finishTime;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public String getPaymentType() {
         return paymentType;
     }
 
     public int getMoneyAmount() {
         return moneyAmount;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public Date getUserPickupTime() {
@@ -131,8 +140,12 @@ public class Order implements Parcelable {
         return startingPointGeo;
     }
 
-    public Location getEndingPointGeo() {
-        return endingPointGeo;
+    public double getDistance() {
+        return distance;
+    }
+
+    public Driver getDriver() {
+        return driver;
     }
 
     @Override
@@ -159,6 +172,11 @@ public class Order implements Parcelable {
 
         dest.writeParcelable(startingPointGeo, flags);
         dest.writeParcelable(endingPointGeo == null ? new Location("Null Provider") : endingPointGeo, flags);
+
+        if (!status.equals(OrderStatusConstants.NOT_TAKEN)
+                && !status.equals(OrderStatusConstants.CANCELED)) {
+            dest.writeParcelable(driver, flags);
+        }
     }
 
     public static final Creator CREATOR = new Creator() {
@@ -170,8 +188,4 @@ public class Order implements Parcelable {
             return new Order[size];
         }
     };
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

@@ -51,9 +51,9 @@ public class ReceivePasswordView extends View {
         paint.setStrokeWidth(2);
 
         if (isTouched) {
-            paint.setColor(Color.parseColor("#4D4D4D"));
+            paint.setColor(Color.parseColor("#66FFFFFF"));
         } else {
-            paint.setColor(Color.parseColor("#4D4D4D"));
+            paint.setColor(Color.parseColor("#66FFFFFF"));
         }
 
         paint.setStyle(Paint.Style.STROKE);
@@ -63,7 +63,7 @@ public class ReceivePasswordView extends View {
 
         Paint textPaint = new Paint();
         textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setColor(Color.WHITE);
+        textPaint.setColor(Color.parseColor("#CCFFFFFF"));
         textPaint.setTextSize(height / 6);
         textPaint.setFakeBoldText(false);
         textPaint.setAntiAlias(true);

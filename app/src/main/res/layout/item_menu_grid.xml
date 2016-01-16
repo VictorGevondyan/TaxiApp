@@ -8,7 +8,7 @@
         android:id="@+id/vertical_space"
         android:layout_width="1px"
         android:layout_height="match_parent"
-        android:background="@color/white_30_opaque"/>
+        android:background="@color/white_40"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,10 +25,9 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="15dp"
                 android:visibility="gone"
-                android:textSize="12sp"
-                android:textColor="@color/pure_white"
-                android:layout_centerInParent="true"
-                />
+                android:textSize="@dimen/tiny_text_size"
+                android:textColor="@color/white_100"
+                android:layout_centerInParent="true"/>
 
             <TextView
                 android:id="@+id/icon"
@@ -36,10 +35,9 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="15dp"
                 android:gravity="center"
-                android:textColor="@color/pure_white"
+                android:textColor="@color/white_100"
                 android:textSize="50sp"
-                android:layout_centerHorizontal="true"
-                />
+                android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
 
@@ -50,20 +48,20 @@
             android:ellipsize="middle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
+            android:paddingBottom="10dp"
             android:paddingRight="10dp"
             android:paddingStart="10dp"
             android:paddingLeft="10dp"
             android:paddingEnd="10dp"
             android:gravity="center"
-            android:textColor="@color/pure_white"
+            android:textColor="@color/white_100"
             android:textSize="20sp"/>
 
         <View
             android:id="@+id/horizontal_space"
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/white_30_opaque"/>
+            android:background="@color/white_40"/>
 
     </LinearLayout>
 

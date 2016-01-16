@@ -1,5 +1,6 @@
 package com.flycode.paradox.taxiuser.fragments;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.activities.OrderActivity;
@@ -16,6 +18,7 @@ import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetOrdersHandler;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
 import com.flycode.paradox.taxiuser.models.Order;
+import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 import java.util.ArrayList;
 
@@ -31,13 +34,15 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
 
         public static final String[] ONGOING_STATUSES = {
                 OrderStatusConstants.TAKEN,
-                OrderStatusConstants.NOT_TAKEN
+                OrderStatusConstants.NOT_TAKEN,
+                OrderStatusConstants.STARTED
         };
     }
 
     private static final String TYPE = "type";
 
     private OrdersListAdapter ordersListAdapter;
+    private TextView noOrderTextView;
 
     public static OrdersFragment initialize(String type) {
         Bundle arguments = new Bundle();
@@ -61,12 +66,23 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
 
         String type = getArguments().getString(TYPE);
 
+        noOrderTextView = (TextView) ordersView.findViewById(R.id.no_order);
+        noOrderTextView.setText(type.equals(TYPES.HISTORY) ? R.string.no_ongoing_orders : R.string.no_history);
+        noOrderTextView.setTypeface(TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
+
+        return  ordersView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        String type = getArguments().getString(TYPE);
+
         APITalker.sharedTalker().getOwnOrders(
                 getActivity(),
                 type.equals(TYPES.HISTORY) ? TYPES.HISTORY_STATUSES : TYPES.ONGOING_STATUSES,
                 this);
-
-        return  ordersView;
     }
 
     AdapterView.OnItemClickListener onOrderListClickListener = new AdapterView.OnItemClickListener() {
@@ -76,7 +92,14 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
 
             Intent orderActivityIntent = new Intent(getActivity(), OrderActivity.class);
             orderActivityIntent.putExtra(OrderActivity.ORDER, order);
-            startActivity(orderActivityIntent);
+
+            if (android.os.Build.VERSION.SDK_INT >= 16) {
+                startActivity(
+                        orderActivityIntent,
+                        ActivityOptions.makeCustomAnimation(getActivity(), R.anim.slide_left_in, R.anim.hold).toBundle());
+            } else {
+                startActivity(orderActivityIntent);
+            }
         }
     };
 
@@ -86,6 +109,12 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
 
     public void onGetOrdersSuccess( ArrayList<Order> ordersList ) {
         ordersListAdapter.setItems(ordersList);
+
+        if (ordersList.isEmpty()) {
+            noOrderTextView.setVisibility(View.VISIBLE);
+        } else {
+            noOrderTextView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -107,6 +136,4 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
         super.onSaveInstanceState(outState);
         //Save the fragment's state here
     }
-
-
 }

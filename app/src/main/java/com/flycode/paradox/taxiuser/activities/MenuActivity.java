@@ -13,9 +13,12 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
+import com.flycode.paradox.taxiuser.api.APITalker;
+import com.flycode.paradox.taxiuser.api.GetUserHandler;
 import com.flycode.paradox.taxiuser.fragments.OrderFragment;
 import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
@@ -24,14 +27,15 @@ import com.flycode.paradox.taxiuser.fragments.TransactionsFragment;
 import com.flycode.paradox.taxiuser.gcm.GCMSubscriber;
 import com.flycode.paradox.taxiuser.layouts.SideMenuLayout;
 import com.flycode.paradox.taxiuser.models.Order;
+import com.flycode.paradox.taxiuser.models.User;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
+import com.flycode.paradox.taxiuser.settings.UserData;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 import java.io.IOException;
 
-public class MenuActivity extends Activity implements OrderFragment.OrderFragmentListener {
-
+public class MenuActivity extends Activity implements OrderFragment.OrderFragmentListener, GetUserHandler {
     private final String SAVED_CURRENT_POSITION = "savedCurrentPosition";
     private final String SAVED_CURRENT_FRAGMENT = "savedCurrentFragment";
 
@@ -49,6 +53,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
     private View contentView;
     private View actionBarView;
     private View actionBarOverlayView;
+    private MenuGridAdapter menuGridAdapter;
 
     private int currentPosition = -1;
 
@@ -65,7 +70,6 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         setContentView(sideMenu);
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
-        Typeface robotoThinTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
         Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
 
         Button actionBarLeftButton = (Button) findViewById(R.id.action_bar_left_button);
@@ -84,9 +88,9 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         actionBarView.bringToFront();
 
         TextView menuTitleTextView = (TextView) findViewById(R.id.menu_title);
-        menuTitleTextView.setTypeface(robotoThinTypeface);
+        menuTitleTextView.setTypeface(robotoRegularTypeface);
 
-        MenuGridAdapter menuGridAdapter = new MenuGridAdapter(this, R.layout.item_menu_grid);
+        menuGridAdapter = new MenuGridAdapter(this, R.layout.item_menu_grid);
 
         GridView menuGridView = (GridView) findViewById(R.id.menu_grid);
         menuGridView.setAdapter(menuGridAdapter);
@@ -111,6 +115,8 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
             e.printStackTrace();
         }
 
+        // TODO: Replace this in more suitable place
+        APITalker.sharedTalker().getUser(this, this);
     }
 
     @Override
@@ -268,7 +274,45 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
     public void onOrderMade(Order order) {
         currentPosition = INDEX_ONGOING;
 
+        setIsActionBarTransparent(false);
+        actionBarRightButton.setVisibility(View.GONE);
+
         Fragment fragment = OrdersFragment.initialize(OrdersFragment.TYPES.ONGOING);
-        getFragmentManager().beginTransaction().replace(R.id.content_fragment, fragment, "fragment").commit();
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_fragment, fragment, "fragment")
+                .commit();
+        currentFragment = fragment;
+    }
+
+    /**
+     * GetUserHandler Methods
+     */
+
+    @Override
+    public void onGetUserSuccess(User user) {
+        setUserData(user);
+    }
+
+    @Override
+    public void onGetUserFailure() {
+        Toast.makeText(this, "NE POVEZLO :(", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setUserData(User user){
+        UserData userData = UserData.sharedData(this);
+
+        userData.setId(user.getId());
+        userData.setRole(user.getRole());
+        userData.setUsername(user.getUsername());
+        userData.setName(user.getName());
+        userData.setSex(user.getSex());
+//        userData.setDateOfBirth(user.getDateOfBirth());
+        userData.setStatus(user.getStatus());
+        userData.setBalance(user.getBalance());
+
+        if (menuGridAdapter != null) {
+            menuGridAdapter.notifyDataSetChanged();
+        }
     }
 }

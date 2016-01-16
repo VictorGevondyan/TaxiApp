@@ -61,15 +61,7 @@ public class MenuGridAdapter extends ArrayAdapter<MenuItem> {
             TextView balanceAmount = ( TextView ) convertView.findViewById(R.id.balance_amount);
             balanceAmount.setVisibility(View.VISIBLE);
             balanceAmount.setText(String.valueOf(UserData.sharedData(context).getBalance()));
-        }
-
-        if( ( MenuConstants.menuTitles[position] ) == R.string.settings){
-            TextView settingsTitle = ( TextView ) convertView.findViewById( R.id.title );
-//            settingsTitle.setSingleLine(false);
-//            settingsTitle.setLines(1);
-//            settingsTitle.setEllipsize( TextUtils.TruncateAt.MIDDLE );
-//            settingsTitle.setPadding( dpToPixel(10), 0, dpToPixel(10), dpToPixel(15)  );
-
+            balanceAmount.setTypeface(robotoThinTypeface);
         }
 
         return convertView;
