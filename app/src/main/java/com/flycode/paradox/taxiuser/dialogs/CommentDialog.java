@@ -70,6 +70,8 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
         doneButton.setTypeface(robotoThinTypeface);
         commentEditText.setTypeface(robotoThinTypeface);
 
+
+
         return view;
     }
 

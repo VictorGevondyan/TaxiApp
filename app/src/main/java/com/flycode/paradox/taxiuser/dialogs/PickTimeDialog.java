@@ -16,24 +16,34 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import com.flycode.paradox.taxiuser.views.PublicTimePicker;
 
+import java.util.Calendar;
+
 /**
  * Created by anhaytananun on 24.12.15.
  */
-public class PickTimeDialog extends DialogFragment implements View.OnClickListener, DialogInterface.OnKeyListener, NumberPicker.OnValueChangeListener {
-    private static final String COMMENT = "comment";
+public class PickTimeDialog extends DialogFragment implements View.OnClickListener, DialogInterface.OnKeyListener,
+        NumberPicker.OnValueChangeListener {
+    private static final String IS_TODAY = "today";
+    private static final String HOUR= "hour";
+    private static final String MINUTE = "minute";
 
     private Activity activity;
     private PickTimeDialogListener listener;
     private PublicTimePicker timePicker;
     private NumberPicker dayPicker;
 
-    public static PickTimeDialog initialize(PickTimeDialogListener listener) {
+    public static PickTimeDialog initialize( boolean isToday, int hour, int minute, PickTimeDialogListener listener) {
         Bundle arguments = new Bundle();
+
+        arguments.putBoolean(IS_TODAY, isToday);
+        arguments.putInt(HOUR, hour);
+        arguments.putInt(MINUTE, minute);
 
         PickTimeDialog pickTimeDialog = new PickTimeDialog();
         pickTimeDialog.setArguments(arguments);
@@ -70,6 +80,16 @@ public class PickTimeDialog extends DialogFragment implements View.OnClickListen
         });
         dayPicker.setOnValueChangedListener(this);
 
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            dayPicker.setValue(arguments.getBoolean(IS_TODAY) ? 0 : 1);
+            timePicker.setCurrentHour(arguments.getInt(HOUR));
+            timePicker.setCurrentMinute(arguments.getInt(MINUTE));
+        }
+
+        timePicker.getHourPicker().setOnValueChangedListener(timePickerHourChangeListener);
+        timePicker.getMinutePicker().setOnValueChangedListener(timePickerMinuteChangeListener);
+
         return view;
     }
 
@@ -96,6 +116,20 @@ public class PickTimeDialog extends DialogFragment implements View.OnClickListen
 
     private void done() {
         if (listener != null) {
+
+            int chosenHour = timePicker.getHour();
+            int chosenMinute = timePicker.getMinute();
+//            if(dayPicker.getValue() ==0){
+//                Calendar calendar = Calendar.getInstance();
+//                int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+//                int currentMinute = calendar.get(Calendar.MINUTE);
+//
+//                if(   ( ( chosenHour <= currentHour ) && (chosenMinute < currentMinute) ) ){
+//                    Toast.makeText(getContext(), "Chosen time must be greater than current time.", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//            }
+
             listener.onTimePickDone(
                     dayPicker.getValue() == 0,
                     timePicker.getHour(),
@@ -160,4 +194,32 @@ public class PickTimeDialog extends DialogFragment implements View.OnClickListen
 
         }
     }
+
+    NumberPicker.OnValueChangeListener timePickerHourChangeListener = new NumberPicker.OnValueChangeListener() {
+        @Override
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            if(dayPicker.getValue() == 0) {
+                if (newVal < Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+                    picker.setValue(oldVal);
+                    newVal = oldVal;
+                }
+                if (newVal == Calendar.getInstance().get(Calendar.HOUR_OF_DAY) && timePicker.getCurrentMinute() < Calendar.getInstance().get(Calendar.MINUTE)) {
+                    timePicker.setCurrentMinute(Calendar.getInstance().get(Calendar.MINUTE));
+                }
+            }
+        }
+    };
+
+    NumberPicker.OnValueChangeListener timePickerMinuteChangeListener = new NumberPicker.OnValueChangeListener() {
+        @Override
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            if(dayPicker.getValue() == 0) {
+                if (timePicker.getCurrentHour() == Calendar.getInstance().get(Calendar.HOUR_OF_DAY) && newVal < Calendar.getInstance().get(Calendar.MINUTE)) {
+                    picker.setValue(oldVal);
+                }
+            }
+
+        }
+    };
+
 }
