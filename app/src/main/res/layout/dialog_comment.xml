@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:background="@color/black_65_opaque"
+        android:background="@color/base_grey_100"
         flycode:maxWidth="400dp">
 
         <TextView
@@ -21,13 +21,13 @@
             android:layout_margin="10dp"
             android:text="@string/comments_title"
             android:textSize="@dimen/settings_title_text_size"
-            android:textColor="@color/pure_white"
+            android:textColor="@color/white_100"
             android:gravity="center_horizontal"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="@dimen/order_details_list_margin"
             android:layout_marginEnd="@dimen/order_details_list_margin"
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_text_size"
-                android:textColor="@color/pure_white"
+                android:textColor="@color/white_80"
                 android:maxLines="5"
                 android:inputType="text"
                 android:background="@android:color/transparent"
@@ -50,14 +50,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_40"/>
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/white_30_opaque"/>
+            android:background="@color/white_40"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,14 +72,14 @@
                 android:layout_weight="1"
                 android:text="@string/cancel"
                 android:textSize="@dimen/small_text_size"
-                android:textColor="@color/pure_white"
+                android:textColor="@color/white_100"
                 android:textAllCaps="false"
                 android:background="@android:color/transparent"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/white_30_opaque"/>
+                android:background="@color/white_40"/>
 
             <Button
                 android:id="@+id/done"
@@ -88,7 +88,7 @@
                 android:layout_weight="1"
                 android:text="@string/done"
                 android:textSize="@dimen/small_text_size"
-                android:textColor="@color/pure_white"
+                android:textColor="@color/white_100"
                 android:textAllCaps="false"
                 android:background="@android:color/transparent"/>
 

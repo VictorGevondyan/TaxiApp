@@ -120,20 +120,5 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
     @Override
     public void onGetOrdersFailure() {
 
-
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            //Restore the fragment's state here
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //Save the fragment's state here
     }
 }

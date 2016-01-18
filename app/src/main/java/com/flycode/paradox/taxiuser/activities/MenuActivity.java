@@ -99,10 +99,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         int newPosition = INDEX_ORDER;
 
         if( savedInstanceState != null ) {
-
-            //Restore the fragment's instance
-            currentFragment = getFragmentManager().getFragment(
-                    savedInstanceState, SAVED_CURRENT_FRAGMENT);
+            currentFragment = getFragmentManager().getFragment(savedInstanceState, SAVED_CURRENT_FRAGMENT);
             newPosition = savedInstanceState.getInt(SAVED_CURRENT_POSITION);
         }
 

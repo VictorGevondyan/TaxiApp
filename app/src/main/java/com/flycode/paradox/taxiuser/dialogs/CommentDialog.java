@@ -50,7 +50,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
 
         setCancelable(false);
 
-        Typeface robotoThinTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
+        Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
 
         Button cancelButton = (Button) view.findViewById(R.id.cancel);
         cancelButton.setOnClickListener(this);
@@ -59,6 +59,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
         commentEditText = (EditText) view.findViewById(R.id.comment);
         commentEditText.requestFocus();
         TextView commentTitle = (TextView) view.findViewById(R.id.comment_title);
+        commentTitle.setTypeface(robotoRegularTypeface);
 
         Bundle arguments = getArguments();
 
@@ -66,9 +67,11 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
             commentEditText.setText(arguments.getString(COMMENT));
         }
 
-        cancelButton.setTypeface(robotoThinTypeface);
-        doneButton.setTypeface(robotoThinTypeface);
-        commentEditText.setTypeface(robotoThinTypeface);
+        cancelButton.setTypeface(robotoRegularTypeface);
+        doneButton.setTypeface(robotoRegularTypeface);
+        commentEditText.setTypeface(robotoRegularTypeface);
+
+
 
         return view;
     }

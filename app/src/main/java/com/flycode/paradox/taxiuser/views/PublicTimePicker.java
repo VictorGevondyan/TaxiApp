@@ -66,8 +66,8 @@ public class PublicTimePicker extends TimePicker {
             selectionDivider.set(getMinutePicker(), getResources().getDrawable(R.drawable.line_white));
             selectionDivider.set(getHourPicker(), getResources().getDrawable(R.drawable.line_white));
 
-            setNumberPickerTextColor(getMinutePicker(), R.color.pure_white);
-            setNumberPickerTextColor(getHourPicker(), R.color.pure_white);
+            setNumberPickerTextColor(getMinutePicker(), R.color.white_100);
+            setNumberPickerTextColor(getHourPicker(), R.color.white_100);
         } catch (Exception e) {
             e.printStackTrace();
         }
