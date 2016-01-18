@@ -1,11 +1,13 @@
 package com.flycode.paradox.taxiuser.fragments;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -223,5 +225,6 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
         super.onSaveInstanceState(outState);
         //Save the fragment's state here
     }
+
 
 }

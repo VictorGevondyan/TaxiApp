@@ -14,6 +14,7 @@ import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetOrderHandler;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
+import com.flycode.paradox.taxiuser.dialogs.ErrorDialog;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
@@ -294,6 +295,6 @@ public class OrderActivity extends Activity implements GetOrderHandler {
 
     @Override
     public void onGetOrderFailure() {
-
+        ErrorDialog.initialize("Error", "GET ORDER ERROR").show(getFragmentManager(), ErrorDialog.ERROR_DIALOG_TAG);
     }
 }

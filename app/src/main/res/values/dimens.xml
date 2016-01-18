@@ -34,5 +34,8 @@
     <dimen name="orders_tiny_margin">15dp</dimen>
     <dimen name="orders_name_width">70dp</dimen>
 
+    <!-- Dialogs -->
+    <dimen name="error_message_margin">18dp</dimen>
+
 
 </resources>

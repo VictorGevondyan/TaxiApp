@@ -1,18 +1,20 @@
 package com.flycode.paradox.taxiuser.activities;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetUserHandler;
 import com.flycode.paradox.taxiuser.api.LoginHandler;
+import com.flycode.paradox.taxiuser.dialogs.ErrorDialog;
 import com.flycode.paradox.taxiuser.models.User;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.settings.UserData;
@@ -81,7 +83,8 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
 
     @Override
     public void onLoginFailure(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        ErrorDialog.initialize("Error", "LOGIN ERROR").show(getFragmentManager(), ErrorDialog.ERROR_DIALOG_TAG);
     }
 
     /**
@@ -90,7 +93,12 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
 
     @Override
     public void onGetUserSuccess(User user) {
-        startActivity(new Intent(this, MenuActivity.class));
+        if( Build.VERSION.SDK_INT >=  16 ) {
+            ActivityOptions options = ActivityOptions.makeCustomAnimation(this, 0, R.anim.slide_down_out);
+            startActivity(new Intent(this, MenuActivity.class), options.toBundle());
+        } else {
+            startActivity(new Intent(this, MenuActivity.class));
+        }
         finish();
         AppSettings.sharedSettings(this).setIsUserLoggedIn(true);
         setUserData(user);
@@ -98,8 +106,11 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
 
     @Override
     public void onGetUserFailure() {
-        Toast.makeText(this, "NE POVEZLO :(", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "NE POVEZLO :(", Toast.LENGTH_SHORT).show();
+        ErrorDialog.initialize("Error", "GET USER ERROR").show(getFragmentManager(), ErrorDialog.ERROR_DIALOG_TAG);
+
     }
+
 
     private void setUserData(User user){
         UserData userData = UserData.sharedData(this);

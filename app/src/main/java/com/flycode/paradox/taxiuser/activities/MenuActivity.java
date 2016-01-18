@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -69,6 +70,9 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
 
         setContentView(sideMenu);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
         Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
 
@@ -114,6 +118,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
 
         // TODO: Replace this in more suitable place
         APITalker.sharedTalker().getUser(this, this);
+
     }
 
     @Override
@@ -159,6 +164,15 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
     }
 
     public void onActionBarRightButtonClicked(View view) {
+
+        if( ( currentPosition == INDEX_ONGOING ) || ( currentPosition == INDEX_HISTORY ) ){
+            OrdersFragment ordersFragment = (OrdersFragment)currentFragment;
+            ordersFragment.refresh();
+        } else if( ( currentPosition == INDEX_BALANCE )){
+            TransactionsFragment transactionsFragment = (TransactionsFragment)currentFragment;
+            transactionsFragment.refresh();
+        }
+
     }
 
     /**
@@ -195,6 +209,8 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         Fragment fragment = null;
 
         if (position == INDEX_BALANCE) {
+            actionBarRightButton.setVisibility(View.VISIBLE);
+            actionBarRightButton.setText(R.string.icon_refresh);
             actionBarTitleTextView.setText(R.string.transactions);
 
             fragment = TransactionsFragment.initialize();
@@ -312,4 +328,5 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
             menuGridAdapter.notifyDataSetChanged();
         }
     }
+
 }

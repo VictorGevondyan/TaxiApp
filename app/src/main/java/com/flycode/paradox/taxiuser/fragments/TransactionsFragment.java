@@ -12,6 +12,7 @@ import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.adapters.TransactionsListAdapter;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetOwnTransactionsHandler;
+import com.flycode.paradox.taxiuser.dialogs.ErrorDialog;
 import com.flycode.paradox.taxiuser.models.Transaction;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
@@ -47,7 +48,7 @@ public class TransactionsFragment extends SuperFragment implements GetOwnTransac
         transactionsListAdapter = new TransactionsListAdapter(getActivity(), R.layout.item_transaction, new ArrayList<Transaction>());
         transactionsListView.setAdapter(transactionsListAdapter);
 
-        noTransactionTextView = (TextView) transactionsView.findViewById(R.id.no_order);
+        noTransactionTextView = (TextView) transactionsView.findViewById(R.id.no_transaction);
         noTransactionTextView.setText(R.string.no_transaction);
         noTransactionTextView.setTypeface(TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
 
@@ -82,6 +83,9 @@ public class TransactionsFragment extends SuperFragment implements GetOwnTransac
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+
+        ErrorDialog.initialize("Error", "GET OWN TRANSACTIONS ERROR").show(getFragmentManager(), ErrorDialog.ERROR_DIALOG_TAG);
+
     }
 
     @Override
@@ -96,6 +100,11 @@ public class TransactionsFragment extends SuperFragment implements GetOwnTransac
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's state here
+    }
+
+    public void refresh(){
+        transactionsListAdapter.clear();
+        APITalker.sharedTalker().getOwnTransactions(getActivity(), this);
     }
 
 }
