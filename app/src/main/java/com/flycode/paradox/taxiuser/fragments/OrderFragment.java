@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,6 +30,7 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import com.flycode.paradox.taxiuser.views.LocationPickerView;
 import com.flycode.paradox.taxiuser.views.MaximalScrollView;
 import com.flycode.paradox.taxiuser.views.OrderView;
+import com.flycode.paradox.taxiuser.views.RhombusView;
 import com.mapbox.mapboxsdk.constants.MyLocationTracking;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -61,9 +61,9 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
     private View orderFragmentView;
 
-    private ImageView isNowRhombus;
-    private ImageView isLaterRhombus;
-    private ImageView isCashOnlyRhombus;
+    private RhombusView isNowRhombus;
+    private RhombusView isLaterRhombus;
+    private RhombusView isCashOnlyRhombus;
 
     private TextView locationTextView;
     private TextView commentsTextView;
@@ -167,9 +167,13 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
         mapView.onCreate(savedInstanceState);
 
-        isNowRhombus = (ImageView) orderFragmentView.findViewById(R.id.now_rhombus);
-        isLaterRhombus = (ImageView) orderFragmentView.findViewById(R.id.later_rhombus);
-        isCashOnlyRhombus = (ImageView) orderFragmentView.findViewById(R.id.only_cash_rhombus);
+        isNowRhombus = (RhombusView) orderFragmentView.findViewById(R.id.now_rhombus);
+        isLaterRhombus = (RhombusView) orderFragmentView.findViewById(R.id.later_rhombus);
+        isCashOnlyRhombus = (RhombusView) orderFragmentView.findViewById(R.id.only_cash_rhombus);
+
+        isNowRhombus.setIsFilled(true);
+        isLaterRhombus.setIsFilled(true);
+        isCashOnlyRhombus.setIsFilled(true);
 
         TextView isNowTextView = (TextView) orderFragmentView.findViewById(R.id.now_text);
         TextView isLaterTextView = (TextView) orderFragmentView.findViewById(R.id.later_text);
@@ -319,18 +323,18 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
      */
 
     private void setupTimeRhombus() {
-        isNowRhombus.setImageResource(isLater ? R.drawable.rhombus_white : R.drawable.rhombus_cyan);
-        isLaterRhombus.setImageResource(isLater ? R.drawable.rhombus_cyan : R.drawable.rhombus_white);
+        isNowRhombus.setColor(getResources().getColor(isLater ? R.color.white_100 : R.color.cyan));
+        isLaterRhombus.setColor(getResources().getColor(isLater ? R.color.cyan : R.color.white_100));
     }
 
     private void setupCacheOnlyRhombus() {
-        isCashOnlyRhombus.setImageResource(isCashOnly ? R.drawable.rhombus_cyan : R.drawable.rhombus_white);
+        isCashOnlyRhombus.setColor(getResources().getColor(isCashOnly ? R.color.cyan: R.color.white_100));
     }
 
     private void setupCarCategoryRhombus(View chosenSection) {
         for (int index = 0; index < carCategoriesSectionLinearLayout.getChildCount(); index++) {
             View carCategorySection = carCategoriesSectionLinearLayout.getChildAt(index);
-            ImageView rhombus = (ImageView) carCategorySection.findViewById(R.id.rhombus);
+            RhombusView rhombus = (RhombusView) carCategorySection.findViewById(R.id.rhombus);
             TextView carCategoryInfoTextView = (TextView) carCategorySection.findViewById(R.id.info);
             TextView carCategoryTitleTextView = (TextView) carCategorySection.findViewById(R.id.text);
 
@@ -338,11 +342,11 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
                 savedCarCategoryIndex = index;
                 CarCategory carCategory = (CarCategory) chosenSection.getTag();
                 currentCarCategory = carCategory;
-                rhombus.setImageResource(R.drawable.rhombus_cyan);
+                rhombus.setColor(getResources().getColor(R.color.cyan));
                 carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.cyan));
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
             } else {
-                rhombus.setImageResource(R.drawable.rhombus_white);
+                rhombus.setColor(getResources().getColor(R.color.white_100));
                 carCategoryInfoTextView.setText("");
                 carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.white_100));
             }
@@ -476,15 +480,16 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             carCategoryTitleTextView.setText(carCategory.getName().toUpperCase());
             carCategoryTitleTextView.setTypeface(TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
 
+            RhombusView carCategoryRhombus = (RhombusView) carCategoryView.findViewById(R.id.rhombus);
+            carCategoryRhombus.setIsFilled(true);
+
             if (index == 0) {
                 currentCarCategory = carCategory;
-                ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
-                carCategoryRhombus.setImageResource(R.drawable.rhombus_cyan);
+                carCategoryRhombus.setColor(getResources().getColor(R.color.cyan));
                 carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
                 carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.cyan));
             } else {
-                ImageView carCategoryRhombus = (ImageView) carCategoryView.findViewById(R.id.rhombus);
-                carCategoryRhombus.setImageResource(R.drawable.rhombus_white);
+                carCategoryRhombus.setColor(getResources().getColor(R.color.white_100));
                 carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.white_100));
             }
 
@@ -499,7 +504,6 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
                 }
             }
         }
-
     }
 
     @Override

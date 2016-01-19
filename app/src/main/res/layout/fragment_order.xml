@@ -156,11 +156,10 @@
                         android:gravity="center"
                         android:clickable="true">
 
-                        <ImageView
+                        <com.flycode.paradox.taxiuser.views.RhombusView
                             android:id="@+id/now_rhombus"
                             android:layout_width="@dimen/rhombus_size"
-                            android:layout_height="@dimen/rhombus_size"
-                            android:scaleType="fitXY"/>
+                            android:layout_height="@dimen/rhombus_size"/>
 
                         <TextView
                             android:id="@+id/now_text"
@@ -181,11 +180,10 @@
                         android:gravity="center"
                         android:clickable="true">
 
-                        <ImageView
+                        <com.flycode.paradox.taxiuser.views.RhombusView
                             android:id="@+id/later_rhombus"
                             android:layout_width="@dimen/rhombus_size"
-                            android:layout_height="@dimen/rhombus_size"
-                            android:scaleType="fitXY" />
+                            android:layout_height="@dimen/rhombus_size" />
 
                         <TextView
                             android:id="@+id/later_text"
@@ -206,11 +204,10 @@
                         android:gravity="center"
                         android:clickable="true">
 
-                        <ImageView
+                        <com.flycode.paradox.taxiuser.views.RhombusView
                             android:id="@+id/only_cash_rhombus"
                             android:layout_width="@dimen/rhombus_size"
-                            android:layout_height="@dimen/rhombus_size"
-                            android:scaleType="fitXY"/>
+                            android:layout_height="@dimen/rhombus_size"/>
 
                         <TextView
                             android:id="@+id/only_cash_text"

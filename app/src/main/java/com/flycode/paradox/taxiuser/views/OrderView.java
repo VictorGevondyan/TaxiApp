@@ -85,9 +85,6 @@ public class OrderView extends View {
         int width = canvas.getWidth();
         int height = canvas.getHeight();
 
-        float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
-        float density = getContext().getResources().getDisplayMetrics().density;
-
         Point a = new Point(0, height / 2);
         Point b = new Point(width / 2, 0);
         Point c = new Point(width, height / 2);

@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
@@ -18,6 +17,7 @@ import com.flycode.paradox.taxiuser.settings.UserData;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import com.flycode.paradox.taxiuser.views.GenericTriangleView;
+import com.flycode.paradox.taxiuser.views.RhombusView;
 
 /**
  * Created by victor on 12/22/15.
@@ -40,9 +40,9 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
 
     private TextView phoneNumberTextView;
 
-    private ImageView armenianRhombusView;
-    private ImageView russianRhombusView;
-    private ImageView englishRhombusView;
+    private RhombusView armenianRhombusView;
+    private RhombusView russianRhombusView;
+    private RhombusView englishRhombusView;
 
     private TextView armenianTextView;
     private TextView russianTextView;
@@ -50,7 +50,7 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
 
     private UserData userData;
 
-    private  String newFullName;
+    private String newFullName;
     private String newEmail;
     private String newPassword;
 
@@ -104,9 +104,9 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
         confirmPasswordEditText.setTypeface(robotoTypeface);
         phoneNumberTextView.setTypeface(robotoTypeface);
 
-        armenianRhombusView = (ImageView) settingsView.findViewById(R.id.armenian_rhombus);
-        englishRhombusView = (ImageView) settingsView.findViewById(R.id.english_rhombus);
-        russianRhombusView = (ImageView) settingsView.findViewById(R.id.russian_rhombus);
+        armenianRhombusView = (RhombusView) settingsView.findViewById(R.id.armenian_rhombus);
+        englishRhombusView = (RhombusView) settingsView.findViewById(R.id.english_rhombus);
+        russianRhombusView = (RhombusView) settingsView.findViewById(R.id.russian_rhombus);
 
         armenianTextView = (TextView) settingsView.findViewById(R.id.armenian_text);
         englishTextView = (TextView) settingsView.findViewById(R.id.english_text);
@@ -147,12 +147,15 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
     private void setupLanguageRhombus() {
         String language = AppSettings.sharedSettings(getActivity()).getLanguage();
 
-        armenianRhombusView.setImageDrawable(
-                getResources().getDrawable(language.equals(AppSettings.LANGUAGES.HY) ? R.drawable.rhombus_yellow : R.drawable.rhombus_outline_cyan));
-        russianRhombusView.setImageDrawable(
-                getResources().getDrawable(language.equals(AppSettings.LANGUAGES.RU) ? R.drawable.rhombus_yellow : R.drawable.rhombus_outline_cyan));
-        englishRhombusView.setImageDrawable(
-                getResources().getDrawable(language.equals(AppSettings.LANGUAGES.EN) ? R.drawable.rhombus_yellow : R.drawable.rhombus_outline_cyan));
+        armenianRhombusView.setColor(
+                getResources().getColor(language.equals(AppSettings.LANGUAGES.HY) ? R.color.yellow : R.color.cyan));
+        russianRhombusView.setColor(
+                getResources().getColor(language.equals(AppSettings.LANGUAGES.RU) ? R.color.yellow : R.color.cyan));
+        englishRhombusView.setColor(
+                getResources().getColor(language.equals(AppSettings.LANGUAGES.EN) ? R.color.yellow : R.color.cyan));
+        armenianRhombusView.setIsFilled(language.equals(AppSettings.LANGUAGES.HY));
+        russianRhombusView.setIsFilled(language.equals(AppSettings.LANGUAGES.RU));
+        englishRhombusView.setIsFilled(language.equals(AppSettings.LANGUAGES.EN));
 
         armenianTextView.setTextColor(getResources().getColor(
                 language.equals(AppSettings.LANGUAGES.HY) ? R.color.yellow : R.color.white_100));

@@ -18,11 +18,10 @@
         android:singleLine="true"
         android:ellipsize="none"/>
 
-    <ImageView
+    <com.flycode.paradox.taxiuser.views.RhombusView
         android:id="@+id/rhombus"
         android:layout_width="@dimen/rhombus_size"
-        android:layout_height="@dimen/rhombus_size"
-        android:scaleType="fitXY"/>
+        android:layout_height="@dimen/rhombus_size"/>
 
     <TextView
         android:id="@+id/text"
