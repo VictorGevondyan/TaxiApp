@@ -32,6 +32,13 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
     private EditText passwordEditText;
     private EditText confirmPasswordEditText;
 
+    private String lastName;
+    private String name;
+    private String email;
+    private String oldPassword;
+    private String password;
+    private String confirmPassword;
+
     private TextView nameIconBigTextView;
     private TextView nameIconTextView;
     private TextView lastNameIconTextView;
@@ -55,6 +62,13 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
     private String newFullName;
     private String newEmail;
     private String newPassword;
+
+    private  final String SAVED_LAST_NAME = "savedLastName";
+    private  final String SAVED_NAME = "savedName";
+    private  final String SAVED_EMAIL = "savedEmail";
+    private  final String SAVED_OLD_PASSWORD = "savedOldPassword";
+    private  final String SAVED_PASSWORD = "savedPassword";
+    private  final String SAVED_CONFIRM_PASSWORD = "savedConfirmPassword";
 
     @Nullable
     @Override
@@ -94,7 +108,21 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
         confirmPasswordEditText = (EditText) settingsView.findViewById(R.id.confirm_password);
         phoneNumberTextView = (TextView) settingsView.findViewById(R.id.phone_number);
 
-//        setKeyboardListeners();
+        if( savedInstanceState != null ){
+            lastName= savedInstanceState.getString(SAVED_LAST_NAME);
+            name = savedInstanceState.getString(SAVED_NAME);
+            email = savedInstanceState.getString(SAVED_EMAIL);
+            oldPassword = savedInstanceState.getString(SAVED_OLD_PASSWORD);
+            password = savedInstanceState.getString(SAVED_PASSWORD);
+            confirmPassword = savedInstanceState.getString(SAVED_CONFIRM_PASSWORD);
+
+            lastNameEditText.setText(lastName);
+            nameEditText.setText(name);
+            emailEditText.setText(email);
+            oldPasswordEditText.setText(oldPassword);
+            passwordEditText.setText(password);
+            confirmPasswordEditText.setText(confirmPassword);
+        }
 
         nameEditText.setText(UserData.sharedData(getActivity()).getName());
         emailEditText.setText(UserData.sharedData(getActivity()).getEmail());
@@ -229,5 +257,20 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's state here
+
+        lastName = lastNameEditText.getText().toString();
+        name = nameEditText.getText().toString();
+        email = emailEditText.getText().toString();
+        oldPassword = oldPasswordEditText.getText().toString();
+        password = passwordEditText.getText().toString();
+        confirmPassword = confirmPasswordEditText.getText().toString();
+
+        outState.putString(SAVED_LAST_NAME, lastName);
+        outState.putString(SAVED_NAME, name);
+        outState.putString(SAVED_EMAIL, email);
+        outState.putString(SAVED_OLD_PASSWORD, oldPassword);
+        outState.putString(SAVED_PASSWORD, password);
+        outState.putString(SAVED_CONFIRM_PASSWORD, confirmPassword);
+
     }
 }
