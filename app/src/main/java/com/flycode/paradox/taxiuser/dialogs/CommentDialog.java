@@ -32,21 +32,23 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
     private Activity activity;
     private CommentDialogListener listener;
     private EditText commentEditText;
+    private KeyboardStateListener keyboardStateListener;
 
-    public static CommentDialog initialize(String comment, CommentDialogListener listener) {
+    public static CommentDialog initialize(String comment, CommentDialogListener listener, KeyboardStateListener keyboardStateListener) {
         Bundle arguments = new Bundle();
         arguments.putString(COMMENT, comment);
 
         CommentDialog commentsDialog = new CommentDialog();
         commentsDialog.setArguments(arguments);
         commentsDialog.setListener(listener);
+        commentsDialog.setKeyboardStateListener(keyboardStateListener);
 
         return commentsDialog;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_comment, container, false);
+        final View view = inflater.inflate(R.layout.dialog_comment, container, false);
 
         setCancelable(false);
 
@@ -70,8 +72,6 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
         cancelButton.setTypeface(robotoRegularTypeface);
         doneButton.setTypeface(robotoRegularTypeface);
         commentEditText.setTypeface(robotoRegularTypeface);
-
-
 
         return view;
     }
@@ -167,4 +167,17 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
             return false;
         }
     }
+
+    /**
+     * Interface for sending keyboard state change event to OrderFragment
+     */
+
+    public interface KeyboardStateListener{
+        public void onKeyboardStateChanged();
+    }
+
+    public void setKeyboardStateListener( KeyboardStateListener keyboardStateListener ){
+        this.keyboardStateListener = keyboardStateListener;
+    }
+
 }

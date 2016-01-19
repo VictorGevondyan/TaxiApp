@@ -1,5 +1,6 @@
 package com.flycode.paradox.taxiuser.gcm;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,6 +16,7 @@ import com.flycode.paradox.taxiuser.activities.OrderActivity;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetOrderHandler;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
+import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
 import com.flycode.paradox.taxiuser.models.Order;
 
 import org.json.JSONException;
@@ -50,7 +52,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
             @Override
             public void onGetOrderFailure() {
-
+                MessageDialog.initialize("Error", "GET ORDER FROM GCM ERROR").show( ((Activity)context).getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
             }
         });
 

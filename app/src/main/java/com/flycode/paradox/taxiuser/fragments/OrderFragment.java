@@ -41,7 +41,7 @@ import java.util.Date;
 
 public class OrderFragment extends SuperFragment implements View.OnClickListener, CommentDialog.CommentDialogListener, CarCategoriesListener,
         GeocodeUtil.GeocodeListener, MakeOrderListener, MapView.OnMyLocationChangeListener, MapView.OnMapChangedListener,
-        PickTimeDialog.PickTimeDialogListener {
+        PickTimeDialog.PickTimeDialogListener, CommentDialog.KeyboardStateListener {
     private static final Object LOCKER = new Object();
     private static final String COMMENT_DIALOG_TAG = "commentDialogTag";
     private static final String TIME_DIALOG_TAG = "timeDialogTag";
@@ -225,6 +225,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         if (commentDialogCandidate != null) {
             CommentDialog commentsDialog = (CommentDialog) commentDialogCandidate;
             commentsDialog.setListener(this);
+            commentsDialog.setKeyboardStateListener(this);
         }
         if (timeDialogCandidate != null) {
             PickTimeDialog timeDialog = (PickTimeDialog) timeDialogCandidate;
@@ -371,7 +372,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             isCashOnly = !isCashOnly;
             setupCacheOnlyRhombus();
         } else if (view.getId() == R.id.comment_section) {
-            CommentDialog.initialize(comment, this).show(getFragmentManager(), COMMENT_DIALOG_TAG);
+            CommentDialog.initialize(comment, this, this).show(getFragmentManager(), COMMENT_DIALOG_TAG);
         } else if (view.getId() == R.id.time_section) {
             if (!isLater) {
                 return;
@@ -620,7 +621,13 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
     }
 
+    @Override
+    public void onKeyboardStateChanged() {
+        orderFragmentView.findViewById(R.id.order_fragment_layout).requestLayout();
+    }
+
     public interface OrderFragmentListener {
         void onOrderMade(Order order);
     }
+
 }
