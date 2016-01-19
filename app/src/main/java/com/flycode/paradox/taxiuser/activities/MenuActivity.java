@@ -8,7 +8,7 @@ import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -60,6 +60,8 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
 
     Fragment currentFragment;
 
+    private boolean isKeyboardOpen = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LocaleUtils.setLocale(this, AppSettings.sharedSettings(this).getLanguage());
@@ -69,9 +71,6 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         sideMenu = (SideMenuLayout) getLayoutInflater().inflate(R.layout.activity_menu, null);
 
         setContentView(sideMenu);
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        getWindow().clearFlags(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
         Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
@@ -119,6 +118,16 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
         // TODO: Replace this in more suitable place
         APITalker.sharedTalker().getUser(this, this);
 
+        getWindow()
+            .getDecorView()
+            .getViewTreeObserver()
+            .addOnGlobalLayoutListener(
+                    new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            sideMenu.requestLayout();
+                        }
+                    });
     }
 
     @Override
@@ -328,5 +337,4 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
             menuGridAdapter.notifyDataSetChanged();
         }
     }
-
 }

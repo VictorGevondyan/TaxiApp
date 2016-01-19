@@ -34,7 +34,6 @@
         <activity android:name=".activities.OrderActivity"
             android:screenOrientation="portrait" />
 
-
         <receiver
             android:name=".gcm.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >

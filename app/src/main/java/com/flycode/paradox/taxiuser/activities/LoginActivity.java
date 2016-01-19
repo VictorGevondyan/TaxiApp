@@ -14,7 +14,7 @@ import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetUserHandler;
 import com.flycode.paradox.taxiuser.api.LoginHandler;
-import com.flycode.paradox.taxiuser.dialogs.ErrorDialog;
+import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
 import com.flycode.paradox.taxiuser.models.User;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.settings.UserData;
@@ -84,7 +84,7 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
     @Override
     public void onLoginFailure(String error) {
 //        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-        ErrorDialog.initialize("Error", "LOGIN ERROR").show(getFragmentManager(), ErrorDialog.ERROR_DIALOG_TAG);
+        MessageDialog.initialize("Error", "LOGIN ERROR").show(getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
     }
 
     /**
@@ -107,7 +107,7 @@ public class LoginActivity  extends Activity implements LoginHandler, GetUserHan
     @Override
     public void onGetUserFailure() {
 //        Toast.makeText(this, "NE POVEZLO :(", Toast.LENGTH_SHORT).show();
-        ErrorDialog.initialize("Error", "GET USER ERROR").show(getFragmentManager(), ErrorDialog.ERROR_DIALOG_TAG);
+        MessageDialog.initialize("Error", "GET USER ERROR").show(getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
 
     }
 

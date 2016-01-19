@@ -16,7 +16,7 @@ import com.flycode.paradox.taxiuser.activities.OrderActivity;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetOrderHandler;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
-import com.flycode.paradox.taxiuser.dialogs.ErrorDialog;
+import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
 import com.flycode.paradox.taxiuser.models.Order;
 
 import org.json.JSONException;
@@ -52,7 +52,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
             @Override
             public void onGetOrderFailure() {
-                ErrorDialog.initialize("Error", "GET ORDER FROM GCM ERROR").show( ((Activity)context).getFragmentManager(), ErrorDialog.ERROR_DIALOG_TAG);
+                MessageDialog.initialize("Error", "GET ORDER FROM GCM ERROR").show( ((Activity)context).getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
             }
         });
 

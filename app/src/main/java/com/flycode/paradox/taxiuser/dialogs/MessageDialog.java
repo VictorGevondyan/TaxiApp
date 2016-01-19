@@ -17,19 +17,19 @@ import android.widget.TextView;
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
-public class ErrorDialog extends DialogFragment implements View.OnClickListener {
+public class MessageDialog extends DialogFragment implements View.OnClickListener {
 
     public static final String ERROR_DIALOG_TAG = "errorDialogTag";
 
     private static final String TITLE = "title";
     private static final String MESSAGE = "message";
 
-    public static ErrorDialog initialize( String title, String message ) {
+    public static MessageDialog initialize( String title, String message ) {
         Bundle arguments = new Bundle();
         arguments.putString(TITLE, title);
         arguments.putString(MESSAGE, message);
 
-        ErrorDialog errorDialog = new ErrorDialog();
+        MessageDialog errorDialog = new MessageDialog();
         errorDialog.setArguments(arguments);
 
         return errorDialog;

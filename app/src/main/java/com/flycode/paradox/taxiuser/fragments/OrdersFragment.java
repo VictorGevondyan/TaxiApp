@@ -17,7 +17,7 @@ import com.flycode.paradox.taxiuser.adapters.OrdersListAdapter;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetOrdersHandler;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
-import com.flycode.paradox.taxiuser.dialogs.ErrorDialog;
+import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
@@ -120,7 +120,7 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
 
     @Override
     public void onGetOrdersFailure() {
-        ErrorDialog.initialize("Error", "GET ORDERS ERROR").show(getFragmentManager(), ErrorDialog.ERROR_DIALOG_TAG);
+        MessageDialog.initialize("Error", "GET ORDERS ERROR").show(getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
     }
 
 

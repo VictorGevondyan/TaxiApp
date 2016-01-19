@@ -12,7 +12,7 @@ import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.adapters.TransactionsListAdapter;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetOwnTransactionsHandler;
-import com.flycode.paradox.taxiuser.dialogs.ErrorDialog;
+import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
 import com.flycode.paradox.taxiuser.models.Transaction;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
@@ -84,7 +84,7 @@ public class TransactionsFragment extends SuperFragment implements GetOwnTransac
             progressDialog.dismiss();
         }
 
-        ErrorDialog.initialize("Error", "GET OWN TRANSACTIONS ERROR").show(getFragmentManager(), ErrorDialog.ERROR_DIALOG_TAG);
+        MessageDialog.initialize("Error", "GET OWN TRANSACTIONS ERROR").show(getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
 
     }
 

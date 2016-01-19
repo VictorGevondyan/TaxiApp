@@ -1,13 +1,11 @@
 package com.flycode.paradox.taxiuser.fragments;
 
-import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +23,8 @@ import com.flycode.paradox.taxiuser.views.GenericTriangleView;
  * Created by victor on 12/22/15.
  */
 public class SettingsFragment extends SuperFragment implements View.OnClickListener, ChangeNameAndMailHandler {
+    private View settingsView;
+
     private EditText lastNameEditText;
     private EditText nameEditText;
     private EditText emailEditText;
@@ -59,7 +59,7 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View settingsView = inflater.inflate(R.layout.fragment_settings, container, false);
+        settingsView = inflater.inflate(R.layout.fragment_settings, container, false);
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
         Typeface robotoTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
@@ -93,6 +93,8 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
         passwordEditText = (EditText) settingsView.findViewById(R.id.enter_password);
         confirmPasswordEditText = (EditText) settingsView.findViewById(R.id.confirm_password);
         phoneNumberTextView = (TextView) settingsView.findViewById(R.id.phone_number);
+
+//        setKeyboardListeners();
 
         nameEditText.setText(UserData.sharedData(getActivity()).getName());
         emailEditText.setText(UserData.sharedData(getActivity()).getEmail());
@@ -225,6 +227,4 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
         super.onSaveInstanceState(outState);
         //Save the fragment's state here
     }
-
-
 }
