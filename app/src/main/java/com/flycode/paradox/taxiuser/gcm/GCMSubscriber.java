@@ -76,7 +76,6 @@ public class GCMSubscriber {
 
                     @Override
                     public void onGCMTokenRegistrationFailure() {
-
                     }
         });
     }

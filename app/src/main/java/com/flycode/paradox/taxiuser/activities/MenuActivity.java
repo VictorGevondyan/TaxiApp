@@ -20,7 +20,7 @@ import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetUserHandler;
-import com.flycode.paradox.taxiuser.fragments.OrderFragment;
+import com.flycode.paradox.taxiuser.fragments.MakeOrderFragment;
 import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
 import com.flycode.paradox.taxiuser.fragments.SuperFragment;
@@ -36,7 +36,7 @@ import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 import java.io.IOException;
 
-public class MenuActivity extends Activity implements OrderFragment.OrderFragmentListener, GetUserHandler {
+public class MenuActivity extends Activity implements MakeOrderFragment.OrderFragmentListener, GetUserHandler {
     private final String SAVED_CURRENT_POSITION = "savedCurrentPosition";
     private final String SAVED_CURRENT_FRAGMENT = "savedCurrentFragment";
 
@@ -108,6 +108,11 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
 
         currentPosition = -1;
         changeFragment(newPosition, false, savedInstanceState != null);
+
+        if (currentFragment instanceof MakeOrderFragment) {
+            MakeOrderFragment makeOrderFragment = (MakeOrderFragment) currentFragment;
+            makeOrderFragment.setListener(this);
+        }
 
         try {
             GCMSubscriber.registerForGcm(this);
@@ -230,7 +235,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
             actionBarTitleTextView.setText(R.string.order);
             actionBarRightButton.setText(R.string.icon_phone);
 
-            fragment = OrderFragment.initialize(this);
+            fragment = MakeOrderFragment.initialize(this);
         } else if (position == INDEX_ONGOING) {
             actionBarRightButton.setVisibility(View.VISIBLE);
             actionBarRightButton.setText(R.string.icon_refresh);
@@ -289,7 +294,7 @@ public class MenuActivity extends Activity implements OrderFragment.OrderFragmen
     }
 
     /**
-     * OrderFragment.OrderFragmentListener Methods
+     * MakeOrderFragment.OrderFragmentListener Methods
      */
 
     @Override

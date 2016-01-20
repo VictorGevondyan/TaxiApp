@@ -82,8 +82,6 @@ public class OrderActivity extends Activity implements GetOrderHandler {
         mapView.setMyLocationEnabled(true);
         mapView.setCompassEnabled(false);
         mapView.setMyLocationTrackingMode(MyLocationTracking.TRACKING_NONE);
-        mapView.setLogoVisibility(View.GONE);
-        mapView.setAttributionVisibility(View.GONE);
         mapView.onCreate(savedInstanceState);
 
         init(order);
@@ -151,6 +149,11 @@ public class OrderActivity extends Activity implements GetOrderHandler {
 
     @Override
     public void finish() {
+        if(this.getCallingActivity() == null) {
+            Intent menuActivityIntent = new Intent(OrderActivity.this, MenuActivity.class);
+            startActivity(menuActivityIntent);
+        }
+
         super.finish();
         overridePendingTransition(R.anim.hold, R.anim.slide_right_out);
     }
@@ -262,7 +265,8 @@ public class OrderActivity extends Activity implements GetOrderHandler {
         View orderInfoView = findViewById(R.id.order_info);
         orderInfoView.setVisibility(View.GONE);
 
-        if (order.getStatus().equals(OrderStatusConstants.TAKEN)) {
+        if (order.getStatus().equals(OrderStatusConstants.TAKEN)
+                && order.getDriver() != null) {
             TextView carNumberTextView = (TextView) driverInfoView.findViewById(R.id.car_number);
             TextView carDescriptionTextView = (TextView) driverInfoView.findViewById(R.id.car_description);
 
@@ -298,7 +302,7 @@ public class OrderActivity extends Activity implements GetOrderHandler {
 
     public void onActionBarRightButtonClicked(View view) {
         // We get the phone number of driver, who has taken the order. Driver's username is his phone number
-        driverPhoneNumber = "099293008";//order.getDriver().getUsername(); //TODO: CHANGE THIS LATER
+        driverPhoneNumber = order.getDriver().getUsername(); 
         callIntent = new Intent(Intent.ACTION_CALL);
 
         callIntent.setData(Uri.parse("tel:" + driverPhoneNumber));

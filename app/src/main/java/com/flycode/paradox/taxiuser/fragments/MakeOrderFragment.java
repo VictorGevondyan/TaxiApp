@@ -39,14 +39,14 @@ import com.mapbox.mapboxsdk.views.MapView;
 import java.util.Calendar;
 import java.util.Date;
 
-public class OrderFragment extends SuperFragment implements View.OnClickListener, CommentDialog.CommentDialogListener, CarCategoriesListener,
+public class MakeOrderFragment extends SuperFragment implements View.OnClickListener, CommentDialog.CommentDialogListener, CarCategoriesListener,
         GeocodeUtil.GeocodeListener, MakeOrderListener, MapView.OnMyLocationChangeListener, MapView.OnMapChangedListener,
         PickTimeDialog.PickTimeDialogListener, CommentDialog.KeyboardStateListener {
     private static final Object LOCKER = new Object();
     private static final String COMMENT_DIALOG_TAG = "commentDialogTag";
     private static final String TIME_DIALOG_TAG = "timeDialogTag";
 
-    private static final String IS_ORDER_DETAILS_VISIBLE = "isOrderDetailsVisible";
+    private static final String SAVED_ORDER_STAGE = "savedOrderStage";
     private static final String SAVED_CAR_CATEGORY_INDEX = "savedCarCategoryIndex";
     private static final String SAVED_COMMENT = "savedComment";
     private static final String SAVED_TIME_RHOMBUS_STATE = "savedTimeRhombusState";
@@ -80,7 +80,6 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
     private LinearLayout carCategoriesSectionLinearLayout;
     private LinearLayout orderDetailsLinerLayout;
 
-    private boolean isOrderDetailsLayoutVisible = false;
     private boolean isLater = false;
     private boolean isCashOnly = false;
     private boolean isFromSaveInstanceState = false;
@@ -91,14 +90,15 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
     private boolean isToday = true;
 
     private int orderStage = 0;
+    private boolean needsRelayout;
 
     private int savedCarCategoryIndex = 0;
 
     private CarCategory currentCarCategory;
     private OrderFragmentListener listener;
 
-    public static OrderFragment initialize(OrderFragmentListener listener) {
-        OrderFragment orderFragment = new OrderFragment();
+    public static MakeOrderFragment initialize(OrderFragmentListener listener) {
+        MakeOrderFragment orderFragment = new MakeOrderFragment();
         orderFragment.setListener(listener);
 
         return orderFragment;
@@ -122,6 +122,8 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 //        googleMap.setMyLocationEnabled(true);
 //        googleMap.setOnCameraChangeListener(this);
 
+        needsRelayout = true;
+
         Calendar calendar = Calendar.getInstance();
         minute = calendar.get(Calendar.MINUTE);
         hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -132,8 +134,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
 
         if (savedInstanceState != null) {
             isFromSaveInstanceState = true;
-            isOrderDetailsLayoutVisible = savedInstanceState.getBoolean(IS_ORDER_DETAILS_VISIBLE);
-
+            orderStage = savedInstanceState.getInt(SAVED_ORDER_STAGE, 0);
             savedCarCategoryIndex = savedInstanceState.getInt(SAVED_CAR_CATEGORY_INDEX);
 
             comment = savedInstanceState.getString(SAVED_COMMENT);
@@ -155,8 +156,6 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         mapView.setMyLocationEnabled(true);
         mapView.setMyLocationTrackingMode(MyLocationTracking.TRACKING_NONE);
         mapView.setOnMyLocationChangeListener(this);
-        mapView.setLogoVisibility(View.GONE);
-        mapView.setAttributionVisibility(View.GONE);
 
         if (hasMyLocationDetermined) {
             mapView.setCenterCoordinate(location);
@@ -235,6 +234,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         orderButton = (OrderView) orderFragmentView.findViewById(R.id.order_button);
         orderButton.setClickable(true);
         orderButton.setOnClickListener(this);
+        orderButton.setOrderStage(orderStage);
 
         closeIconButton = (Button) orderFragmentView.findViewById(R.id.close_button);
         closeIconButton.setTypeface(icomoonTypeface);
@@ -244,10 +244,14 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         orderDetailsLinerLayout = (LinearLayout) orderFragmentView.findViewById(R.id.order_details);
 
         dayTextView.setText(isToday ? R.string.today : R.string.tomorrow);
-        minutesTextView.setText(String.valueOf(minute));
-        hoursTextView.setText(String.valueOf(hour));
 
-        if (isOrderDetailsLayoutVisible) {
+        String formattedMinuteString = String.format("%02d",  minute);
+        String formattedHourString = String.format("%02d",  hour);
+
+        minutesTextView.setText(formattedMinuteString);
+        hoursTextView.setText(formattedHourString);
+
+        if (orderStage == 1) {
             orderDetailsLinerLayout.setVisibility(View.VISIBLE);
             closeIconButton.setVisibility(View.VISIBLE);
         }
@@ -310,13 +314,22 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         super.onSaveInstanceState(outState);
 
         mapView.onSaveInstanceState(outState);
-        outState.putBoolean(IS_ORDER_DETAILS_VISIBLE, isOrderDetailsLayoutVisible);
+        outState.putInt(SAVED_ORDER_STAGE, orderStage);
         outState.putInt(SAVED_CAR_CATEGORY_INDEX, savedCarCategoryIndex);
         outState.putString(SAVED_COMMENT, comment);
         outState.putBoolean(SAVED_TIME_RHOMBUS_STATE, isLater);
         outState.putBoolean(SAVED_CASH_ONLY_STATE, isCashOnly);
         outState.putParcelable(SAVED_LOCATION, mapView.getCenterCoordinate());
         outState.putString(SAVED_ADDRESS, locationTopTextView.getText().toString());
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus && needsRelayout && orderStage == 1) {
+            needsRelayout = false;
+
+            setOrderDetailsVisible();
+        }
     }
 
     /**
@@ -383,27 +396,11 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
                 orderStage++;
                 orderDetailsLinerLayout.setVisibility(View.VISIBLE);
                 closeIconButton.setVisibility(View.VISIBLE);
-                isOrderDetailsLayoutVisible = true;
                 locationTextView.setText(locationTopTextView.getText());
                 mapView.setAllGesturesEnabled(false);
                 orderButton.setOrderStage(orderStage);
 
-                MaximalLinearLayout headerPanelView = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.header_panel);
-                MaximalScrollView orderDetailsView = (MaximalScrollView) orderFragmentView.findViewById(R.id.order_details_container);
-                LocationPickerView locationPickerView = (LocationPickerView) orderFragmentView.findViewById(R.id.picker_view);
-
-                float density = getResources().getDisplayMetrics().density;
-                float maxOrderDetailsHeight = mapView.getMeasuredHeight() - headerPanelView.getBottom()
-                        - (int) (75 * density) - carCategoriesSectionLinearLayout.getMeasuredHeight();
-                float offset = (mapView.getMeasuredHeight() - headerPanelView.getBottom()
-                        - maxOrderDetailsHeight) / 2;
-
-                mapView.setTranslationY(-offset);
-                locationPickerView.setTranslationY(-offset);
-
-                orderDetailsView.setMaxHeight((int) maxOrderDetailsHeight);
-
-                headerPanelView.findViewById(R.id.header_panel_location).setVisibility(View.GONE);
+                setOrderDetailsVisible();
             } else {
                 APITalker.sharedTalker().makeOrder(
                         getActivity(),
@@ -420,7 +417,6 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             orderStage--;
             orderDetailsLinerLayout.setVisibility(View.GONE);
             closeIconButton.setVisibility(View.GONE);
-            isOrderDetailsLayoutVisible = false;
             mapView.setAllGesturesEnabled(true);
             orderButton.setOrderStage(orderStage);
 
@@ -432,6 +428,26 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
             mapView.setY(0);
             locationPickerView.setY((mapView.getMeasuredHeight() - locationPickerView.getMeasuredHeight()) / 2);
         }
+    }
+
+    private void setOrderDetailsVisible() {
+        MaximalLinearLayout headerPanelView = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.header_panel);
+        MaximalScrollView orderDetailsView = (MaximalScrollView) orderFragmentView.findViewById(R.id.order_details_container);
+        LocationPickerView locationPickerView = (LocationPickerView) orderFragmentView.findViewById(R.id.picker_view);
+
+        float headerBottom = headerPanelView.getBottom() - locationTopTextView.getMeasuredHeight();
+        float maxOrderDetailsHeight = mapView.getMeasuredHeight() - headerBottom
+                - 3 * locationPickerView.getMeasuredHeight() / 2
+                - carCategoriesSectionLinearLayout.getMeasuredHeight() - closeIconButton.getMeasuredHeight();
+        float offset = (mapView.getMeasuredHeight() - headerBottom - carCategoriesSectionLinearLayout.getMeasuredHeight()
+                - closeIconButton.getMeasuredHeight() - maxOrderDetailsHeight) / 2;
+
+        mapView.setTranslationY(-offset);
+        locationPickerView.setTranslationY(-offset);
+
+        orderDetailsView.setMaxHeight((int) maxOrderDetailsHeight);
+
+        headerPanelView.findViewById(R.id.header_panel_location).setVisibility(View.GONE);
     }
 
     /**
@@ -589,7 +605,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         public void run() {
             synchronized (LOCKER) {
                 try {
-                    GeocodeUtil.geocode(getActivity(), mapView.getCenterCoordinate(), OrderFragment.this);
+                    GeocodeUtil.geocode(getActivity(), mapView.getCenterCoordinate(), MakeOrderFragment.this);
                 } catch (Exception e) {
                     // TODO: Investigate Reason
                     e.printStackTrace();
@@ -599,7 +615,7 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
     };
 
     /**
-     * OrderFragment Listener
+     * MakeOrderFragment Listener
      */
 
     public void setListener(OrderFragmentListener listener) {
@@ -612,8 +628,12 @@ public class OrderFragment extends SuperFragment implements View.OnClickListener
         this.hour = hour;
         this.minute = minute;
         dayTextView.setText(isToday ? R.string.today : R.string.tomorrow);
-        minutesTextView.setText(String.valueOf(minute));
-        hoursTextView.setText(String.valueOf(hour));
+
+        String formattedMinuteString = String.format("%02d",  minute);
+        String formattedHourString = String.format("%02d",  hour);
+
+        minutesTextView.setText(formattedMinuteString);
+        hoursTextView.setText(formattedHourString);
     }
 
     @Override

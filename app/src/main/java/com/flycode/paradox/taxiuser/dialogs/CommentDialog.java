@@ -169,7 +169,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
     }
 
     /**
-     * Interface for sending keyboard state change event to OrderFragment
+     * Interface for sending keyboard state change event to MakeOrderFragment
      */
 
     public interface KeyboardStateListener{
