@@ -1,10 +1,14 @@
 package com.flycode.paradox.taxiuser.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
@@ -33,10 +37,15 @@ import java.util.TimerTask;
 public class OrderActivity extends Activity implements GetOrderHandler {
     public static final String ORDER = "order";
 
+    private final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 0;
+
     private MapView mapView;
     private Order order;
 
     private Timer timer;
+
+    private String driverPhoneNumber;
+    Intent callIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +67,13 @@ public class OrderActivity extends Activity implements GetOrderHandler {
 
         Intent orderIntent = getIntent();
         order = orderIntent.getParcelableExtra(ORDER);
+
+        String orderStatus = order.getStatus();
+        boolean setPhoneButtonVisible = (order.getDriver() != null) && (orderStatus.equals(OrderStatusConstants.STARTED) ||
+                orderStatus.equals(OrderStatusConstants.TAKEN));
+        if (setPhoneButtonVisible) {
+            actionBarRightButton.setVisibility(View.VISIBLE);
+        }
 
         mapView = (MapView) findViewById(R.id.map_view);
         mapView.setStyleUrl(Style.LIGHT);
@@ -217,7 +233,7 @@ public class OrderActivity extends Activity implements GetOrderHandler {
             durationString = durationString + hours + getString(R.string.hour);
         }
         if (minutes > 0) {
-            durationString = durationString +  " " + (minutes - hours * 60) + getString(R.string.minute);
+            durationString = durationString + " " + (minutes - hours * 60) + getString(R.string.minute);
         }
 
         durationString = durationString + " " + (seconds - minutes * 60) + getString(R.string.second);
@@ -281,6 +297,20 @@ public class OrderActivity extends Activity implements GetOrderHandler {
     }
 
     public void onActionBarRightButtonClicked(View view) {
+        // We get the phone number of driver, who has taken the order. Driver's username is his phone number
+        driverPhoneNumber = "099293008";//order.getDriver().getUsername(); //TODO: CHANGE THIS LATER
+        callIntent = new Intent(Intent.ACTION_CALL);
+
+        callIntent.setData(Uri.parse("tel:" + driverPhoneNumber));
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_REQUEST_CALL_PHONE);
+            return;
+        }
+
+        startActivity(callIntent);
     }
 
     /**
@@ -297,4 +327,25 @@ public class OrderActivity extends Activity implements GetOrderHandler {
     public void onGetOrderFailure() {
         MessageDialog.initialize("Error", "GET ORDER ERROR").show(getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if ( requestCode == MY_PERMISSIONS_REQUEST_CALL_PHONE ) {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    startActivity(callIntent);
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+
 }

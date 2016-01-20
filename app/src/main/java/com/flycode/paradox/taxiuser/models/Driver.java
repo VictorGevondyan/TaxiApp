@@ -8,17 +8,24 @@ import android.os.Parcelable;
  */
 public class Driver implements Parcelable {
     private String carNumber;
+    private String username;
 
-    public Driver(String carNumber) {
+    public Driver(String carNumber, String username) {
         this.carNumber = carNumber;
+        this.username = username;
     }
 
     public String getCarNumber() {
         return carNumber;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public Driver(Parcel in) {
         carNumber = in.readString();
+        username = in.readString();
     }
 
         @Override
@@ -29,6 +36,7 @@ public class Driver implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(carNumber);
+        dest.writeString(username);
     }
 
     public static final Creator CREATOR = new Creator() {

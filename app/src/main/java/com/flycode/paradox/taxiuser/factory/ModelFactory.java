@@ -116,7 +116,9 @@ public class ModelFactory {
 
         if (driverJSON != null) {
             String carNumber = driverJSON.optString(CAR_NUMBER, "");
-            driver = new Driver(carNumber);
+            String username = driverJSON.optString(USERNAME, "");
+
+            driver = new Driver(carNumber, username);
         }
 
         // Transaction
