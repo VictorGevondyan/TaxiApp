@@ -286,13 +286,15 @@ public class OrderActivity extends Activity implements GetOrderHandler {
         typeLabelTextView.setTypeface(robotoThinTypeface);
         cancelButton.setTypeface(robotoThinTypeface);
 
-        if (order.getStatus().equals(OrderStatusConstants.TAKEN)) {
+        String orderStatus = order.getStatus();
+        if (orderStatus.equals(OrderStatusConstants.TAKEN)) {
             orderStatusTextView.setText(getString(R.string.taken));
-        } else if (order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)) {
+        } else if (orderStatus.equals(OrderStatusConstants.NOT_TAKEN)) {
             orderStatusTextView.setText(getString(R.string.not_taken));
         }
 
-        typeValueTextView.setText("Standard");
+        typeValueTextView.setText(order.getCarCategory());
+
         cancelButton.setText(getString(R.string.cancel).toUpperCase());
     }
 

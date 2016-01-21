@@ -32,13 +32,14 @@ public class Order implements Parcelable {
     private Location endingPointGeo;
 
     private Driver driver;
+    private String carCategory;
 
     public Order(String id, String status, String description, String username,
                  Date orderTime, Date userPickupTime, Date finishTime,
                  String startingPointName, String endingPointName,
                  Location startingPointGeo, Location endingPointGeo,
                  String paymentType, int moneyAmount, double distance,
-                 Driver driver) {
+                 Driver driver, String carCategory) {
         this.id = id;
         this.status = status;
         this.description = description;
@@ -59,6 +60,7 @@ public class Order implements Parcelable {
         this.distance = distance;
 
         this.driver = driver;
+        this.carCategory = carCategory;
     }
 
     public Order(Parcel in) {
@@ -98,6 +100,8 @@ public class Order implements Parcelable {
                 && !status.equals(OrderStatusConstants.CANCELED)) {
             driver = in.readParcelable(Driver.class.getClassLoader());
         }
+
+        carCategory = in.readString();
     }
 
     public String getId() {
@@ -148,6 +152,10 @@ public class Order implements Parcelable {
         return driver;
     }
 
+    public String getCarCategory(){
+        return carCategory;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -177,6 +185,8 @@ public class Order implements Parcelable {
                 && !status.equals(OrderStatusConstants.CANCELED)) {
             dest.writeParcelable(driver, flags);
         }
+
+        dest.writeString(carCategory);
     }
 
     public static final Creator CREATOR = new Creator() {
