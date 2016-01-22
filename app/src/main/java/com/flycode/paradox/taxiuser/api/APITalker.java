@@ -60,6 +60,9 @@ public class APITalker {
     private final String EMAIL = "email";
     private final String DATE_OF_BIRTH = "dateOfBirth";
     private final String TRANSACTIONS = "transactions";
+    private final String ONLY_COUNT = "onlyCount";
+    private final String COUNT = "count";
+    public static final String TRUE = "true";
 
     /*
 	 * Singletone
@@ -138,7 +141,7 @@ public class APITalker {
         });
     }
 
-    public void getOwnOrders(Context context, String[] statuses, final GetOrdersHandler getOrdersHandler){
+    public void getOwnOrders(Context context, String[] statuses, final boolean onlyCount, final GetOrdersHandler getOrdersHandler){
         if (!authenticate(context)) {
             return;
         }
@@ -152,6 +155,10 @@ public class APITalker {
         RequestParams params = new RequestParams();
         params.put(STATUS, statusArray.toString());
 
+        if( onlyCount ){
+            params.put(ONLY_COUNT, TRUE);
+        }
+
         String url = BASE_API_URL + ORDERS_URL + OWN_URL;
 
         asyncHttpClient.get(url, params, new JsonHttpResponseHandler() {
@@ -159,7 +166,13 @@ public class APITalker {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 if (getOrdersHandler != null) {
                     JSONArray orders = response.optJSONArray(ORDERS);
-                    getOrdersHandler.onGetOrdersSuccess(ModelFactory.makeOrders(orders));
+                    int ordersCount = response.optInt(COUNT);
+
+                    if(onlyCount){
+                        getOrdersHandler.onGetOrdersSuccess( null , ordersCount );
+                    } else {
+                        getOrdersHandler.onGetOrdersSuccess(ModelFactory.makeOrders(orders), ordersCount);
+                    }
                 }
             }
 

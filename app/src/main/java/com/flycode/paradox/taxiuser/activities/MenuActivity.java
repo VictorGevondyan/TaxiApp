@@ -19,7 +19,9 @@ import android.widget.Toast;
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.adapters.MenuGridAdapter;
 import com.flycode.paradox.taxiuser.api.APITalker;
+import com.flycode.paradox.taxiuser.api.GetOrdersHandler;
 import com.flycode.paradox.taxiuser.api.GetUserHandler;
+import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
 import com.flycode.paradox.taxiuser.fragments.MakeOrderFragment;
 import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
@@ -35,8 +37,10 @@ import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class MenuActivity extends Activity implements MakeOrderFragment.OrderFragmentListener, GetUserHandler {
+public class MenuActivity extends Activity implements MakeOrderFragment.OrderFragmentListener, GetUserHandler, GetOrdersHandler,
+        OrdersFragment.OnOngoingOrdersRefreshListener {
     private final String SAVED_CURRENT_POSITION = "savedCurrentPosition";
     private final String SAVED_CURRENT_FRAGMENT = "savedCurrentFragment";
 
@@ -114,14 +118,16 @@ public class MenuActivity extends Activity implements MakeOrderFragment.OrderFra
             makeOrderFragment.setListener(this);
         }
 
+        if (currentFragment instanceof OrdersFragment) {
+            OrdersFragment ordersFragment = (OrdersFragment) currentFragment;
+            ordersFragment.setOnOngoingOrdersRefreshListener(this);
+        }
+
         try {
             GCMSubscriber.registerForGcm(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // TODO: Replace this in more suitable place
-        APITalker.sharedTalker().getUser(this, this);
 
         getWindow()
             .getDecorView()
@@ -133,6 +139,15 @@ public class MenuActivity extends Activity implements MakeOrderFragment.OrderFra
                             sideMenu.requestLayout();
                         }
                     });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        APITalker.sharedTalker().getUser(this, this);
+
+        String[] statusesArray = { OrderStatusConstants.NOT_TAKEN, OrderStatusConstants.STARTED, OrderStatusConstants.TAKEN };
+        APITalker.sharedTalker().getOwnOrders(this, statusesArray, true,  this );
     }
 
     @Override
@@ -241,13 +256,13 @@ public class MenuActivity extends Activity implements MakeOrderFragment.OrderFra
             actionBarRightButton.setText(R.string.icon_refresh);
             actionBarTitleTextView.setText(R.string.ongoing);
 
-            fragment = OrdersFragment.initialize(OrdersFragment.TYPES.ONGOING);
+            fragment = OrdersFragment.initialize(OrdersFragment.TYPES.ONGOING, this);
         } else if (position == INDEX_HISTORY) {
             actionBarRightButton.setVisibility(View.VISIBLE);
             actionBarRightButton.setText(R.string.icon_refresh);
             actionBarTitleTextView.setText(R.string.history);
 
-            fragment = OrdersFragment.initialize(OrdersFragment.TYPES.HISTORY);
+            fragment = OrdersFragment.initialize(OrdersFragment.TYPES.HISTORY, this);
         } else if (position == INDEX_SETTINGS) {
             actionBarOverlayView.setVisibility(View.VISIBLE);
             actionBarTitleTextView.setText(R.string.settings);
@@ -302,9 +317,11 @@ public class MenuActivity extends Activity implements MakeOrderFragment.OrderFra
         currentPosition = INDEX_ONGOING;
 
         setIsActionBarTransparent(false);
-        actionBarRightButton.setVisibility(View.GONE);
 
-        Fragment fragment = OrdersFragment.initialize(OrdersFragment.TYPES.ONGOING);
+        actionBarRightButton.setText(R.string.icon_refresh);
+        actionBarRightButton.setVisibility(View.VISIBLE);
+
+        Fragment fragment = OrdersFragment.initialize(OrdersFragment.TYPES.ONGOING, this);
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_fragment, fragment, "fragment")
@@ -338,6 +355,31 @@ public class MenuActivity extends Activity implements MakeOrderFragment.OrderFra
         userData.setStatus(user.getStatus());
         userData.setBalance(user.getBalance());
 
+        if (menuGridAdapter != null) {
+            menuGridAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * GetOrdersHandler Methods
+     */
+
+    @Override
+    public void onGetOrdersSuccess(ArrayList<Order> ordersList, int ordersCount) {
+        UserData.sharedData(this).setOrderCount(ordersCount);
+
+        if (menuGridAdapter != null) {
+            menuGridAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onGetOrdersFailure() {
+
+    }
+
+    @Override
+    public void onOngoingOrdersRefresh() {
         if (menuGridAdapter != null) {
             menuGridAdapter.notifyDataSetChanged();
         }

@@ -19,6 +19,7 @@ import com.flycode.paradox.taxiuser.api.GetOrdersHandler;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
 import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
 import com.flycode.paradox.taxiuser.models.Order;
+import com.flycode.paradox.taxiuser.settings.UserData;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 import java.util.ArrayList;
@@ -44,14 +45,18 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
 
     private OrdersListAdapter ordersListAdapter;
     private TextView noOrderTextView;
+    private OnOngoingOrdersRefreshListener listener;
 
-    public static OrdersFragment initialize(String type) {
+    public static OrdersFragment initialize(String type, OnOngoingOrdersRefreshListener listener) {
         Bundle arguments = new Bundle();
         arguments.putString(TYPE, type);
 
         OrdersFragment ordersFragment = new OrdersFragment();
         ordersFragment.setArguments(arguments);
 
+        if(type.equals(TYPES.ONGOING)) {
+            ordersFragment.setOnOngoingOrdersRefreshListener(listener);
+        }
         return ordersFragment;
     }
 
@@ -82,7 +87,7 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
 
         APITalker.sharedTalker().getOwnOrders(
                 getActivity(),
-                type.equals(TYPES.HISTORY) ? TYPES.HISTORY_STATUSES : TYPES.ONGOING_STATUSES,
+                type.equals(TYPES.HISTORY) ? TYPES.HISTORY_STATUSES : TYPES.ONGOING_STATUSES, false,
                 this);
     }
 
@@ -108,13 +113,19 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
      * GetOrdersHandler Methods
      */
 
-    public void onGetOrdersSuccess( ArrayList<Order> ordersList ) {
+    public void onGetOrdersSuccess( ArrayList<Order> ordersList, int ordersCount ) {
         ordersListAdapter.setItems(ordersList);
+
+        UserData.sharedData(getActivity()).setOrderCount(ordersCount);
 
         if (ordersList.isEmpty()) {
             noOrderTextView.setVisibility(View.VISIBLE);
         } else {
             noOrderTextView.setVisibility(View.GONE);
+        }
+
+        if( listener !=null && getArguments().getString(TYPE).equals(TYPES.ONGOING) ) {
+            listener.onOngoingOrdersRefresh();
         }
     }
 
@@ -122,7 +133,6 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
     public void onGetOrdersFailure() {
         MessageDialog.initialize("Error", "GET ORDERS ERROR").show(getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
     }
-
 
     public void refresh(){
 
@@ -132,9 +142,15 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
 
         APITalker.sharedTalker().getOwnOrders(
                 getActivity(),
-                type.equals(TYPES.HISTORY) ? TYPES.HISTORY_STATUSES : TYPES.ONGOING_STATUSES,
+                type.equals(TYPES.HISTORY) ? TYPES.HISTORY_STATUSES : TYPES.ONGOING_STATUSES, false,
                 this);
-
     }
 
+    public interface OnOngoingOrdersRefreshListener{
+        void onOngoingOrdersRefresh();
+    }
+
+    public void setOnOngoingOrdersRefreshListener( OnOngoingOrdersRefreshListener listener ){
+        this.listener = listener;
+    }
 }

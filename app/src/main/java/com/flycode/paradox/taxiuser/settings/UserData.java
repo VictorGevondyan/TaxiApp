@@ -23,6 +23,8 @@ public class UserData {
     private static final String DATE_OF_BIRTH = "dateOfBirth";
     private static final String STATUS = "status";
     private static final String BALANCE = "balance";
+    private static final String ORDERS_COUNT = "onlyCount";
+
 
     private final SharedPreferences.Editor dataEditor;
 
@@ -35,6 +37,7 @@ public class UserData {
     private Date dateOfBirth;
     private String status;
     private int balance;
+    private int orderCount;
 
     public static UserData sharedData(Context context) {
         if (sharedData == null) {
@@ -57,6 +60,7 @@ public class UserData {
 //        ModelFactory.dateFromString(dataPreferences.getString(SEX, ""), dateOfBirth);
         status = dataPreferences.getString(STATUS, "");
         balance = dataPreferences.getInt(BALANCE, 0);
+        balance = dataPreferences.getInt(ORDERS_COUNT, 0);
     }
 
     public String getId() {
@@ -139,6 +143,14 @@ public class UserData {
     public void setBalance(int balance) {
         this.balance = balance;
         dataEditor.putInt(BALANCE, balance).commit();
+    }
+
+    public int getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(int orderCount) {
+        this.orderCount = orderCount;
     }
 }
 
