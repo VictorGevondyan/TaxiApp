@@ -43,8 +43,6 @@ public class APITalker {
 
     private final String USERNAME = "username";
     private final String PASSWORD = "password";
-    private final String ORDERS = "orders";
-    private final String STATUS = "status";
     private final String STARTING_POINT = "startingPoint";
     private final String NAME = "name";
     private final String GEO = "geo";
@@ -55,10 +53,12 @@ public class APITalker {
     private final String ANDROID = "android";
     private final String DEVICE_ID = "deviceId";
     private final String OLD_PASSWORD = "oldPassword";
-    private final String NEW_PASSWODR = "newPassword";
-    private final String SEX = "sex";
+    private final String NEW_PASSWORD = "newPassword";
+    private final String ORDER = "order";
+    private final String ORDERS = "orders";
+    private final String STATUS = "status";
     private final String EMAIL = "email";
-    private final String DATE_OF_BIRTH = "dateOfBirth";
+    private final String LIMIT = "limit";
     private final String TRANSACTIONS = "transactions";
 
     /*
@@ -238,7 +238,7 @@ public class APITalker {
             public void onSuccess(int statusCode, Header[] headers,
                                   JSONObject response) {
 
-                if (getOwnTransactionsHandler!= null) {
+                if (getOwnTransactionsHandler != null) {
                     JSONArray transactions = response.optJSONArray(TRANSACTIONS);
                     getOwnTransactionsHandler.onGetOwnTransactionsSuccess(ModelFactory.makeTransactions(transactions));
                 }
@@ -249,14 +249,14 @@ public class APITalker {
                                   Header[] headers,
                                   java.lang.Throwable throwable,
                                   org.json.JSONObject errorResponse) {
-                if (getOwnTransactionsHandler!= null) {
+                if (getOwnTransactionsHandler != null) {
                     getOwnTransactionsHandler.onGetOwnTransactionsFailure();
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (getOwnTransactionsHandler!= null) {
+                if (getOwnTransactionsHandler != null) {
                     Log.d("STATUS CODE", statusCode + "");
                     Log.d("RESPONSE STRING", responseString);
                     getOwnTransactionsHandler.onGetOwnTransactionsFailure();
@@ -407,7 +407,7 @@ public class APITalker {
 
         RequestParams params = new RequestParams();
         params.put(OLD_PASSWORD, oldPassword);
-        params.put(NEW_PASSWODR, newPassword);
+        params.put(NEW_PASSWORD, newPassword);
 
         String url = BASE_API_URL + USERS_URL + USER_URL + PASSWORD_URL;
 
@@ -426,8 +426,8 @@ public class APITalker {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    Log.d("STATUS CODE", statusCode + "");
-                    Log.d("RESPONSE STRING", responseString);
+                Log.d("STATUS CODE", statusCode + "");
+                Log.d("RESPONSE STRING", responseString);
             }
 
 
@@ -450,7 +450,7 @@ public class APITalker {
             public void onSuccess(int statusCode, Header[] headers,
                                   JSONObject response) {
 
-                if (changeNameAndMail!= null) {
+                if (changeNameAndMail != null) {
                     changeNameAndMail.onChangeNameAndMailSuccess();
                 }
             }
@@ -460,21 +460,47 @@ public class APITalker {
                                   Header[] headers,
                                   java.lang.Throwable throwable,
                                   org.json.JSONObject errorResponse) {
-                if (changeNameAndMail!= null) {
+                if (changeNameAndMail != null) {
                     changeNameAndMail.onChangeNameAndMailFailure();
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (changeNameAndMail!= null) {
+                if (changeNameAndMail != null) {
                     Log.d("STATUS CODE", statusCode + "");
                     Log.d("RESPONSE STRING", responseString);
                     changeNameAndMail.onChangeNameAndMailFailure();
                 }
             }
+        });
+    }
 
+    public void getPointsForOrder(String orderId, String status, int limit, final PointsForOrderListener listener) {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put(ORDER, orderId);
+        requestParams.put(STATUS, status);
 
+        if (limit > 0) {
+            requestParams.put(LIMIT, limit);
+        }
+
+        String url = BASE_API_URL + POINTS_URL;
+
+        asyncHttpClient.get(url, requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+
+                listener.onGetPointsForOrderSuccess(response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                listener.onGetPointsForOrderFail();
+            }
         });
     }
 
@@ -504,4 +530,3 @@ public class APITalker {
         return locationJSON;
     }
 }
-

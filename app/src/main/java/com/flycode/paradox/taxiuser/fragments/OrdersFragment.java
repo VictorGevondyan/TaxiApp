@@ -68,7 +68,7 @@ public class OrdersFragment extends SuperFragment implements GetOrdersHandler {
         String type = getArguments().getString(TYPE);
 
         noOrderTextView = (TextView) ordersView.findViewById(R.id.no_order);
-        noOrderTextView.setText(type.equals(TYPES.HISTORY) ? R.string.no_ongoing_orders : R.string.no_history);
+        noOrderTextView.setText(type.equals(TYPES.HISTORY) ? R.string.no_history : R.string.no_ongoing_orders);
         noOrderTextView.setTypeface(TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
 
         return  ordersView;

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.GetOrderHandler;
+import com.flycode.paradox.taxiuser.api.PointsForOrderListener;
+import com.flycode.paradox.taxiuser.constants.DriverStatusConstants;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
 import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
 import com.flycode.paradox.taxiuser.models.Order;
@@ -25,19 +28,27 @@ import com.flycode.paradox.taxiuser.utils.LocaleUtils;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import com.flycode.paradox.taxiuser.views.MaximalScrollView;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.annotations.Polyline;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.constants.MyLocationTracking;
 import com.mapbox.mapboxsdk.constants.Style;
+import com.mapbox.mapboxsdk.geometry.BoundingBox;
+import com.mapbox.mapboxsdk.geometry.CoordinateBounds;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class OrderActivity extends Activity implements GetOrderHandler {
+public class OrderActivity extends Activity implements GetOrderHandler, PointsForOrderListener {
     public static final String ORDER = "order";
 
-    private final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 0;
+    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 0;
 
     private MapView mapView;
     private Order order;
@@ -45,7 +56,16 @@ public class OrderActivity extends Activity implements GetOrderHandler {
     private Timer timer;
 
     private String driverPhoneNumber;
-    Intent callIntent;
+    private Intent callIntent;
+
+    private boolean hasCenteredOnes = false;
+
+    private Marker userMarker;
+    private Marker taxiMarker;
+    private Marker startMarker;
+    private Marker finishMarker;
+    private Marker locationMarker;
+    private Polyline pathPolyline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +99,6 @@ public class OrderActivity extends Activity implements GetOrderHandler {
         mapView.setStyleUrl(Style.LIGHT);
         mapView.setZoomLevel(15);
         mapView.setZoomControlsEnabled(false);
-        mapView.setMyLocationEnabled(true);
         mapView.setCompassEnabled(false);
         mapView.setMyLocationTrackingMode(MyLocationTracking.TRACKING_NONE);
         mapView.onCreate(savedInstanceState);
@@ -92,18 +111,22 @@ public class OrderActivity extends Activity implements GetOrderHandler {
         super.onResume();
         mapView.onResume();
 
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                new Handler(getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        APITalker.sharedTalker().getOrder(OrderActivity.this, order.getId(), OrderActivity.this);
-                    }
-                });
-            }
-        }, 30000, 30000);
+        if (order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)
+                || order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)
+                || order.getStatus().equals(OrderStatusConstants.STARTED)) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    new Handler(getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            APITalker.sharedTalker().getOrder(OrderActivity.this, order.getId(), OrderActivity.this);
+                        }
+                    });
+                }
+            }, 30000, 30000);
+        }
     }
 
     @Override
@@ -111,7 +134,10 @@ public class OrderActivity extends Activity implements GetOrderHandler {
         super.onPause();
         mapView.onPause();
 
-        timer.cancel();
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
     }
 
     @Override
@@ -149,24 +175,51 @@ public class OrderActivity extends Activity implements GetOrderHandler {
 
     @Override
     public void finish() {
-        if(this.getCallingActivity() == null) {
-            Intent menuActivityIntent = new Intent(OrderActivity.this, MenuActivity.class);
-            startActivity(menuActivityIntent);
-        }
-
         super.finish();
         overridePendingTransition(R.anim.hold, R.anim.slide_right_out);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if ( requestCode == MY_PERMISSIONS_REQUEST_CALL_PHONE ) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startActivity(callIntent);
+            } else {
+            }
+
+            return;
+        }
+    }
+
     public void init(Order order) {
-        LatLng startingPoint = new LatLng(order.getStartingPointGeo().getLatitude(), order.getStartingPointGeo().getLongitude());
+        if (order.getStatus().equals(OrderStatusConstants.TAKEN)
+                || order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)) {
+            LatLng pickupCoordinate = new LatLng(
+                    order.getStartingPointGeo().getLatitude(),
+                    order.getStartingPointGeo().getLongitude());
 
-        MarkerOptions userLocationMarkerOptions = new MarkerOptions();
-        userLocationMarkerOptions.position(startingPoint);
-        userLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.people));
+            MarkerOptions pickupLocationMarkerOptions = new MarkerOptions();
+            pickupLocationMarkerOptions.position(pickupCoordinate);
+            pickupLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_user));
 
-        mapView.addMarker(userLocationMarkerOptions);
-        mapView.setCenterCoordinate(startingPoint);
+            mapView.setMyLocationEnabled(true);
+
+            if (userMarker != null) {
+                mapView.removeAnnotation(userMarker);
+            } else {
+                mapView.setCenterCoordinate(pickupCoordinate, false);
+            }
+
+            userMarker = mapView.addMarker(pickupLocationMarkerOptions);
+        }
+
+        if (order.getStatus().equals(OrderStatusConstants.TAKEN)) {
+            APITalker.sharedTalker().getPointsForOrder(order.getId(), DriverStatusConstants.GOING_TO_ORDER, 1, this);
+        } else if (order.getStatus().equals(OrderStatusConstants.STARTED)
+                || order.getStatus().equals(OrderStatusConstants.FINISHED)) {
+            APITalker.sharedTalker().getPointsForOrder(order.getId(), DriverStatusConstants.IN_ORDER, 0, this);
+        }
 
         if (order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)
                 || order.getStatus().equals(OrderStatusConstants.TAKEN)
@@ -227,19 +280,23 @@ public class OrderActivity extends Activity implements GetOrderHandler {
         statusValueTextView.setTypeface(robotoTypeface);
 
         String durationString = "";
-        long durationMillis = order.getFinishTime().getTime() - order.getUserPickupTime().getTime();
-        long seconds = durationMillis / 1000;
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
 
-        if (hours > 0) {
-            durationString = durationString + hours + getString(R.string.hour);
-        }
-        if (minutes > 0) {
-            durationString = durationString + " " + (minutes - hours * 60) + getString(R.string.minute);
-        }
+        if (order.getFinishTime() != null
+                && order.getUserPickupTime() != null) {
+            long durationMillis = order.getFinishTime().getTime() - order.getUserPickupTime().getTime();
+            long seconds = durationMillis / 1000;
+            long minutes = seconds / 60;
+            long hours = minutes / 60;
 
-        durationString = durationString + " " + (seconds - minutes * 60) + getString(R.string.second);
+            if (hours > 0) {
+                durationString = durationString + hours + getString(R.string.hour);
+            }
+            if (minutes > 0) {
+                durationString = durationString + " " + (minutes - hours * 60) + getString(R.string.minute);
+            }
+
+            durationString = durationString + " " + (seconds - minutes * 60) + getString(R.string.second);
+        }
 
         int bonus = order.getMoneyAmount() * 20 / 100;
 
@@ -301,8 +358,7 @@ public class OrderActivity extends Activity implements GetOrderHandler {
     }
 
     public void onActionBarRightButtonClicked(View view) {
-        // We get the phone number of driver, who has taken the order. Driver's username is his phone number
-        driverPhoneNumber = order.getDriver().getUsername(); 
+        driverPhoneNumber = order.getDriver().getUsername();
         callIntent = new Intent(Intent.ACTION_CALL);
 
         callIntent.setData(Uri.parse("tel:" + driverPhoneNumber));
@@ -332,24 +388,207 @@ public class OrderActivity extends Activity implements GetOrderHandler {
         MessageDialog.initialize("Error", "GET ORDER ERROR").show(getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
     }
 
+    /**
+     * PointsForOrderListener Methods
+     */
+
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        if ( requestCode == MY_PERMISSIONS_REQUEST_CALL_PHONE ) {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    startActivity(callIntent);
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-            // other 'case' lines to check for other
-            // permissions this app might request
+    public void onGetPointsForOrderFail() {
+
+    }
+
+    @Override
+    public void onGetPointsForOrderSuccess(JSONArray coordinates) {
+        if (order.getStatus().equals(OrderStatusConstants.STARTED)
+                || order.getStatus().equals(OrderStatusConstants.FINISHED)) {
+            drawPath(coordinates);
+        } else if (order.getStatus().equals(OrderStatusConstants.TAKEN)) {
+            showTaxiLocation(coordinates);
+        }
+    }
+
+    private void showTaxiLocation(JSONArray coordinates) {
+        if (coordinates.length() == 0) {
+            return;
         }
 
+        JSONObject coordinate = coordinates.optJSONObject(0);
+        JSONArray geo = coordinate.optJSONArray("geo");
+        double latitude = geo.optDouble(0);
+        double longitude = geo.optDouble(1);
+
+        double south = order.getStartingPointGeo().getLatitude();
+        double north = order.getStartingPointGeo().getLatitude();
+        double east = order.getStartingPointGeo().getLongitude();
+        double west = order.getStartingPointGeo().getLongitude();
+
+        if (latitude < south) {
+            south = latitude;
+        }
+        if (latitude > north) {
+            north = latitude;
+        }
+        if (longitude < west) {
+            west = longitude;
+        }
+        if (longitude > east) {
+            east = longitude;
+        }
+
+        if (north - south < 0.0005) {
+            north = north + 0.0005;
+            south = south - 0.0005;
+        }
+        if (east - west < 0.0005) {
+            east = east + 0.0005;
+            west = west - 0.0005;
+        }
+
+        if (taxiMarker != null) {
+            mapView.removeAnnotation(taxiMarker);
+        } else {
+            CoordinateBounds coordinateBounds = new CoordinateBounds(new LatLng(north, east), new LatLng(south, west));
+            View actionBarView = findViewById(R.id.action_bar);
+            View orderInfoView = findViewById(R.id.order_info);
+
+            mapView.setVisibleCoordinateBounds(
+                coordinateBounds,
+                new RectF(
+                        actionBarView.getMeasuredHeight() / 2,
+                        actionBarView.getMeasuredHeight(),
+                        actionBarView.getMeasuredHeight() / 2,
+                        orderInfoView.getMeasuredHeight()),
+                        true);
+        }
+
+        MarkerOptions taxiLocationMarkerOptions = new MarkerOptions();
+        taxiLocationMarkerOptions.position(new LatLng(latitude, longitude));
+        taxiLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_taxi));
+
+        taxiMarker = mapView.addMarker(taxiLocationMarkerOptions);
+    }
+
+    private void drawPath(JSONArray coordinates) {
+        double south = Double.MAX_VALUE;
+        double north = Double.MIN_VALUE;
+        double east = Double.MIN_VALUE;
+        double west = Double.MAX_VALUE;
+
+        PolylineOptions pathPolylineOptions = new PolylineOptions();
+        pathPolylineOptions.color(getResources().getColor(R.color.path_grey));
+        pathPolylineOptions.width(5);
+
+        if (coordinates.length() > 0) {
+            for (int index = 0; index < coordinates.length(); index++) {
+                JSONObject coordinate = coordinates.optJSONObject(index);
+                JSONArray geo = coordinate.optJSONArray("geo");
+                double latitude = geo.optDouble(0);
+                double longitude = geo.optDouble(1);
+
+                pathPolylineOptions.add(new LatLng(latitude, longitude));
+
+                if (latitude < south) {
+                    south = latitude;
+                }
+                if (latitude > north) {
+                    north = latitude;
+                }
+                if (longitude < west) {
+                    west = longitude;
+                }
+                if (longitude > east) {
+                    east = longitude;
+                }
+            }
+        } else {
+            return;
+        }
+
+        if (north - south < 0.0005) {
+            north = north + 0.0005;
+            south = south - 0.0005;
+        }
+        if (east - west < 0.0005) {
+            east = east + 0.0005;
+            west = west - 0.0005;
+        }
+
+        if (pathPolyline != null) {
+            mapView.removeAnnotation(pathPolyline);
+        } else {
+            BoundingBox zoomLevel = new BoundingBox(north, east, south, west);
+            CoordinateBounds coordinateBounds = new CoordinateBounds(new LatLng(north, east), new LatLng(south, west));
+
+            if (zoomLevel.isValid()) {
+                View actionBarView = findViewById(R.id.action_bar);
+                int infoHeight = 0;
+
+                if (order.getStatus().equals(OrderStatusConstants.STARTED)) {
+                    View driverInfoView = findViewById(R.id.driver_info);
+                    infoHeight = driverInfoView.getMeasuredHeight();
+                } else {
+                    View orderInfoView = findViewById(R.id.order_info);
+                    infoHeight = orderInfoView.getMeasuredHeight();
+                }
+
+                mapView.setVisibleCoordinateBounds(
+                        coordinateBounds,
+                        new RectF(
+                                actionBarView.getMeasuredHeight() / 2,
+                                actionBarView.getMeasuredHeight(),
+                                actionBarView.getMeasuredHeight() / 2,
+                                infoHeight),
+                        false);
+            }
+        }
+
+        pathPolyline = mapView.addPolyline(pathPolylineOptions);
+
+        if (userMarker != null) {
+            mapView.removeAnnotation(userMarker);
+            userMarker = null;
+        }
+
+        if (taxiMarker != null) {
+            mapView.removeAnnotation(taxiMarker);
+            taxiMarker = null;
+        }
+
+        if (startMarker != null) {
+            mapView.removeAnnotation(startMarker);
+        }
+
+        MarkerOptions startLocationMarkerOptions = new MarkerOptions();
+        startLocationMarkerOptions.position(pathPolylineOptions.getPoints().get(pathPolylineOptions.getPoints().size() - 1));
+        startLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_start));
+
+        startMarker = mapView.addMarker(startLocationMarkerOptions);
+
+        if (order.getStatus().equals(OrderStatusConstants.STARTED)) {
+            if (locationMarker != null) {
+                mapView.removeAnnotation(locationMarker);
+            }
+
+            MarkerOptions locationMarkerOptions = new MarkerOptions();
+            locationMarkerOptions.position(pathPolylineOptions.getPoints().get(0));
+            locationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_location));
+
+            locationMarker = mapView.addMarker(locationMarkerOptions);
+        } else if (order.getStatus().equals(OrderStatusConstants.FINISHED)) {
+            if (locationMarker != null) {
+                mapView.removeAnnotation(locationMarker);
+                locationMarker = null;
+            }
+
+            if (finishMarker != null) {
+                mapView.removeAnnotation(finishMarker);
+            }
+
+            MarkerOptions finishLocationMarkerOptions = new MarkerOptions();
+            finishLocationMarkerOptions.position(pathPolylineOptions.getPoints().get(0));
+            finishLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_finish));
+
+            finishMarker = mapView.addMarker(finishLocationMarkerOptions);
+        }
+    }
 }
