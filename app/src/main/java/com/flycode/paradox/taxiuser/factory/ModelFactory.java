@@ -63,6 +63,7 @@ public class ModelFactory {
     private static final String CAR_NUMBER = "carNumber";
     private static final String DRIVER = "driver";
     private static final String EMAIL = "email";
+    private static final String CAR_CATEGORY= "carCategory";
 
     public static ArrayList<Order> makeOrders(JSONArray ordersJSONArray) {
         ArrayList<Order> orders = new ArrayList<>();
@@ -121,6 +122,10 @@ public class ModelFactory {
             driver = new Driver(carNumber, username);
         }
 
+        // Car Category
+        JSONObject carCategoryJSON = orderJSON.optJSONObject(CAR_CATEGORY);
+        String carCategory = carCategoryJSON.optString(NAME);
+
         // Transaction
         JSONObject transactionJSONObject = orderJSON.optJSONObject(TRANSACTION);
         String paymentType = transactionJSONObject.optString(PAYMENT_TYPE);
@@ -141,7 +146,7 @@ public class ModelFactory {
                 startingPointName, endingPointName,
                 startingPointGeo, endingPointGeo,
                 paymentType, moneyAmount, distance,
-                driver);
+                driver, carCategory);
     }
 
     public static CarCategory[] makeCarCategories(JSONArray carCategoriesArray) {
