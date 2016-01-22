@@ -124,7 +124,11 @@ public class ModelFactory {
 
         // Car Category
         JSONObject carCategoryJSON = orderJSON.optJSONObject(CAR_CATEGORY);
-        String carCategory = carCategoryJSON.optString(NAME);
+        String carCategory = "";
+
+        if (carCategoryJSON != null) {
+            carCategory = carCategoryJSON.optString(NAME);
+        }
 
         // Transaction
         JSONObject transactionJSONObject = orderJSON.optJSONObject(TRANSACTION);

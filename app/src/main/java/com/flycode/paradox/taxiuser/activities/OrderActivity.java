@@ -561,7 +561,7 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         }
 
         MarkerOptions startLocationMarkerOptions = new MarkerOptions();
-        startLocationMarkerOptions.position(pathPolylineOptions.getPoints().get(pathPolylineOptions.getPoints().size() - 1));
+        startLocationMarkerOptions.position(pathPolylineOptions.getPoints().get(0));
         startLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_start));
 
         startMarker = mapView.addMarker(startLocationMarkerOptions);
@@ -572,7 +572,7 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
             }
 
             MarkerOptions locationMarkerOptions = new MarkerOptions();
-            locationMarkerOptions.position(pathPolylineOptions.getPoints().get(0));
+            locationMarkerOptions.position(pathPolylineOptions.getPoints().get(pathPolylineOptions.getPoints().size() - 1));
             locationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_location));
 
             locationMarker = mapView.addMarker(locationMarkerOptions);
@@ -587,7 +587,7 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
             }
 
             MarkerOptions finishLocationMarkerOptions = new MarkerOptions();
-            finishLocationMarkerOptions.position(pathPolylineOptions.getPoints().get(0));
+            finishLocationMarkerOptions.position(pathPolylineOptions.getPoints().get(pathPolylineOptions.getPoints().size() - 1));
             finishLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_finish));
 
             finishMarker = mapView.addMarker(finishLocationMarkerOptions);
