@@ -8,6 +8,6 @@ import java.util.ArrayList;
  * Created by victor on 12/15/15.
  */
 public interface GetOrdersHandler {
-    public void onGetOrdersSuccess( ArrayList<Order> ordersList);
+    public void onGetOrdersSuccess( ArrayList<Order> ordersList, int ordersCount );
     public void onGetOrdersFailure();
 }

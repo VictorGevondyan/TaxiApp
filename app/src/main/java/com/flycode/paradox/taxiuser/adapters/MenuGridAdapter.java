@@ -62,6 +62,11 @@ public class MenuGridAdapter extends ArrayAdapter<MenuItem> {
             balanceAmount.setVisibility(View.VISIBLE);
             balanceAmount.setText(String.valueOf(UserData.sharedData(context).getBalance()));
             balanceAmount.setTypeface(robotoThinTypeface);
+        } else if( ( MenuConstants.menuTitles[position] ) == R.string.ongoing ){
+            TextView balanceAmount = ( TextView ) convertView.findViewById(R.id.balance_amount);
+            balanceAmount.setVisibility(View.VISIBLE);
+            balanceAmount.setText(String.valueOf(UserData.sharedData(context).getOrderCount()));
+            balanceAmount.setTypeface(robotoThinTypeface);
         }
 
         return convertView;
