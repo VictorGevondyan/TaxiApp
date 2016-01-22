@@ -88,6 +88,10 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         Intent orderIntent = getIntent();
         order = orderIntent.getParcelableExtra(ORDER);
 
+        if (savedInstanceState != null) {
+            order = savedInstanceState.getParcelable(ORDER);
+        }
+
         String orderStatus = order.getStatus();
         boolean setPhoneButtonVisible = (order.getDriver() != null) && (orderStatus.equals(OrderStatusConstants.STARTED) ||
                 orderStatus.equals(OrderStatusConstants.TAKEN));
@@ -125,7 +129,7 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
                         }
                     });
                 }
-            }, 30000, 30000);
+            }, 10000, 10000);
         }
     }
 
@@ -160,8 +164,11 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
+
+        outState.putParcelable(ORDER, order);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -560,6 +567,8 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
             mapView.removeAnnotation(startMarker);
         }
 
+        mapView.setMyLocationEnabled(false);
+
         MarkerOptions startLocationMarkerOptions = new MarkerOptions();
         startLocationMarkerOptions.position(pathPolylineOptions.getPoints().get(0));
         startLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_start));
@@ -577,6 +586,11 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
 
             locationMarker = mapView.addMarker(locationMarkerOptions);
         } else if (order.getStatus().equals(OrderStatusConstants.FINISHED)) {
+            if (timer != null) {
+                timer.cancel();
+                timer.purge();
+            }
+
             if (locationMarker != null) {
                 mapView.removeAnnotation(locationMarker);
                 locationMarker = null;
