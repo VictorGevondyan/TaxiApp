@@ -1,50 +1,65 @@
 package com.flycode.paradox.taxiuser.fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.api.APITalker;
 import com.flycode.paradox.taxiuser.api.CarCategoriesListener;
 import com.flycode.paradox.taxiuser.api.MakeOrderListener;
+import com.flycode.paradox.taxiuser.database.Database;
 import com.flycode.paradox.taxiuser.dialogs.CommentDialog;
+import com.flycode.paradox.taxiuser.dialogs.LoadingDialog;
+import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
 import com.flycode.paradox.taxiuser.dialogs.PickTimeDialog;
 import com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout;
 import com.flycode.paradox.taxiuser.models.CarCategory;
 import com.flycode.paradox.taxiuser.models.Order;
+import com.flycode.paradox.taxiuser.settings.UserData;
 import com.flycode.paradox.taxiuser.utils.GeocodeUtil;
+import com.flycode.paradox.taxiuser.utils.HardwareAccessibilityUtil;
+import com.flycode.paradox.taxiuser.utils.MessageHandlerUtil;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import com.flycode.paradox.taxiuser.views.LocationPickerView;
 import com.flycode.paradox.taxiuser.views.MaximalScrollView;
 import com.flycode.paradox.taxiuser.views.OrderView;
 import com.flycode.paradox.taxiuser.views.RhombusView;
-import com.mapbox.mapboxsdk.constants.MyLocationTracking;
-import com.mapbox.mapboxsdk.constants.Style;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.views.MapView;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class MakeOrderFragment extends SuperFragment implements View.OnClickListener, CommentDialog.CommentDialogListener, CarCategoriesListener,
-        GeocodeUtil.GeocodeListener, MakeOrderListener, MapView.OnMyLocationChangeListener, MapView.OnMapChangedListener,
-        PickTimeDialog.PickTimeDialogListener, CommentDialog.KeyboardStateListener {
+        GeocodeUtil.GeocodeListener, MakeOrderListener,
+        PickTimeDialog.PickTimeDialogListener, OnMapReadyCallback, GoogleMap.OnCameraChangeListener, GoogleMap.OnMyLocationChangeListener, TextWatcher, MessageDialog.MessageDialogListener {
     private static final Object LOCKER = new Object();
     private static final String COMMENT_DIALOG_TAG = "commentDialogTag";
     private static final String TIME_DIALOG_TAG = "timeDialogTag";
+    private static final String HAVE_ORDERS_DIALOG_TAG = "haveOrdersDialogTag";
 
     private static final String SAVED_ORDER_STAGE = "savedOrderStage";
     private static final String SAVED_CAR_CATEGORY_INDEX = "savedCarCategoryIndex";
@@ -53,11 +68,16 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
     private static final String SAVED_CASH_ONLY_STATE = "savedCashOnlyState";
     private static final String SAVED_LOCATION = "savedLocation";
     private static final String SAVED_ADDRESS = "savedAddress";
+    private static final String SAVED_QUERY = "savedQuery";
+    private static final String SAVED_RESULT_ADDRESSES = "savedResultAddresses";
+    private static final String SAVED_RESULT_PLACE_IDS = "savedPlaceIds";
+    private static final String SAVED_MANUAL_QUERY_VISIBILITY = "savedManualQueryVisibility";
 
-    //    private MapView mapView;
-//    private GoogleMap googleMap;
     private MapView mapView;
+    private GoogleMap googleMap;
     private boolean hasMyLocationDetermined;
+    private LatLng location;
+    private LatLng myLocation;
 
     private View orderFragmentView;
 
@@ -71,14 +91,23 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
     private TextView minutesTextView;
     private TextView hoursTextView;
     private TextView dayTextView;
-
     private TextView locationTopTextView;
+    private TextView noSearchResultsTextView;
 
+    private EditText locationEditText;
+
+    private Button cancelButton;
     private Button closeIconButton;
     private OrderView orderButton;
 
     private LinearLayout carCategoriesSectionLinearLayout;
     private LinearLayout orderDetailsLinerLayout;
+    private LinearLayout mapControlsLinearLayout;
+    private LinearLayout searchResultContainerLinearLayout;
+
+    private RelativeLayout searchResultsRelativeLayout;
+
+    private LoadingDialog loadingDialog;
 
     private boolean isLater = false;
     private boolean isCashOnly = false;
@@ -95,6 +124,8 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
     private int savedCarCategoryIndex = 0;
 
     private CarCategory currentCarCategory;
+    private String[] resultPlaceIds;
+    private String[] resultAddresses;
     private OrderFragmentListener listener;
 
     public static MakeOrderFragment initialize(OrderFragmentListener listener) {
@@ -106,21 +137,22 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         super.onCreate(savedInstanceState);
 
-        orderFragmentView = inflater.inflate(R.layout.fragment_order, container, false);
+        loadingDialog = new LoadingDialog(getActivity());
+
+        orderFragmentView = inflater.inflate(R.layout.fragment_make_order, container, false);
 
         Typeface robotoThinTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
         Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
 
-//        mapView = (MapView) orderView.findViewById(R.id.map_view);
-//        mapView.onCreate(savedInstanceState);
-//        MapsInitializer.initialize(getActivity());
-//
-//        googleMap = mapView.getMap();
-//        googleMap.setMyLocationEnabled(true);
-//        googleMap.setOnCameraChangeListener(this);
+        mapView = (MapView) orderFragmentView.findViewById(R.id.map_view);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+        MapsInitializer.initialize(getActivity());
 
         needsRelayout = true;
 
@@ -129,8 +161,9 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         hasMyLocationDetermined = false;
 
-        LatLng location = null;
         String savedAddress = "";
+        String savedQuery = "";
+        boolean isManualQueryVisible = false;
 
         if (savedInstanceState != null) {
             isFromSaveInstanceState = true;
@@ -146,25 +179,11 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
             hasMyLocationDetermined = true;
 
             savedAddress = savedInstanceState.getString(SAVED_ADDRESS, "");
+            savedQuery = savedInstanceState.getString(SAVED_QUERY, "");
+            resultAddresses = savedInstanceState.getStringArray(SAVED_RESULT_ADDRESSES);
+            resultPlaceIds = savedInstanceState.getStringArray(SAVED_RESULT_PLACE_IDS);
+            isManualQueryVisible = savedInstanceState.getBoolean(SAVED_MANUAL_QUERY_VISIBILITY, false);
         }
-
-        mapView = (MapView) orderFragmentView.findViewById(R.id.map_view);
-        mapView.setStyleUrl(Style.LIGHT);
-        mapView.setZoomLevel(15);
-        mapView.setZoomControlsEnabled(false);
-        mapView.setCompassEnabled(false);
-        mapView.setMyLocationEnabled(true);
-        mapView.setMyLocationTrackingMode(MyLocationTracking.TRACKING_NONE);
-        mapView.setOnMyLocationChangeListener(this);
-
-        if (hasMyLocationDetermined) {
-            mapView.setCenterCoordinate(location);
-        } else {
-            mapView.setCenterCoordinate(new LatLng(40.177570, 44.512549));
-            mapView.addOnMapChangedListener(this);
-        }
-
-        mapView.onCreate(savedInstanceState);
 
         isNowRhombus = (RhombusView) orderFragmentView.findViewById(R.id.now_rhombus);
         isLaterRhombus = (RhombusView) orderFragmentView.findViewById(R.id.later_rhombus);
@@ -215,20 +234,26 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         locationTopTextView.setText(savedAddress);
         locationTextView.setText(savedAddress);
 
+        locationTopTextView.setOnClickListener(this);
+
         setupTimeRhombus();
         setupCacheOnlyRhombus();
 
         Fragment commentDialogCandidate = getFragmentManager().findFragmentByTag(COMMENT_DIALOG_TAG);
         Fragment timeDialogCandidate = getFragmentManager().findFragmentByTag(TIME_DIALOG_TAG);
+        Fragment haveOrdersDialogCandidate = getFragmentManager().findFragmentByTag(HAVE_ORDERS_DIALOG_TAG);
 
-        if (commentDialogCandidate != null) {
+        if (commentDialogCandidate instanceof CommentDialog) {
             CommentDialog commentsDialog = (CommentDialog) commentDialogCandidate;
             commentsDialog.setListener(this);
-            commentsDialog.setKeyboardStateListener(this);
         }
-        if (timeDialogCandidate != null) {
+        if (timeDialogCandidate instanceof PickTimeDialog) {
             PickTimeDialog timeDialog = (PickTimeDialog) timeDialogCandidate;
             timeDialog.setListener(this);
+        }
+        if (haveOrdersDialogCandidate instanceof MessageDialog) {
+            MessageDialog messageDialog = (MessageDialog) haveOrdersDialogCandidate;
+            messageDialog.setListener(this);
         }
 
         orderButton = (OrderView) orderFragmentView.findViewById(R.id.order_button);
@@ -240,6 +265,38 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         closeIconButton.setTypeface(icomoonTypeface);
         closeIconButton.setOnClickListener(this);
 
+        locationEditText = (EditText) orderFragmentView.findViewById(R.id.location_search);
+        noSearchResultsTextView = (TextView) orderFragmentView.findViewById(R.id.no_search_results);
+        cancelButton = (Button) orderFragmentView.findViewById(R.id.cancel_search_button);
+        searchResultsRelativeLayout = (RelativeLayout) orderFragmentView.findViewById(R.id.search_results_section);
+        searchResultContainerLinearLayout = (LinearLayout) orderFragmentView.findViewById(R.id.search_results_container);
+
+        locationEditText.setTypeface(robotoThinTypeface);
+        cancelButton.setTypeface(robotoThinTypeface);
+        noSearchResultsTextView.setTypeface(robotoThinTypeface);
+
+        if (isManualQueryVisible) {
+            onClick(locationTopTextView);
+            locationEditText.setText(savedQuery);
+            onReverseGeocodeSuccess(savedQuery, resultAddresses, resultPlaceIds);
+        }
+
+        locationEditText.addTextChangedListener(this);
+        cancelButton.setOnClickListener(this);
+
+        Button showMyLocationButton = (Button) orderFragmentView.findViewById(R.id.my_location_button);
+        showMyLocationButton.setTypeface(icomoonTypeface);
+        showMyLocationButton.setOnClickListener(this);
+
+        Button zoomInButton = (Button) orderFragmentView.findViewById(R.id.zoom_in_button);
+        zoomInButton.setTypeface(icomoonTypeface);
+        zoomInButton.setOnClickListener(this);
+
+        Button zoomOutButton = (Button) orderFragmentView.findViewById(R.id.zoom_out_button);
+        zoomOutButton.setTypeface(icomoonTypeface);
+        zoomOutButton.setOnClickListener(this);
+
+        mapControlsLinearLayout = (LinearLayout) orderFragmentView.findViewById(R.id.map_controls);
         carCategoriesSectionLinearLayout = (LinearLayout) orderFragmentView.findViewById(R.id.car_categories_container);
         orderDetailsLinerLayout = (LinearLayout) orderFragmentView.findViewById(R.id.order_details);
 
@@ -254,9 +311,12 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         if (orderStage == 1) {
             orderDetailsLinerLayout.setVisibility(View.VISIBLE);
             closeIconButton.setVisibility(View.VISIBLE);
+            mapControlsLinearLayout.setVisibility(View.GONE);
         }
 
         commentsTextView.setText(comment);
+
+        initCarCategories(Database.sharedDatabase(getActivity()).getCarCategories());
 
         return orderFragmentView;
     }
@@ -293,13 +353,11 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        mapView.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mapView.onStop();
     }
 
     @Override
@@ -319,8 +377,12 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         outState.putString(SAVED_COMMENT, comment);
         outState.putBoolean(SAVED_TIME_RHOMBUS_STATE, isLater);
         outState.putBoolean(SAVED_CASH_ONLY_STATE, isCashOnly);
-        outState.putParcelable(SAVED_LOCATION, mapView.getCenterCoordinate());
+        outState.putParcelable(SAVED_LOCATION, googleMap.getCameraPosition().target);
         outState.putString(SAVED_ADDRESS, locationTopTextView.getText().toString());
+        outState.putString(SAVED_QUERY, locationEditText.getText().toString());
+        outState.putStringArray(SAVED_RESULT_ADDRESSES, resultAddresses);
+        outState.putStringArray(SAVED_RESULT_PLACE_IDS, resultPlaceIds);
+        outState.putBoolean(SAVED_MANUAL_QUERY_VISIBILITY, locationEditText.getVisibility() == View.VISIBLE);
     }
 
     @Override
@@ -332,17 +394,48 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         }
     }
 
+    @Override
+    public boolean onBackButtonPressed() {
+        if (orderStage == 1) {
+            onClick(closeIconButton);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onConnectionChanged(boolean isConnected) {
+        if (Database.sharedDatabase(getActivity()).getCarCategories().length == 0) {
+            APITalker.sharedTalker().getCarCategories(this);
+        }
+    }
+
+    @Override
+    public void onGPSPermissionChanged(boolean isGPSPermitted) {
+        if (googleMap != null && isGPSPermitted) {
+            try {
+                googleMap.setMyLocationEnabled(true);
+                googleMap.setOnMyLocationChangeListener(this);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * Rhombus Methods
      */
 
     private void setupTimeRhombus() {
-        isNowRhombus.setColor(getResources().getColor(isLater ? R.color.white_100 : R.color.cyan));
-        isLaterRhombus.setColor(getResources().getColor(isLater ? R.color.cyan : R.color.white_100));
+        isNowRhombus.setColor(getResources().getColor(isLater ? R.color.white_100 : R.color.cyan_100));
+        isLaterRhombus.setColor(getResources().getColor(isLater ? R.color.cyan_100 : R.color.white_100));
+
+        orderFragmentView.findViewById(R.id.time_section).setVisibility(isLater ? View.VISIBLE : View.GONE);
     }
 
     private void setupCacheOnlyRhombus() {
-        isCashOnlyRhombus.setColor(getResources().getColor(isCashOnly ? R.color.cyan: R.color.white_100));
+        isCashOnlyRhombus.setColor(getResources().getColor(isCashOnly ? R.color.cyan_100 : R.color.white_100));
     }
 
     private void setupCarCategoryRhombus(View chosenSection) {
@@ -356,9 +449,11 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
                 savedCarCategoryIndex = index;
                 CarCategory carCategory = (CarCategory) chosenSection.getTag();
                 currentCarCategory = carCategory;
-                rhombus.setColor(getResources().getColor(R.color.cyan));
-                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.cyan));
-                carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
+                rhombus.setColor(getResources().getColor(R.color.cyan_100));
+                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.cyan_100));
+                carCategoryInfoTextView.setText(
+                        getString(R.string.min) + String.format("%.0f", carCategory.getMinPrice()) +
+                        " " + getString(R.string.one_km) + String.format("%.0f", carCategory.getRoutePrice()));
             } else {
                 rhombus.setColor(getResources().getColor(R.color.white_100));
                 carCategoryInfoTextView.setText("");
@@ -385,7 +480,7 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
             isCashOnly = !isCashOnly;
             setupCacheOnlyRhombus();
         } else if (view.getId() == R.id.comment_section) {
-            CommentDialog.initialize(comment, this, this).show(getFragmentManager(), COMMENT_DIALOG_TAG);
+            CommentDialog.initialize(comment, this).show(getFragmentManager(), COMMENT_DIALOG_TAG);
         } else if (view.getId() == R.id.time_section) {
             if (!isLater) {
                 return;
@@ -396,28 +491,35 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
                 orderStage++;
                 orderDetailsLinerLayout.setVisibility(View.VISIBLE);
                 closeIconButton.setVisibility(View.VISIBLE);
+                mapControlsLinearLayout.setVisibility(View.GONE);
                 locationTextView.setText(locationTopTextView.getText());
-                mapView.setAllGesturesEnabled(false);
                 orderButton.setOrderStage(orderStage);
 
                 setOrderDetailsVisible();
+
+                if (googleMap != null) {
+                    googleMap.getUiSettings().setAllGesturesEnabled(false);
+                }
             } else {
-                APITalker.sharedTalker().makeOrder(
-                        getActivity(),
-                        locationTextView.getText().toString(),
-                        mapView.getCenterCoordinate().getLatitude(),
-                        mapView.getCenterCoordinate().getLongitude(),
-                        new Date(),
-                        currentCarCategory.getId(),
-                        comment,
-                        this
-                );
+                if (UserData.sharedData(getActivity()).getOrderCount() == 0) {
+                    onMakeOrder();
+                } else {
+                    MessageDialog
+                            .initialize(
+                                    getString(R.string.hey),
+                                    getString(R.string.already_have_orders, UserData.sharedData(getActivity()).getOrderCount()),
+                                    getString(android.R.string.no),
+                                    getString(android.R.string.yes)
+                            )
+                            .setListener(this)
+                            .show(getFragmentManager(), HAVE_ORDERS_DIALOG_TAG);
+                }
             }
         } else if (view.getId() == R.id.close_button) {
             orderStage--;
             orderDetailsLinerLayout.setVisibility(View.GONE);
             closeIconButton.setVisibility(View.GONE);
-            mapView.setAllGesturesEnabled(true);
+            mapControlsLinearLayout.setVisibility(View.VISIBLE);
             orderButton.setOrderStage(orderStage);
 
             MaximalLinearLayout headerPanelView = (MaximalLinearLayout) orderFragmentView.findViewById(R.id.header_panel);
@@ -427,7 +529,85 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
             mapView.setY(0);
             locationPickerView.setY((mapView.getMeasuredHeight() - locationPickerView.getMeasuredHeight()) / 2);
+
+            if (googleMap != null) {
+                googleMap.getUiSettings().setAllGesturesEnabled(true);
+            }
+        } else if (view.getId() == R.id.my_location_button) {
+            if (myLocation != null) {
+                googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
+            }
+        } else if (view.getId() == R.id.zoom_in_button) {
+            float currentZoom = googleMap.getCameraPosition().zoom;
+
+            if (currentZoom < googleMap.getMaxZoomLevel() - 1) {
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(currentZoom + 1));
+            }
+        } else if (view.getId() == R.id.zoom_out_button) {
+            float currentZoom = googleMap.getCameraPosition().zoom;
+
+            if (currentZoom > googleMap.getMinZoomLevel() + 1) {
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(currentZoom - 1));
+            }
+        } else if (view.getId() == R.id.location) {
+            locationTopTextView.setVisibility(View.GONE);
+            locationEditText.setVisibility(View.VISIBLE);
+            noSearchResultsTextView.setVisibility(View.VISIBLE);
+            cancelButton.setVisibility(View.VISIBLE);
+            searchResultsRelativeLayout.setVisibility(View.VISIBLE);
+            orderButton.setVisibility(View.GONE);
+
+            if (googleMap != null) {
+                googleMap.getUiSettings().setAllGesturesEnabled(false);
+            }
+
+            locationEditText.requestFocusFromTouch();
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(locationEditText, InputMethodManager.SHOW_IMPLICIT);
+        } else if (view.getId() == R.id.cancel_search_button) {
+            resultAddresses = new String[0];
+            resultPlaceIds = new String[0];
+            locationEditText.setText("");
+            locationTopTextView.setVisibility(View.VISIBLE);
+            locationEditText.setVisibility(View.GONE);
+            noSearchResultsTextView.setVisibility(View.INVISIBLE);
+            cancelButton.setVisibility(View.GONE);
+            searchResultsRelativeLayout.setVisibility(View.GONE);
+            orderButton.setVisibility(View.VISIBLE);
+
+            if (googleMap != null) {
+                googleMap.getUiSettings().setAllGesturesEnabled(true);
+            }
+
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(locationEditText.getWindowToken(), 0);
         }
+    }
+
+    private void onMakeOrder() {
+        loadingDialog.show();
+
+        Calendar calendar = Calendar.getInstance();
+
+        if (isLater) {
+            if (!isToday) {
+                calendar.add(Calendar.DAY_OF_YEAR, 1);
+            }
+
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minute);
+        }
+
+        APITalker.sharedTalker().makeOrder(
+                getActivity(),
+                locationTextView.getText().toString(),
+                googleMap.getCameraPosition().target.latitude,
+                googleMap.getCameraPosition().target.longitude,
+                calendar.getTime(),
+                currentCarCategory.getId(),
+                comment,
+                this
+        );
     }
 
     private void setOrderDetailsVisible() {
@@ -476,6 +656,17 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
             return;
         }
 
+        initCarCategories(carCategories);
+
+        Database.sharedDatabase(getActivity()).storeCategories(carCategories);
+    }
+
+    @Override
+    public void onGetCarCategoriesFail(int statusCode) {
+
+    }
+
+    private void initCarCategories(CarCategory[] carCategories) {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         carCategoriesSectionLinearLayout.removeAllViews();
@@ -502,9 +693,11 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
             if (index == 0) {
                 currentCarCategory = carCategory;
-                carCategoryRhombus.setColor(getResources().getColor(R.color.cyan));
-                carCategoryInfoTextView.setText(getString(R.string.min) + carCategory.getMinPrice() + " " + getString(R.string.one_km) + carCategory.getRoutePrice());
-                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.cyan));
+                carCategoryRhombus.setColor(getResources().getColor(R.color.cyan_100));
+                carCategoryInfoTextView.setText(
+                        getString(R.string.min) + String.format("%.0f", carCategory.getMinPrice()) +
+                                " " + getString(R.string.one_km) + String.format("%.0f", carCategory.getRoutePrice()));
+                carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.cyan_100));
             } else {
                 carCategoryRhombus.setColor(getResources().getColor(R.color.white_100));
                 carCategoryTitleTextView.setTextColor(getResources().getColor(R.color.white_100));
@@ -523,23 +716,56 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         }
     }
 
-    @Override
-    public void onGetCarCategoriesFail() {
-
-    }
-
     /**
      * GeocodeUtil.GeocodeListener Methods
      */
 
     @Override
-    public void onGeocodeSuccess(String address, LatLng location) {
-        if (location == null) {
+    public void onGeocodeSuccess(String address, double latitude, double longitude) {
+        locationTopTextView.setText(address);
+    }
+
+    @Override
+    public void onPlaceLocationDetermined(String address, LatLng placeLocation) {
+        locationTopTextView.setText(address);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(placeLocation));
+        onClick(cancelButton);
+    }
+
+    @Override
+    public void onReverseGeocodeSuccess(String searchedAddress, String[] addresses, String[] placeIds) {
+        if (!searchedAddress.equals(locationEditText.getText().toString())) {
             return;
         }
 
-        locationTopTextView.setTextColor(Color.BLACK);
-        locationTopTextView.setText(address);
+        searchResultContainerLinearLayout.removeAllViews();
+
+        this.resultAddresses = addresses;
+        this.resultPlaceIds = placeIds;
+
+        if (addresses == null || addresses.length == 0) {
+            noSearchResultsTextView.setVisibility(View.VISIBLE);
+            searchResultsRelativeLayout.requestLayout();
+
+            return;
+        }
+
+        Typeface robotoThinTypeface = (TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
+
+        noSearchResultsTextView.setVisibility(View.INVISIBLE);
+
+        for (int index = 0 ; index < addresses.length ; index++) {
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View addressView = layoutInflater.inflate(R.layout.item_address, searchResultContainerLinearLayout, false);
+            TextView addressTextView = (TextView) addressView.findViewById(R.id.address);
+            addressTextView.setTypeface(robotoThinTypeface);
+            addressTextView.setText(addresses[index]);
+            addressView.setOnClickListener(new AddressItemClickListener(placeIds[index]));
+
+            searchResultContainerLinearLayout.addView(addressView);
+        }
+
+        searchResultsRelativeLayout.requestLayout();
     }
 
     /**
@@ -548,50 +774,18 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
     @Override
     public void onMakeOrderSuccess(Order order) {
-        if (listener == null) {
-            return;
+        if (listener != null) {
+            listener.onOrderMade(order);
         }
 
-        listener.onOrderMade(order);
+        loadingDialog.dismiss();
     }
 
     @Override
-    public void onMakeOrderFail() {
-    }
+    public void onMakeOrderFail(int statusCode) {
+        loadingDialog.dismiss();
 
-    /**
-     * MapView.OnMyLocationChangeListener
-     */
-
-    @Override
-    public void onMyLocationChange(Location location) {
-        if (!hasMyLocationDetermined) {
-            hasMyLocationDetermined = true;
-            LatLng center = new LatLng(location.getLatitude(), location.getLongitude());
-            mapView.setCenterCoordinate(center, false);
-            GeocodeUtil.geocode(getActivity(), center, this);
-        }
-    }
-
-    /**
-     * MapView.OnMapChangedListener
-     */
-
-    @Override
-    public void onMapChanged(int change) {
-        if (change == MapView.REGION_DID_CHANGE_ANIMATED
-                || change == MapView.REGION_DID_CHANGE) {
-            synchronized (LOCKER) {
-                try {
-                    locationTopTextView.setText("");
-                    mapInteractionHandler.removeCallbacks(mapInteractionRunnable);
-                    mapInteractionHandler.postDelayed(mapInteractionRunnable, 500);
-                } catch (Exception e) {
-                    // TODO: Investigate Reason
-                    e.printStackTrace();
-                }
-            }
-        }
+        MessageHandlerUtil.showErrorForStatusCode(statusCode, getActivity());
     }
 
     /**
@@ -605,7 +799,28 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         public void run() {
             synchronized (LOCKER) {
                 try {
-                    GeocodeUtil.geocode(getActivity(), mapView.getCenterCoordinate(), MakeOrderFragment.this);
+                    GeocodeUtil.geocode(
+                            getActivity(),
+                            googleMap.getCameraPosition().target.latitude,
+                            googleMap.getCameraPosition().target.longitude,
+                            MakeOrderFragment.this);
+                } catch (Exception e) {
+                    // TODO: Investigate Reason
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    private Runnable searchInteractionRunnable = new Runnable() {
+        @Override
+        public void run() {
+            synchronized (LOCKER) {
+                try {
+                    GeocodeUtil.reverseGeocode(
+                            getActivity(),
+                            locationEditText.getText().toString(),
+                            MakeOrderFragment.this);
                 } catch (Exception e) {
                     // TODO: Investigate Reason
                     e.printStackTrace();
@@ -641,13 +856,128 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
     }
 
+    /**
+     * OnMapReadyCallback Methods
+     */
+
     @Override
-    public void onKeyboardStateChanged() {
-        orderFragmentView.findViewById(R.id.order_fragment_layout).requestLayout();
+    public void onMapReady(GoogleMap googleMap) {
+        if (HardwareAccessibilityUtil.checkIfHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            googleMap.setOnMyLocationChangeListener(this);
+            googleMap.setMyLocationEnabled(true);
+        }
+
+        googleMap.getUiSettings().setZoomControlsEnabled(false);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.getUiSettings().setCompassEnabled(false);
+
+        googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+
+        if (hasMyLocationDetermined) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        } else {
+            if (myLocation != null) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+            } else {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(40.177570, 44.512549)));
+            }
+        }
+
+        googleMap.setOnCameraChangeListener(this);
+
+        if (HardwareAccessibilityUtil.checkIfHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            googleMap.setMyLocationEnabled(true);
+        }
+
+        if (locationEditText.getVisibility() == View.VISIBLE
+                || closeIconButton.getVisibility() == View.VISIBLE) {
+            googleMap.getUiSettings().setAllGesturesEnabled(false);
+        }
+
+        this.googleMap = googleMap;
+    }
+
+    /**
+     * OnCameraChangeListener Methods
+     */
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        synchronized (LOCKER) {
+            mapInteractionHandler.removeCallbacks(mapInteractionRunnable);
+            mapInteractionHandler.postDelayed(mapInteractionRunnable, 500);
+        }
+    }
+
+    /**
+     * OnMyLocationChangeListener
+     */
+
+    @Override
+    public void onMyLocationChange(Location location) {
+        myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+        if (hasMyLocationDetermined || googleMap == null) {
+            return;
+        }
+
+        hasMyLocationDetermined = true;
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+    }
+
+    /**
+     * TextChangedListener Methods
+     */
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        synchronized (LOCKER) {
+            if (s.length() > 2) {
+                mapInteractionHandler.removeCallbacks(searchInteractionRunnable);
+                mapInteractionHandler.postDelayed(searchInteractionRunnable, 500);
+            }
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    /**
+     * MessageDialogListener Methods
+     */
+
+    @Override
+    public void onNegativeClicked(MessageDialog messageDialog) {
+
+    }
+
+    @Override
+    public void onPositiveClicked(MessageDialog messageDialog) {
+        onMakeOrder();
     }
 
     public interface OrderFragmentListener {
         void onOrderMade(Order order);
     }
 
+    public class AddressItemClickListener implements View.OnClickListener {
+        String placeId;
+
+        public AddressItemClickListener(String placeId) {
+            this.placeId = placeId;
+        }
+
+        @Override
+        public void onClick(View view) {
+            GeocodeUtil.getPlaceDetailsByPlaceId(placeId, MakeOrderFragment.this);
+        }
+    }
 }

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:flycode="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout
+        android:id="@+id/dialog_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingTop="25dp"
+        android:paddingRight="25dp"
+        android:paddingLeft="25dp"
+        android:paddingEnd="25dp"
+        android:paddingStart="25dp"
+        android:orientation="vertical"
+        android:background="@drawable/white_rounded_rect"
+        flycode:maxWidth="500dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/no_internet_title"
+            android:textSize="@dimen/title_text_size"
+            android:textColor="@color/white_80"
+            android:gravity="center_horizontal"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/car_no_lights"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"/>
+
+            <ImageView
+                android:id="@+id/darker"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/car_darker_red"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"/>
+
+            <ImageView
+                android:id="@+id/lighter"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/car_lighter_red"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="60dp"
+            android:text="@string/no_internet_description"
+            android:textSize="@dimen/small_text_size"
+            android:textColor="@color/white_80"
+            android:gravity="center"
+            android:background="@android:color/transparent"/>
+
+    </com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-2dp"
+        android:clickable="true">
+
+        <com.flycode.paradox.taxiuser.views.WhiteRhombusView
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+
+        <TextView
+            android:id="@+id/button_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/connect"
+            android:textSize="@dimen/small_text_size"
+            android:textColor="@color/black_100"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

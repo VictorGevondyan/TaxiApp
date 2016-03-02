@@ -7,5 +7,5 @@ import com.flycode.paradox.taxiuser.models.Order;
  */
 public interface MakeOrderListener {
     void onMakeOrderSuccess(Order order);
-    void onMakeOrderFail();
+    void onMakeOrderFail(int statusCode);
 }

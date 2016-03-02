@@ -6,15 +6,19 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.api.APITalker;
-import com.flycode.paradox.taxiuser.api.ChangeNameAndMailHandler;
+import com.flycode.paradox.taxiuser.api.ChangeNameAndMailRequestListener;
+import com.flycode.paradox.taxiuser.api.ChangePasswordRequestHandler;
+import com.flycode.paradox.taxiuser.dialogs.LoadingDialog;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.settings.UserData;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
+import com.flycode.paradox.taxiuser.utils.MessageHandlerUtil;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import com.flycode.paradox.taxiuser.views.GenericTriangleView;
 import com.flycode.paradox.taxiuser.views.RhombusView;
@@ -22,8 +26,7 @@ import com.flycode.paradox.taxiuser.views.RhombusView;
 /**
  * Created by victor on 12/22/15.
  */
-public class SettingsFragment extends SuperFragment implements View.OnClickListener, ChangeNameAndMailHandler {
-    private View settingsView;
+public class SettingsFragment extends SuperFragment implements View.OnClickListener, ChangeNameAndMailRequestListener, ChangePasswordRequestHandler {
 
     private EditText lastNameEditText;
     private EditText nameEditText;
@@ -39,16 +42,6 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
     private String password;
     private String confirmPassword;
 
-    private TextView nameIconBigTextView;
-    private TextView nameIconTextView;
-    private TextView lastNameIconTextView;
-    private TextView emailIconTextView;
-    private TextView oldPasswordIconTextView;
-    private TextView enterPasswordIconTextView;
-    private TextView confirmPasswordIconTextView;
-
-    private TextView phoneNumberTextView;
-
     private RhombusView armenianRhombusView;
     private RhombusView russianRhombusView;
     private RhombusView englishRhombusView;
@@ -57,34 +50,41 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
     private TextView russianTextView;
     private TextView englishTextView;
 
+    private LoadingDialog loadingDialog;
+
     private UserData userData;
 
     private String newFullName;
     private String newEmail;
-    private String newPassword;
 
-    private  final String SAVED_LAST_NAME = "savedLastName";
-    private  final String SAVED_NAME = "savedName";
-    private  final String SAVED_EMAIL = "savedEmail";
-    private  final String SAVED_OLD_PASSWORD = "savedOldPassword";
-    private  final String SAVED_PASSWORD = "savedPassword";
-    private  final String SAVED_CONFIRM_PASSWORD = "savedConfirmPassword";
+    private final String SAVED_LAST_NAME = "savedLastName";
+    private final String SAVED_NAME = "savedName";
+    private final String SAVED_EMAIL = "savedEmail";
+    private final String SAVED_OLD_PASSWORD = "savedOldPassword";
+    private final String SAVED_PASSWORD = "savedPassword";
+    private final String SAVED_CONFIRM_PASSWORD = "savedConfirmPassword";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        settingsView = inflater.inflate(R.layout.fragment_settings, container, false);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        View settingsView = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        loadingDialog = new LoadingDialog(getActivity());
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
         Typeface robotoTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
 
-        nameIconBigTextView = ( TextView )settingsView.findViewById(R.id.name_icon_big);
-        nameIconTextView = ( TextView )settingsView.findViewById(R.id.name_icon);
-        lastNameIconTextView = ( TextView )settingsView.findViewById(R.id.last_name_icon);
-        emailIconTextView = ( TextView )settingsView.findViewById(R.id.email_icon);
-        oldPasswordIconTextView = ( TextView )settingsView.findViewById(R.id.old_password_icon);
-        enterPasswordIconTextView = ( TextView )settingsView.findViewById(R.id.enter_password_icon);
-        confirmPasswordIconTextView = ( TextView )settingsView.findViewById(R.id.confirm_password_icon);
+        userData = UserData.sharedData(getActivity());
+
+        TextView nameIconBigTextView = (TextView) settingsView.findViewById(R.id.name_icon_big);
+        TextView nameIconTextView = (TextView) settingsView.findViewById(R.id.name_icon);
+        TextView lastNameIconTextView = (TextView) settingsView.findViewById(R.id.last_name_icon);
+        TextView emailIconTextView = (TextView) settingsView.findViewById(R.id.email_icon);
+        TextView oldPasswordIconTextView = (TextView) settingsView.findViewById(R.id.old_password_icon);
+        TextView enterPasswordIconTextView = (TextView) settingsView.findViewById(R.id.enter_password_icon);
+        TextView confirmPasswordIconTextView = (TextView) settingsView.findViewById(R.id.confirm_password_icon);
 
         nameIconBigTextView.setTypeface(icomoonTypeface);
         nameIconTextView.setTypeface(icomoonTypeface);
@@ -106,10 +106,10 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
         oldPasswordEditText = (EditText) settingsView.findViewById(R.id.old_password);
         passwordEditText = (EditText) settingsView.findViewById(R.id.enter_password);
         confirmPasswordEditText = (EditText) settingsView.findViewById(R.id.confirm_password);
-        phoneNumberTextView = (TextView) settingsView.findViewById(R.id.phone_number);
+        TextView phoneNumberTextView = (TextView) settingsView.findViewById(R.id.phone_number);
 
-        if( savedInstanceState != null ){
-            lastName= savedInstanceState.getString(SAVED_LAST_NAME);
+        if (savedInstanceState != null) {
+            lastName = savedInstanceState.getString(SAVED_LAST_NAME);
             name = savedInstanceState.getString(SAVED_NAME);
             email = savedInstanceState.getString(SAVED_EMAIL);
             oldPassword = savedInstanceState.getString(SAVED_OLD_PASSWORD);
@@ -124,9 +124,9 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
             confirmPasswordEditText.setText(confirmPassword);
         }
 
-        nameEditText.setText(UserData.sharedData(getActivity()).getName());
-        emailEditText.setText(UserData.sharedData(getActivity()).getEmail());
-        phoneNumberTextView.setText(UserData.sharedData(getActivity()).getUsername());
+        nameEditText.setText(userData.getName());
+        emailEditText.setText(userData.getEmail());
+        phoneNumberTextView.setText(userData.getUsername());
 
         nameEditText.setTypeface(robotoTypeface);
         lastNameEditText.setTypeface(robotoTypeface);
@@ -166,8 +166,6 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
 
         setupLanguageRhombus();
 
-        userData = UserData.sharedData(getActivity());
-
         return settingsView;
     }
 
@@ -180,11 +178,11 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
         String language = AppSettings.sharedSettings(getActivity()).getLanguage();
 
         armenianRhombusView.setColor(
-                getResources().getColor(language.equals(AppSettings.LANGUAGES.HY) ? R.color.yellow : R.color.cyan));
+                getResources().getColor(language.equals(AppSettings.LANGUAGES.HY) ? R.color.yellow : R.color.cyan_100));
         russianRhombusView.setColor(
-                getResources().getColor(language.equals(AppSettings.LANGUAGES.RU) ? R.color.yellow : R.color.cyan));
+                getResources().getColor(language.equals(AppSettings.LANGUAGES.RU) ? R.color.yellow : R.color.cyan_100));
         englishRhombusView.setColor(
-                getResources().getColor(language.equals(AppSettings.LANGUAGES.EN) ? R.color.yellow : R.color.cyan));
+                getResources().getColor(language.equals(AppSettings.LANGUAGES.EN) ? R.color.yellow : R.color.cyan_100));
         armenianRhombusView.setIsFilled(language.equals(AppSettings.LANGUAGES.HY));
         russianRhombusView.setIsFilled(language.equals(AppSettings.LANGUAGES.RU));
         englishRhombusView.setIsFilled(language.equals(AppSettings.LANGUAGES.EN));
@@ -207,14 +205,26 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
             newFullName = nameEditText.getText().toString();
             newEmail = emailEditText.getText().toString();
 
-            APITalker.sharedTalker().changeNameAndMail(getActivity(), newFullName, newEmail,  this);
+            loadingDialog.show();
 
+            APITalker.sharedTalker().changeNameAndMail(getActivity(), newFullName, newEmail, this);
         } else if (view.getId() == R.id.submit_password) {
-
             String oldPassword = oldPasswordEditText.getText().toString();
-            newPassword = passwordEditText.getText().toString();
-            APITalker.sharedTalker().changeUserPassword(getActivity(), oldPassword, newPassword);
+            String newPassword = passwordEditText.getText().toString();
+            String confirmPassword = confirmPasswordEditText.getText().toString();
 
+            if (newPassword.isEmpty() || oldPassword.isEmpty() || confirmPassword.isEmpty()) {
+                MessageHandlerUtil.showMessage(R.string.app_name, R.string.empty_password, getActivity());
+                return;
+            }
+            if (!newPassword.equals(confirmPassword)) {
+                MessageHandlerUtil.showMessage(R.string.attention, R.string.password_does_not_match, getActivity());
+                return;
+            }
+
+            loadingDialog.show();
+
+            APITalker.sharedTalker().changeUserPassword(getActivity(), oldPassword, newPassword, this);
         } else if (view.getId() == R.id.russian) {
             AppSettings.sharedSettings(getActivity()).setLanguage(AppSettings.LANGUAGES.RU);
             setupLanguageRhombus();
@@ -234,29 +244,8 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
     }
 
     @Override
-    public void onChangeNameAndMailSuccess() {
-        userData.setName(newFullName);
-        userData.setEmail(newEmail);
-
-    }
-
-    @Override
-    public void onChangeNameAndMailFailure() {
-
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            //Restore the fragment's state here
-        }
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //Save the fragment's state here
 
         lastName = lastNameEditText.getText().toString();
         name = nameEditText.getText().toString();
@@ -271,6 +260,43 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
         outState.putString(SAVED_OLD_PASSWORD, oldPassword);
         outState.putString(SAVED_PASSWORD, password);
         outState.putString(SAVED_CONFIRM_PASSWORD, confirmPassword);
+    }
 
+    /**
+     * ChangeNameAndMailHandler Methods
+     */
+
+    @Override
+    public void onChangeNameAndMailSuccess() {
+        loadingDialog.dismiss();
+
+        userData.setName(newFullName);
+        userData.setEmail(newEmail);
+        MessageHandlerUtil.showMessage(R.string.congratulation, R.string.info_changed, getActivity());
+    }
+
+    @Override
+    public void onChangeNameAndMailFailure(int statusCode) {
+        loadingDialog.dismiss();
+
+        MessageHandlerUtil.showErrorForStatusCode(statusCode, getActivity());
+    }
+
+    /**
+     * ChangePasswordRequestHandler
+     */
+
+    @Override
+    public void onChangePasswordRequestSuccess() {
+        loadingDialog.dismiss();
+
+        MessageHandlerUtil.showMessage(R.string.congratulation, R.string.password_changed, getActivity());
+    }
+
+    @Override
+    public void onChangePasswordRequestFailure(int statusCode) {
+        loadingDialog.dismiss();
+
+        MessageHandlerUtil.showErrorForStatusCode(statusCode, getActivity());
     }
 }

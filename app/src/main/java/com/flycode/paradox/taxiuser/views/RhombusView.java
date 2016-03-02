@@ -33,7 +33,7 @@ public class RhombusView extends View {
         int height = canvas.getHeight();
 
         float density = getContext().getResources().getDisplayMetrics().density;
-        int sideStroke = (int)density;
+        int sideStroke = 1;
 
         Point a = new Point(sideStroke, height / 2);
         Point b = new Point(width / 2, sideStroke);

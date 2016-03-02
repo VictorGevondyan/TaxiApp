@@ -5,6 +5,6 @@ package com.flycode.paradox.taxiuser.api;
  */
 public interface LoginHandler {
     public void onLoginSuccess();
-    public void onLoginFailure(String error);
+    public void onLoginFailure(int statusCode);
 
 }

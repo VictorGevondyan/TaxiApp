@@ -7,20 +7,20 @@
     <dimen name="order_rhombus_size">150dp</dimen>
     <dimen name="small_text_size">15sp</dimen>
     <dimen name="tiny_text_size">13sp</dimen>
+    <dimen name="super_small_text_size">10sp</dimen>
     <dimen name="medium_text_size">17sp</dimen>
+    <dimen name="title_text_size">20sp</dimen>
 
     <!-- Action Bar -->
     <dimen name="action_bar_height">60dp</dimen>
     <dimen name="action_bar_button_margin">15dp</dimen>
     <dimen name="action_bar_button_text_size">30sp</dimen>
-    <dimen name="action_bar_title_text_size">20sp</dimen>
 
     <!-- Menu Grid -->
     <dimen name="close_menu_text_size">40sp</dimen>
 
     <!-- Settings -->
     <dimen name="settings_entry_margin">20dp</dimen>
-    <dimen name="settings_title_text_size">17sp</dimen>
 
     <!-- Ordering -->
     <dimen name="order_time_width">50dp</dimen>
@@ -32,10 +32,14 @@
     <dimen name="orders_big_margin">30dp</dimen>
     <dimen name="orders_small_margin">20dp</dimen>
     <dimen name="orders_tiny_margin">15dp</dimen>
-    <dimen name="orders_name_width">70dp</dimen>
+    <dimen name="orders_name_width">60dp</dimen>
 
     <!-- Dialogs -->
     <dimen name="error_message_margin">18dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 
 
 </resources>

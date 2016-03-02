@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/comment_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:flycode="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:background="@color/base_grey_100"
+        android:gravity="center_horizontal"
+        flycode:maxWidth="500dp">
+
+        <TextView
+            android:id="@+id/comment_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/feedback_title"
+            android:textSize="@dimen/medium_text_size"
+            android:textColor="@color/white_100"
+            android:gravity="center_horizontal"/>
+
+        <RatingBar
+            android:id="@+id/feedback_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:rating="5"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="@dimen/order_details_list_margin"
+            android:layout_marginEnd="@dimen/order_details_list_margin"
+            android:layout_marginStart="@dimen/order_details_list_margin"
+            android:layout_marginLeft="@dimen/order_details_list_margin"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/white_80"
+                android:maxLines="5"
+                android:inputType="text"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/white_40"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_40"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cancel"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/white_100"
+                android:textAllCaps="false"
+                android:background="@android:color/transparent"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/white_40"/>
+
+            <Button
+                android:id="@+id/done"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/done"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/white_100"
+                android:textAllCaps="false"
+                android:background="@android:color/transparent"/>
+
+        </LinearLayout>
+
+    </com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout>
+
+</RelativeLayout>

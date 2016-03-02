@@ -57,16 +57,18 @@ public class MenuGridAdapter extends ArrayAdapter<MenuItem> {
         menuIconTextView.setText(MenuConstants.menuIcons[position]);
         menuTitleTextView.setText(MenuConstants.menuTitles[position]);
 
-        if( ( MenuConstants.menuTitles[position] ) == R.string.balance ){
-            TextView balanceAmount = ( TextView ) convertView.findViewById(R.id.balance_amount);
+        TextView balanceAmount = (TextView) convertView.findViewById(R.id.balance_amount);
+
+        if ((MenuConstants.menuTitles[position]) == R.string.balance) {
             balanceAmount.setVisibility(View.VISIBLE);
             balanceAmount.setText(String.valueOf(UserData.sharedData(context).getBalance()));
             balanceAmount.setTypeface(robotoThinTypeface);
-        } else if( ( MenuConstants.menuTitles[position] ) == R.string.ongoing ){
-            TextView balanceAmount = ( TextView ) convertView.findViewById(R.id.balance_amount);
+        } else if ((MenuConstants.menuTitles[position]) == R.string.ongoing) {
             balanceAmount.setVisibility(View.VISIBLE);
             balanceAmount.setText(String.valueOf(UserData.sharedData(context).getOrderCount()));
             balanceAmount.setTypeface(robotoThinTypeface);
+        } else {
+            balanceAmount.setVisibility(View.GONE);
         }
 
         return convertView;
@@ -77,7 +79,7 @@ public class MenuGridAdapter extends ArrayAdapter<MenuItem> {
         return MenuConstants.menuTitles.length;
     }
 
-    public int dpToPixel( int dpValue ){
+    public int dpToPixel(int dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         int pixelValue = (int) (dpValue * scale + 0.5f);
         return pixelValue;

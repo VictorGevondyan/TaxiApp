@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity">
 
-    <ImageView
+    <com.flycode.paradox.taxiuser.views.FullScreenImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/yerevan"
@@ -19,7 +18,6 @@
         android:orientation="vertical"
         android:overScrollMode="never"
         android:scrollbars="none"
-        android:fillViewport="true"
         android:background="@color/base_grey_50">
 
         <com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout
@@ -32,42 +30,70 @@
             android:layout_marginStart="@dimen/credentials_list_margin"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            flycode:maxWidth="400dp">
+            flycode:maxWidth="500dp">
 
-            <ImageView
+            <TextView
+                android:id="@+id/logo"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/action_bar_height"
-                android:src="@drawable/vip_logo"/>
+                android:text="@string/icon_logo"
+                android:textSize="80sp"
+                android:textColor="@color/white_100"/>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="45dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal" >
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/mobile_icon"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_name"
+                    android:textSize="@dimen/credentials_icon_size"
+                    android:textColor="@color/cyan_100"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"/>
 
-                    <TextView
-                        android:id="@+id/mobile_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/icon_password"
-                        android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/cyan"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginEnd="5dp"/>
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_40"/>
 
-                    <View
-                        android:layout_width="1px"
-                        android:layout_height="match_parent"
-                        android:background="@color/white_40"/>
+                <!--<Spinner-->
+                    <!--android:id="@+id/phone_code"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:background="@android:color/transparent"-->
+                    <!--android:layout_marginLeft="5dp"-->
+                    <!--android:layout_marginStart="5dp"-->
+                    <!--android:layout_marginRight="5dp"-->
+                    <!--android:layout_marginEnd="5dp" />-->
 
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/phone_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="+374"
+                    android:ems="3"
+                    android:gravity="right|end"
+                    android:textSize="@dimen/medium_text_size"
+                    android:textColor="@color/white_80"
+                    android:background="@android:color/transparent" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_40"/>
 
                 <EditText
                     android:id="@+id/number"
@@ -83,9 +109,10 @@
                     android:textColorHint="@color/white_80"
                     android:inputType="phone"
                     android:textCursorDrawable="@null"
+                    android:textSize="@dimen/medium_text_size"
                     android:background="@android:color/transparent"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -113,7 +140,7 @@
                         android:layout_marginEnd="5dp"
                         android:text="@string/icon_password"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/cyan"/>
+                        android:textColor="@color/cyan_100"/>
 
                     <View
                         android:layout_width="1px"
@@ -136,6 +163,7 @@
                     android:textColorHint="@color/white_80"
                     android:inputType="textWebPassword"
                     android:textCursorDrawable="@null"
+                    android:textSize="@dimen/medium_text_size"
                     android:background="@android:color/transparent"/>
 
             </RelativeLayout>

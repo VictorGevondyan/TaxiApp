@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
+import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
@@ -46,28 +47,35 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
             TextView dateIconTextView = (TextView) convertView.findViewById(R.id.icon_date);
             TextView locationIconTextView = (TextView) convertView.findViewById(R.id.icon_location);
             TextView statusIconTextView = (TextView) convertView.findViewById(R.id.icon_status);
+            TextView costIconTextView = (TextView) convertView.findViewById(R.id.icon_cost);
 
             dateIconTextView.setTypeface(icomoonTypeface);
             locationIconTextView.setTypeface(icomoonTypeface);
             statusIconTextView.setTypeface(icomoonTypeface);
+            costIconTextView.setTypeface(icomoonTypeface);
             iconArrow.setTypeface(icomoonTypeface);
         }
 
         TextView dateTextView = (TextView) convertView.findViewById(R.id.date);
         TextView locationTextView = (TextView) convertView.findViewById(R.id.location);
         TextView statusTextView = (TextView) convertView.findViewById(R.id.status);
+        TextView costTextView = (TextView) convertView.findViewById(R.id.cost);
 
         TextView dateValueTextView = (TextView) convertView.findViewById(R.id.date_value);
         TextView locationValueTextView = (TextView) convertView.findViewById(R.id.location_value);
         TextView statusValueTextView = (TextView) convertView.findViewById(R.id.status_value);
+        TextView costValueTextView = (TextView) convertView.findViewById(R.id.cost_value);
 
         dateTextView.setTypeface(robotoTypeface);
         locationTextView.setTypeface(robotoTypeface);
         statusTextView.setTypeface(robotoTypeface);
+        costTextView.setTypeface(robotoTypeface);
 
         dateValueTextView.setTypeface(robotoTypeface);
         locationValueTextView.setTypeface(robotoTypeface);
         statusValueTextView.setTypeface(robotoTypeface);
+        statusValueTextView.setTypeface(robotoTypeface);
+        costValueTextView.setTypeface(robotoTypeface);
 
         dateValueTextView.setText(DateUtils.formatDateTime(
                 context,
@@ -76,7 +84,16 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
                         | DateUtils.FORMAT_ABBREV_MONTH | DateUtils.FORMAT_SHOW_YEAR
                         | DateUtils.FORMAT_24HOUR));
         locationValueTextView.setText(order.getStartingPointName());
-        statusValueTextView.setText(order.getStatus());
+
+        if (order.getStatus().equals(OrderStatusConstants.FINISHED)) {
+            convertView.findViewById(R.id.cost_section).setVisibility(View.VISIBLE);
+            convertView.findViewById(R.id.status_section).setVisibility(View.GONE);
+            costValueTextView.setText(order.getMoneyAmount() + " / " + order.getPaymentType() + " / " + order.getBonus());
+        } else {
+            convertView.findViewById(R.id.cost_section).setVisibility(View.GONE);
+            convertView.findViewById(R.id.status_section).setVisibility(View.VISIBLE);
+            statusValueTextView.setText(order.getStatus());
+        }
 
         return convertView;
     }
@@ -84,6 +101,12 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
     @Override
     public int getCount() {
         return ordersList.size();
+    }
+
+    @Override
+    public void clear() {
+        ordersList.clear();
+        notifyDataSetChanged();
     }
 
     @Override

@@ -29,17 +29,21 @@ public class ModelFactory {
     }
 
     private static final String ID = "_id";
+    private static final String ORDER = "order";
     private static final String STATUS = "status";
     private static final String STARTING_POINT = "startingPoint";
     private static final String ORDER_TIME = "orderTime";
     private static final String ENDING_POINT = "endingPoint";
     private static final String FINISH_TIME = "finishTime";
+    private static final String UPDATED = "updated";
     private static final String DESCRIPTION = "description";
+    private static final String BONUS = "bonus";
+    private static final String FEEDBACK = "feedback";
 
     private static final String TRANSACTION = "transaction";
     private static final String PAYMENT_TYPE = "paymentType";
     private static final String MONEY_AMOUNT = "moneyAmount";
-    private static final java.lang.String DISTANCE = "distance";
+    private static final String DISTANCE = "distance";
 
     private static final String USER = "user";
     private static final String USERNAME = "username";
@@ -55,10 +59,10 @@ public class ModelFactory {
 
     private static final String TIME_PRICE = "timePrice";
     private static final String ROUT_PRICE = "routPrice";
-    private static final String MIN_PRICE = "minPrice";
+    private static final String MIN_PRICE = "minimumPrice";
 
     private static final String SEX = "sex";
-    private static final String DATE_OF_BIRTH = "dateOfBirth";
+    private static   final String DATE_OF_BIRTH = "dateOfBirth";
     private static final String BALANCE = "balance";
     private static final String CAR_NUMBER = "carNumber";
     private static final String DRIVER = "driver";
@@ -83,8 +87,13 @@ public class ModelFactory {
         Date orderTime = dateFromString(orderJSON.optString(ORDER_TIME));
         Date finishTime = dateFromString(orderJSON.optString(FINISH_TIME));
         Date userPickupTime = dateFromString(orderJSON.optString(USER_PICKUP_TIME));
+        Date updatedTime = dateFromString(orderJSON.optString(UPDATED));
+
+        // Distance
+        double distance = orderJSON.optDouble(DISTANCE, 0.0) * 1000;
 
         // Starting Point
+
         JSONObject startingPointJSON = orderJSON.optJSONObject(STARTING_POINT);
         String startingPointName = startingPointJSON.optString(NAME);
         JSONArray startPointGeoArray = startingPointJSON.optJSONArray(GEO);
@@ -132,9 +141,13 @@ public class ModelFactory {
 
         // Transaction
         JSONObject transactionJSONObject = orderJSON.optJSONObject(TRANSACTION);
-        String paymentType = transactionJSONObject.optString(PAYMENT_TYPE);
-        int moneyAmount = transactionJSONObject.optInt(MONEY_AMOUNT, 0);
-        float distance = transactionJSONObject.optInt(DISTANCE, 0);
+        String paymentType = "";
+        int moneyAmount = 0;
+
+        if (transactionJSONObject != null) {
+            paymentType = transactionJSONObject.optString(PAYMENT_TYPE);
+            moneyAmount = transactionJSONObject.optInt(MONEY_AMOUNT, 0);
+        }
 
         // User
         JSONObject userJSONObject = orderJSON.optJSONObject(USER);
@@ -144,13 +157,26 @@ public class ModelFactory {
             username = userJSONObject.optString(USERNAME);
         }
 
+        // Bonus
+        JSONObject bonusJSON = orderJSON.optJSONObject(BONUS);
+        int bonus = 0;
+
+        if (bonusJSON != null) {
+            bonus = bonusJSON.optInt(MONEY_AMOUNT);
+        }
+
+        // Feedback
+        JSONObject feedbackJSONJsonObject = orderJSON.optJSONObject(FEEDBACK);
+        boolean hasFeedback = feedbackJSONJsonObject != null && feedbackJSONJsonObject.keys().hasNext();
+
         return new Order(
                 id, status, description, username,
-                orderTime, userPickupTime, finishTime,
+                orderTime, userPickupTime, finishTime, updatedTime,
                 startingPointName, endingPointName,
                 startingPointGeo, endingPointGeo,
-                paymentType, moneyAmount, distance,
-                driver, carCategory);
+                paymentType, moneyAmount, bonus, distance,
+                driver, carCategory,
+                hasFeedback);
     }
 
     public static CarCategory[] makeCarCategories(JSONArray carCategoriesArray) {
@@ -172,7 +198,6 @@ public class ModelFactory {
         double timePrice = carCategoryJSON.optDouble(TIME_PRICE);
         double routPrice = carCategoryJSON.optDouble(ROUT_PRICE);
         double minPrice = carCategoryJSON.optDouble(MIN_PRICE, 6 * routPrice);
-        // TODO: TAKE MIN PRICE FROM SERVER ONLY
 
         return new CarCategory(id, name, description, timePrice, routPrice, minPrice);
     }
@@ -201,27 +226,33 @@ public class ModelFactory {
 
             JSONObject recipient  = transactionJSON.optJSONObject(TO);
 
-            String recipientUsername;
-            String recipientRole;
+            String recipientUsername = "";
+            String recipientRole = "";
+
             if( recipient != null ) {
                 recipientUsername = recipient.optString(USERNAME);
                 recipientRole = recipient.optString(ROLE);
-            } else{
-                recipientUsername = "Driver";
-                recipientRole = "Driver";
             }
+
             JSONObject sender  = transactionJSON.optJSONObject(FROM);
-            String senderUsername= sender.optString(USERNAME);
-            String senderRole = sender.optString(ROLE);
+            String senderUsername = "";
+            String senderRole = "";
+
+            if (sender != null) {
+                senderUsername = sender.optString(USERNAME);
+                senderRole = sender.optString(ROLE);
+            }
 
             Date date = dateFromString(transactionJSON.optString(DATE));
 
             String description = transactionJSON.optString(DESCRIPTION);
             String paymentType = transactionJSON.optString(PAYMENT_TYPE);
-            String moneyAmount = transactionJSON.optString(MONEY_AMOUNT);
+            String id = transactionJSON.optString(ID);
+            String orderId = transactionJSON.optString(ORDER);
+            int moneyAmount = transactionJSON.optInt(MONEY_AMOUNT);
 
-            transactions.add(new Transaction(recipientUsername, recipientRole, senderUsername, senderRole,
-                    date, description, paymentType, moneyAmount));
+            transactions.add(new Transaction(id, recipientUsername, recipientRole, senderUsername, senderRole,
+                    date, description, paymentType, moneyAmount, orderId));
         }
 
         return transactions;

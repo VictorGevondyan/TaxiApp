@@ -29,7 +29,7 @@
     <string name="submit">SUBMIT</string>
     <string name="change_password">CHANGE PASSWORD</string>
     <string name="old_password">Old Password</string>
-    <string name="enter_password">Enter Password</string>
+    <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="language">LANGUAGE</string>
     <string name="english">English</string>
@@ -43,9 +43,11 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="comments">comments</string>
-    <string name="confirm">CONFIRM</string>
+    <string name="confirm">Confirm</string>
     <string name="min">min/</string>
     <string name="one_km">1km/</string>
+    <string name="address">Address</string>
+    <string name="no_search_results">No Results</string>
 
     <!-- Orders List -->
     <string name="date">Date</string>
@@ -56,12 +58,30 @@
 
     <!-- Dialogs -->
     <string name="cancel">Cancel</string>
+    <string name="retry">Retry</string>
     <string name="done">Done</string>
     <string name="ok">OK</string>
     <string name="comments_title">Comments</string>
+    <string name="feedback_title">Feedback</string>
     <string name="error_title">Error</string>
     <string name="order_time">Order Time</string>
-
+    <string name="no_internet_description">There is no network connection. If you are not connected to internet, please, tap on button below, navigate to wifi or mobile data settings and select appropriate connection. If that does not help, please contact your network provider. If this issue is recurring, please, contact us.</string>
+    <string name="gps_disabled_title">GPS Disabled</string>
+    <string name="gps_not_permitted_title">No GPS Permission</string>
+    <string name="gps_disabled_message">There is no way we can identify your location. Please, proceed to location settings with button below and enable the location access.</string>
+    <string name="gps_not_permitted_message">The application is not permitted to use location data. Please, proceed to application settings below, open permissions and allow location permission.</string>
+    <string name="permit">Permit</string>
+    <string name="enable">Enable</string>
+    <string name="no_internet_title">NETWORK ERROR</string>
+    <string name="connect">Connect</string>
+    <string name="success">Success</string>
+    <string name="you_will_receive_sms">You will soon receive sms with your new password. If sms does not arrive, please, check phone number you enter, or contact us.</string>
+    <string name="thank_you_for_feedback">Thank you for you feedback.</string>
+    <string name="congratulation">Congratulation</string>
+    <string name="password_changed">Your password has been changed.</string>
+    <string name="info_changed">Your info has been changed.</string>
+    <string name="hey">Hey!</string>
+    <string name="already_have_orders">You already have %d active orders. Do you really want to do another?</string>
 
     <!-- Order -->
     <string name="cost">Cost</string>
@@ -71,8 +91,11 @@
     <string name="hour">h</string>
     <string name="minute">m</string>
     <string name="second">s</string>
+    <string name="km">km</string>
     <string name="taken">Taken</string>
     <string name="not_taken">Not Taken</string>
+    <string name="started">Started</string>
+    <string name="leave_feedback">Leave Feedback</string>
 
     <!-- Transactions -->
     <string name="transactions">Transactions</string>
@@ -80,11 +103,43 @@
     <string name="to">To</string>
     <string name="loading">Loading</string>
     <string name="no_transaction">No Transactions</string>
+    <string name="me">Me</string>
+    <string name="driver">Driver</string>
 
     <!-- Push Notifications -->
     <string name="your_order_taken">Your order is taken</string>
     <string name="your_order_finished">Your order is finished</string>
+    <string name="your_order_started">Your order is started</string>
+    <string name="your_driver_waiting">Your driver is waiting</string>
+    <string name="your_order_not_taken">Your order still not taken</string>
+    <string name="no_car_for_you">Seems there is no car that can serve you at the moment. Please, click \"Retry\" if you want to try ordering again, and \"Ok\" if you want to cancel the order.</string>
     <string name="something_happens">Whoa! Something happens!</string>
+
+    <!-- Splash Screen -->
+    <string name="blazon">The best app for ordering a taxi</string>
+    <string name="powered_by">POWERED BY PARADOX LLC</string>
+
+    <!-- Map Controls -->
+    <string name="plus">+</string>
+    <string name="minus">—</string>
+
+    <!-- Error Messages -->
+    <string name="cannot_complete_request_title">Servers unreachable</string>
+    <string name="cannot_complete_request_message">Cannot connect to servers. Please, check your internet connection. If issue is recurring, please connect us.</string>
+    <string name="server_error_title">Server Error</string>
+    <string name="server_error_message">Server is unable to process request. If issue is recurring, please connect us.</string>
+    <string name="invalid_data_title">Invalid Data</string>
+    <string name="invalid_data_message">Invalid data was sent. Please, check your input. If issue is recurring, please connect us.</string>
+    <string name="unknown_error_title">Unknown Error</string>
+    <string name="unknown_error_message">Unknown error occurred. If issue is recurring, please, connect us and report following status code - </string>
+    <string name="attention">Attention</string>
+    <string name="empty_phone_number">Phone number is empty.</string>
+    <string name="empty_password">Password is empty.</string>
+    <string name="invalid_phone_number">Phone number is invalid. It must contain 8 digits, without the leading zero.</string>
+    <string name="wrong_credentials">Wrong Credentials</string>
+    <string name="phone_pass_combination_wrong">This phone and password combination does not exist. You can get new password for this phone number by clicking \"Receive Password\" button.</string>
+    <string name="invalid_password">Invalid Password</string>
+    <string name="password_does_not_match">New Password and Confirm Password fields do not match.</string>
 
     <!-- Icons -->
     <string name="icon_about_us">&#xe900;</string>
@@ -110,9 +165,15 @@
     <string name="icon_balance">&#xe914;</string>
     <string name="icon_help">&#xe915;</string>
     <string name="icon_status">&#xe916;</string>
+    <string name="icon_logo">&#xe917;</string>
     <string name="icon_person_tile">&#xe921;</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="icon_logo_filled">&#xe930;</string>
+    <string name="icon_gps">&#xe935;</string>
+    <string name="icon_no_gps">&#xe934;</string>
+    <string name="icon_gaz">&#xe936;</string>
+    <string name="icon_car">&#xe937;</string>
+    <string name="icon_gps_tiny">&#xe93e;</string>
+    <string name="icon_plus">&#xe93f;</string>
+    <string name="icon_minus">&#xe940;</string>
 
 </resources>

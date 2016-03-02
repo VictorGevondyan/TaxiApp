@@ -1,10 +1,8 @@
 package com.flycode.paradox.taxiuser.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,31 +11,39 @@ import android.support.v4.app.ActivityCompat;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.api.APITalker;
+import com.flycode.paradox.taxiuser.api.FeedbackRequestHandler;
 import com.flycode.paradox.taxiuser.api.GetOrderHandler;
 import com.flycode.paradox.taxiuser.api.PointsForOrderListener;
+import com.flycode.paradox.taxiuser.api.UpdateOrderStatusHandler;
 import com.flycode.paradox.taxiuser.constants.DriverStatusConstants;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
-import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
+import com.flycode.paradox.taxiuser.dialogs.FeedbackDialog;
+import com.flycode.paradox.taxiuser.dialogs.LoadingDialog;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
+import com.flycode.paradox.taxiuser.utils.HardwareAccessibilityUtil;
 import com.flycode.paradox.taxiuser.utils.LocaleUtils;
+import com.flycode.paradox.taxiuser.utils.MessageHandlerUtil;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 import com.flycode.paradox.taxiuser.views.MaximalScrollView;
-import com.mapbox.mapboxsdk.annotations.IconFactory;
-import com.mapbox.mapboxsdk.annotations.Marker;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.annotations.Polyline;
-import com.mapbox.mapboxsdk.annotations.PolylineOptions;
-import com.mapbox.mapboxsdk.constants.MyLocationTracking;
-import com.mapbox.mapboxsdk.constants.Style;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
-import com.mapbox.mapboxsdk.geometry.CoordinateBounds;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.views.MapView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,20 +51,23 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class OrderActivity extends Activity implements GetOrderHandler, PointsForOrderListener {
+public class OrderActivity extends SuperActivity implements GetOrderHandler, PointsForOrderListener, OnMapReadyCallback, FeedbackDialog.FeedbackDialogListener, FeedbackRequestHandler, UpdateOrderStatusHandler {
     public static final String ORDER = "order";
+    public static final String RETRY = "retry";
 
     private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 0;
+    private static final String TAG_FEEDBACK_DIALOG = "tagFeedbackDialog";
 
     private MapView mapView;
+    private GoogleMap googleMap;
+    private LinearLayout leaveFeedbackLinearLayout;
+    private LoadingDialog loadingDialog;
     private Order order;
 
     private Timer timer;
 
     private String driverPhoneNumber;
     private Intent callIntent;
-
-    private boolean hasCenteredOnes = false;
 
     private Marker userMarker;
     private Marker taxiMarker;
@@ -73,6 +82,13 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+
+        loadingDialog = new LoadingDialog(this);
+
+        mapView = (MapView) findViewById(R.id.map_view);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+        MapsInitializer.initialize(this);
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
         Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
@@ -93,21 +109,12 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         }
 
         String orderStatus = order.getStatus();
-        boolean setPhoneButtonVisible = (order.getDriver() != null) && (orderStatus.equals(OrderStatusConstants.STARTED) ||
-                orderStatus.equals(OrderStatusConstants.TAKEN));
+        boolean setPhoneButtonVisible = (order.getDriver() != null)
+                && (orderStatus.equals(OrderStatusConstants.STARTED)
+                || orderStatus.equals(OrderStatusConstants.TAKEN));
         if (setPhoneButtonVisible) {
             actionBarRightButton.setVisibility(View.VISIBLE);
         }
-
-        mapView = (MapView) findViewById(R.id.map_view);
-        mapView.setStyleUrl(Style.LIGHT);
-        mapView.setZoomLevel(15);
-        mapView.setZoomControlsEnabled(false);
-        mapView.setCompassEnabled(false);
-        mapView.setMyLocationTrackingMode(MyLocationTracking.TRACKING_NONE);
-        mapView.onCreate(savedInstanceState);
-
-        init(order);
     }
 
     @Override
@@ -116,7 +123,8 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         mapView.onResume();
 
         if (order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)
-                || order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)
+                || order.getStatus().equals(OrderStatusConstants.TAKEN)
+                || order.getStatus().equals(OrderStatusConstants.WAITING)
                 || order.getStatus().equals(OrderStatusConstants.STARTED)) {
             timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -153,13 +161,11 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
     @Override
     public void onStart() {
         super.onStart();
-        mapView.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mapView.onStop();
     }
 
     @Override
@@ -199,29 +205,42 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         }
     }
 
+    @Override
+    protected void onOrderUpdated(Order order) {
+        super.onOrderUpdated(order);
+
+        this.order = order;
+        init(order);
+    }
+
     public void init(Order order) {
         if (order.getStatus().equals(OrderStatusConstants.TAKEN)
-                || order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)) {
+                || order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)
+                || order.getStatus().equals(OrderStatusConstants.WAITING)) {
             LatLng pickupCoordinate = new LatLng(
                     order.getStartingPointGeo().getLatitude(),
                     order.getStartingPointGeo().getLongitude());
 
             MarkerOptions pickupLocationMarkerOptions = new MarkerOptions();
             pickupLocationMarkerOptions.position(pickupCoordinate);
-            pickupLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_user));
+            pickupLocationMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.tile_user));
+            pickupLocationMarkerOptions.anchor(0.5f, 0.5f);
 
-            mapView.setMyLocationEnabled(true);
-
-            if (userMarker != null) {
-                mapView.removeAnnotation(userMarker);
-            } else {
-                mapView.setCenterCoordinate(pickupCoordinate, false);
+            if (HardwareAccessibilityUtil.checkIfHasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                googleMap.setMyLocationEnabled(true);
             }
 
-            userMarker = mapView.addMarker(pickupLocationMarkerOptions);
+            if (userMarker != null) {
+                userMarker.remove();
+            } else {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(pickupCoordinate));
+            }
+
+            userMarker = googleMap.addMarker(pickupLocationMarkerOptions);
         }
 
-        if (order.getStatus().equals(OrderStatusConstants.TAKEN)) {
+        if (order.getStatus().equals(OrderStatusConstants.TAKEN)
+                || order.getStatus().equals(OrderStatusConstants.WAITING)) {
             APITalker.sharedTalker().getPointsForOrder(order.getId(), DriverStatusConstants.GOING_TO_ORDER, 1, this);
         } else if (order.getStatus().equals(OrderStatusConstants.STARTED)
                 || order.getStatus().equals(OrderStatusConstants.FINISHED)) {
@@ -230,7 +249,8 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
 
         if (order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)
                 || order.getStatus().equals(OrderStatusConstants.TAKEN)
-                || order.getStatus().equals(OrderStatusConstants.STARTED)) {
+                || order.getStatus().equals(OrderStatusConstants.STARTED)
+                || order.getStatus().equals(OrderStatusConstants.WAITING)) {
             initDriverDetails(order);
         } else {
             Button actionBarRightButton = (Button) findViewById(R.id.action_bar_right_button);
@@ -246,7 +266,8 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         driverInfoView.setVisibility(View.GONE);
 
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
-        Typeface robotoTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
+        Typeface robotoThinTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
+        Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
 
         TextView dateIconTextView = (TextView) orderInfoView.findViewById(R.id.icon_date);
         TextView locationIconTextView = (TextView) orderInfoView.findViewById(R.id.icon_location);
@@ -273,18 +294,19 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         TextView distanceValueTextView = (TextView) orderInfoView.findViewById(R.id.distance_value);
         TextView statusValueTextView = (TextView) orderInfoView.findViewById(R.id.status_value);
 
-        dateTextView.setTypeface(robotoTypeface);
-        locationTextView.setTypeface(robotoTypeface);
-        costTextView.setTypeface(robotoTypeface);
-        distanceTextView.setTypeface(robotoTypeface);
-        statusTextView.setTypeface(robotoTypeface);
+        dateTextView.setTypeface(robotoThinTypeface);
+        locationTextView.setTypeface(robotoThinTypeface);
+        costTextView.setTypeface(robotoThinTypeface);
+        distanceTextView.setTypeface(robotoThinTypeface);
+        statusTextView.setTypeface(robotoThinTypeface);
 
-        dateValueTextView.setTypeface(robotoTypeface);
-        startLocationValueTextView.setTypeface(robotoTypeface);
-        endLocationValueTextView.setTypeface(robotoTypeface);
-        costValueTextView.setTypeface(robotoTypeface);
-        distanceValueTextView.setTypeface(robotoTypeface);
-        statusValueTextView.setTypeface(robotoTypeface);
+        dateValueTextView.setTypeface(robotoThinTypeface);
+
+        startLocationValueTextView.setTypeface(robotoThinTypeface);
+        endLocationValueTextView.setTypeface(robotoThinTypeface);
+        costValueTextView.setTypeface(robotoThinTypeface);
+        distanceValueTextView.setTypeface(robotoThinTypeface);
+        statusValueTextView.setTypeface(robotoThinTypeface);
 
         String durationString = "";
 
@@ -305,19 +327,36 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
             durationString = durationString + " " + (seconds - minutes * 60) + getString(R.string.second);
         }
 
-        int bonus = order.getMoneyAmount() * 20 / 100;
-
         dateValueTextView.setText(DateUtils.formatDateTime(
                 this,
                 order.getOrderTime().getTime(),
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME
                         | DateUtils.FORMAT_ABBREV_MONTH | DateUtils.FORMAT_SHOW_YEAR
                         | DateUtils.FORMAT_24HOUR));
-        startLocationValueTextView.setText(order.getStartingPointName());
-        endLocationValueTextView.setText(order.getEndingPointName());
-        costValueTextView.setText(order.getMoneyAmount() + " / " + order.getPaymentType() + " / " + bonus);
-        distanceValueTextView.setText(order.getDistance() + " - " + durationString);
+
+        if (order.getStartingPointName().isEmpty()) {
+            startLocationValueTextView.setVisibility(View.GONE);
+        } else {
+            startLocationValueTextView.setText(order.getStartingPointName());
+        }
+        if (order.getEndingPointName().isEmpty()) {
+            endLocationValueTextView.setVisibility(View.GONE);
+        } else {
+            endLocationValueTextView.setText(order.getEndingPointName());
+        }
+
+        String distanceString = String.format("%.2f", order.getDistance() / 1000) + getString(R.string.km);
+
+        costValueTextView.setText(order.getMoneyAmount() + " / " + order.getPaymentType() + " / " + order.getBonus());
+        distanceValueTextView.setText(distanceString + " - " + durationString);
         statusValueTextView.setText(order.getStatus());
+
+        if (!order.getHasFeedback()) {
+            leaveFeedbackLinearLayout = (LinearLayout) findViewById(R.id.feedback_section);
+            Button leaveFeedbackButton = (Button) leaveFeedbackLinearLayout.findViewById(R.id.feedback_button);
+            leaveFeedbackButton.setTypeface(robotoRegularTypeface);
+            leaveFeedbackLinearLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     public void initDriverDetails(Order order) {
@@ -329,7 +368,9 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         View orderInfoView = findViewById(R.id.order_info);
         orderInfoView.setVisibility(View.GONE);
 
-        if (order.getStatus().equals(OrderStatusConstants.TAKEN)
+        if ((order.getStatus().equals(OrderStatusConstants.TAKEN)
+                || order.getStatus().equals(OrderStatusConstants.STARTED)
+                || order.getStatus().equals(OrderStatusConstants.WAITING))
                 && order.getDriver() != null) {
             TextView carNumberTextView = (TextView) driverInfoView.findViewById(R.id.car_number);
             TextView carDescriptionTextView = (TextView) driverInfoView.findViewById(R.id.car_description);
@@ -355,6 +396,9 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
             orderStatusTextView.setText(getString(R.string.taken));
         } else if (orderStatus.equals(OrderStatusConstants.NOT_TAKEN)) {
             orderStatusTextView.setText(getString(R.string.not_taken));
+        } else if (orderStatus.equals(OrderStatusConstants.STARTED)) {
+            orderStatusTextView.setText(getString(R.string.started));
+            cancelButton.setVisibility(View.GONE);
         }
 
         typeValueTextView.setText(order.getCarCategory());
@@ -382,6 +426,17 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         startActivity(callIntent);
     }
 
+    public void onLeaveFeedback(View view) {
+        FeedbackDialog
+                .initialize(this)
+                .show(getFragmentManager(), TAG_FEEDBACK_DIALOG);
+    }
+
+    public void onCancelOrder(View view) {
+        loadingDialog.show();
+        APITalker.sharedTalker().updateOrderStatus(this, order.getId(), OrderStatusConstants.CANCELED, this);
+    }
+
     /**
      * GetOrderHandler Methods
      */
@@ -393,8 +448,8 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
     }
 
     @Override
-    public void onGetOrderFailure() {
-        MessageDialog.initialize("Error", "GET ORDER ERROR").show(getFragmentManager(), MessageDialog.ERROR_DIALOG_TAG);
+    public void onGetOrderFailure(int statusCode) {
+        MessageHandlerUtil.showErrorForStatusCode(statusCode, this);
     }
 
     /**
@@ -402,7 +457,7 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
      */
 
     @Override
-    public void onGetPointsForOrderFail() {
+    public void onGetPointsForOrderFail(int statusCode) {
 
     }
 
@@ -411,7 +466,8 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         if (order.getStatus().equals(OrderStatusConstants.STARTED)
                 || order.getStatus().equals(OrderStatusConstants.FINISHED)) {
             drawPath(coordinates);
-        } else if (order.getStatus().equals(OrderStatusConstants.TAKEN)) {
+        } else if (order.getStatus().equals(OrderStatusConstants.TAKEN)
+                || order.getStatus().equals(OrderStatusConstants.WAITING)) {
             showTaxiLocation(coordinates);
         }
     }
@@ -454,27 +510,28 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         }
 
         if (taxiMarker != null) {
-            mapView.removeAnnotation(taxiMarker);
+            taxiMarker.remove();
         } else {
-            CoordinateBounds coordinateBounds = new CoordinateBounds(new LatLng(north, east), new LatLng(south, west));
             View actionBarView = findViewById(R.id.action_bar);
             View orderInfoView = findViewById(R.id.order_info);
 
-            mapView.setVisibleCoordinateBounds(
-                coordinateBounds,
-                new RectF(
-                        actionBarView.getMeasuredHeight() / 2,
-                        actionBarView.getMeasuredHeight(),
-                        actionBarView.getMeasuredHeight() / 2,
-                        orderInfoView.getMeasuredHeight()),
-                        true);
+            LatLngBounds bounds = new LatLngBounds(new LatLng(south, west), new LatLng(north, east));
+
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(
+                    bounds,
+                    mapView.getMeasuredWidth(),
+                    mapView.getMeasuredHeight() - orderInfoView.getMeasuredHeight() -
+                            actionBarView.getMeasuredHeight() + actionBarView.getMeasuredHeight(),
+                    0
+            ));
         }
 
         MarkerOptions taxiLocationMarkerOptions = new MarkerOptions();
         taxiLocationMarkerOptions.position(new LatLng(latitude, longitude));
-        taxiLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_taxi));
+        taxiLocationMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.tile_taxi));
+        taxiLocationMarkerOptions.anchor(0.5f, 0.5f);
 
-        taxiMarker = mapView.addMarker(taxiLocationMarkerOptions);
+        taxiMarker = googleMap.addMarker(taxiLocationMarkerOptions);
     }
 
     private void drawPath(JSONArray coordinates) {
@@ -523,10 +580,10 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
         }
 
         if (pathPolyline != null) {
-            mapView.removeAnnotation(pathPolyline);
+            pathPolyline.remove();
         } else {
             BoundingBox zoomLevel = new BoundingBox(north, east, south, west);
-            CoordinateBounds coordinateBounds = new CoordinateBounds(new LatLng(north, east), new LatLng(south, west));
+            LatLngBounds bounds = new LatLngBounds(new LatLng(south, west), new LatLng(north, east));
 
             if (zoomLevel.isValid()) {
                 View actionBarView = findViewById(R.id.action_bar);
@@ -536,55 +593,59 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
                     View driverInfoView = findViewById(R.id.driver_info);
                     infoHeight = driverInfoView.getMeasuredHeight();
                 } else {
-                    View orderInfoView = findViewById(R.id.order_info);
+                    View orderInfoView = findViewById(R.id.order_info_scroll_view);
                     infoHeight = orderInfoView.getMeasuredHeight();
                 }
 
-                mapView.setVisibleCoordinateBounds(
-                        coordinateBounds,
-                        new RectF(
-                                actionBarView.getMeasuredHeight() / 2,
-                                actionBarView.getMeasuredHeight(),
-                                actionBarView.getMeasuredHeight() / 2,
-                                infoHeight),
-                        false);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                        bounds,
+                        mapView.getMeasuredWidth(),
+                        mapView.getMeasuredHeight() - infoHeight -
+                                actionBarView.getMeasuredHeight() + actionBarView.getMeasuredHeight(),
+                        actionBarView.getMeasuredHeight()
+                ));
+                googleMap.moveCamera(CameraUpdateFactory.scrollBy(0, mapView.getMeasuredHeight() / 4 - actionBarView.getMeasuredHeight()));
             }
         }
 
-        pathPolyline = mapView.addPolyline(pathPolylineOptions);
+        pathPolyline = googleMap.addPolyline(pathPolylineOptions);
 
         if (userMarker != null) {
-            mapView.removeAnnotation(userMarker);
+            userMarker.remove();
             userMarker = null;
         }
 
         if (taxiMarker != null) {
-            mapView.removeAnnotation(taxiMarker);
+            taxiMarker.remove();
             taxiMarker = null;
         }
 
         if (startMarker != null) {
-            mapView.removeAnnotation(startMarker);
+            startMarker.remove();
         }
 
-        mapView.setMyLocationEnabled(false);
+        if (HardwareAccessibilityUtil.checkIfHasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            googleMap.setMyLocationEnabled(false);
+        }
 
         MarkerOptions startLocationMarkerOptions = new MarkerOptions();
         startLocationMarkerOptions.position(pathPolylineOptions.getPoints().get(0));
-        startLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_start));
+        startLocationMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.tile_start));
+        startLocationMarkerOptions.anchor(0.5f, 0.5f);
 
-        startMarker = mapView.addMarker(startLocationMarkerOptions);
+        startMarker = googleMap.addMarker(startLocationMarkerOptions);
 
         if (order.getStatus().equals(OrderStatusConstants.STARTED)) {
             if (locationMarker != null) {
-                mapView.removeAnnotation(locationMarker);
+                locationMarker.remove();
             }
 
             MarkerOptions locationMarkerOptions = new MarkerOptions();
             locationMarkerOptions.position(pathPolylineOptions.getPoints().get(pathPolylineOptions.getPoints().size() - 1));
-            locationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_location));
+            locationMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.tile_location));
+            locationMarkerOptions.anchor(0.5f, 0.5f);
 
-            locationMarker = mapView.addMarker(locationMarkerOptions);
+            locationMarker = googleMap.addMarker(locationMarkerOptions);
         } else if (order.getStatus().equals(OrderStatusConstants.FINISHED)) {
             if (timer != null) {
                 timer.cancel();
@@ -592,19 +653,98 @@ public class OrderActivity extends Activity implements GetOrderHandler, PointsFo
             }
 
             if (locationMarker != null) {
-                mapView.removeAnnotation(locationMarker);
+                locationMarker.remove();
                 locationMarker = null;
             }
 
             if (finishMarker != null) {
-                mapView.removeAnnotation(finishMarker);
+                finishMarker.remove();
             }
 
             MarkerOptions finishLocationMarkerOptions = new MarkerOptions();
             finishLocationMarkerOptions.position(pathPolylineOptions.getPoints().get(pathPolylineOptions.getPoints().size() - 1));
-            finishLocationMarkerOptions.icon(IconFactory.getInstance(this).fromResource(R.drawable.tile_finish));
+            finishLocationMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.tile_finish));
+            finishLocationMarkerOptions.anchor(0.5f, 0.5f);
 
-            finishMarker = mapView.addMarker(finishLocationMarkerOptions);
+            finishMarker = googleMap.addMarker(finishLocationMarkerOptions);
         }
+    }
+
+    /**
+     * OnMapReadyCallback Methods
+     */
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        googleMap.getUiSettings().setZoomControlsEnabled(false);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.getUiSettings().setCompassEnabled(false);
+
+        googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+
+        if (HardwareAccessibilityUtil.checkIfHasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            googleMap.setMyLocationEnabled(true);
+        }
+
+        this.googleMap = googleMap;
+
+        init(order);
+    }
+
+    /**
+     * FeedbackDialogListener Methods
+     */
+
+    @Override
+    public void onFeedbackDone(String comment, int rating) {
+        loadingDialog.show();
+
+        APITalker.sharedTalker().sendFeedback(this, comment, rating, order.getId(), this);
+    }
+
+    @Override
+    public void onFeedbackCancel() {
+
+    }
+
+    /**
+     * FeedbackRequestHandler
+     */
+
+    @Override
+    public void onFeedbackRequestSuccess() {
+        loadingDialog.dismiss();
+
+        order.setHasFeedback(true);
+        MessageHandlerUtil.showMessage(R.string.success, R.string.thank_you_for_feedback, this);
+        leaveFeedbackLinearLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onFeedbackRequestFailure(int statusCode) {
+        loadingDialog.dismiss();
+
+        MessageHandlerUtil.showErrorForStatusCode(statusCode, this);
+    }
+
+    /**
+     * UpdateOrderStatusHandler Methods
+     */
+
+    @Override
+    public void onUpdateOrderStatusSuccess(Order order) {
+        loadingDialog.dismiss();
+
+        this.order = order;
+
+        init(order);
+    }
+
+    @Override
+    public void onUpdateOrderStatusFailure(int statusCode) {
+        loadingDialog.dismiss();
+
+        MessageHandlerUtil.showErrorForStatusCode(statusCode, this);
     }
 }

@@ -5,5 +5,5 @@ package com.flycode.paradox.taxiuser.api;
  */
 public interface OnGCMTokenRegisteredListener {
     void onGCMTokenRegistrationSuccess(String registrationId);
-    void onGCMTokenRegistrationFailure();
+    void onGCMTokenRegistrationFailure(int statusCode);
 }

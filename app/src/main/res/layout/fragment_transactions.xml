@@ -6,11 +6,6 @@
     android:orientation="vertical"
     android:background="@color/base_grey_100">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_grey"/>
-
     <TextView
         android:id="@+id/no_transaction"
         android:layout_width="match_parent"
@@ -28,7 +23,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:listSelector="@android:color/transparent"
-        android:divider="@drawable/divider_grey" >
+        android:overScrollMode="never"
+        android:divider="@drawable/divider_grey"
+        android:scrollbars="none" >
     </ListView>
 
 </LinearLayout>

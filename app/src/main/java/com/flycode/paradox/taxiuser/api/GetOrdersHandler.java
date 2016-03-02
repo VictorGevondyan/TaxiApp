@@ -9,5 +9,5 @@ import java.util.ArrayList;
  */
 public interface GetOrdersHandler {
     public void onGetOrdersSuccess( ArrayList<Order> ordersList, int ordersCount );
-    public void onGetOrdersFailure();
+    public void onGetOrdersFailure(int statusCode);
 }

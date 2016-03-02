@@ -1,10 +1,13 @@
 package com.flycode.paradox.taxiuser.api;
 
 import android.content.Context;
-import android.util.Log;
 
+import com.flycode.paradox.taxiuser.database.Database;
 import com.flycode.paradox.taxiuser.factory.ModelFactory;
+import com.flycode.paradox.taxiuser.models.Order;
+import com.flycode.paradox.taxiuser.models.Transaction;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
+import com.flycode.paradox.taxiuser.settings.UserData;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -20,24 +23,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by victor on 12/14/15.
  */
 public class APITalker {
     // Url constants
-    private final String BASE_URL = "http://107.155.108.131:9000";
-//    private final String BASE_URL = "http://192.168.0.110:9000";
+//    private final String BASE_URL = "http://taxivip.am:9001";
+//    private final String BASE_URL = "http://107.155.108.131:9000";
+    private final String BASE_URL = "http://192.168.0.110:9001";
+//    private final String BASE_URL = "http://192.168.1.110:9000";
     private final String BASE_API_URL = BASE_URL+ "/api";
     private final String LOGIN_URL = "/auth/local";
     private final String ORDERS_URL = "/orders";
+    private final String FEEDBACK_URL = "/feedback";
     private final String OWN_URL = "/own";
     private final String POINTS_URL = "/points";
+    private final String STATUS_URL = "/status";
     private final String TRANSACTIONS_URL = "/transactions";
     private final String CAR_CATEGORIES_URL = "/carCategories";
     private final String DEVICES = "/devices";
-    private final String USER_URL = "/me";
+    private final String ME_URL = "/me";
     private final String USERS_URL = "/users";
     private final String PASSWORD_URL = "/password";
 
@@ -45,6 +55,8 @@ public class APITalker {
     private final String PASSWORD = "password";
     private final String STARTING_POINT = "startingPoint";
     private final String NAME = "name";
+    private final String FEEDBACK = "feedback";
+    private final String STARS = "stars";
     private final String GEO = "geo";
     private final String DESCRIPTION = "description";
     private final String CAR_CATEGORY = "carCategory";
@@ -62,7 +74,11 @@ public class APITalker {
     private final String TRANSACTIONS = "transactions";
     private final String ONLY_COUNT = "onlyCount";
     private final String COUNT = "count";
-    public static final String TRUE = "true";
+    private final String DATE = "date";
+    private final String START = "start";
+    private final String TRUE = "true";
+    private final String UPDATED = "updated";
+    private final String ORDER_TIME = "orderTime";
 
     /*
 	 * Singletone
@@ -97,25 +113,56 @@ public class APITalker {
 
         asyncHttpClient.post(url, params, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers,
-                                  JSONObject response) {
-
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 if (loginHandler != null) {
                     String token = response.optString(TOKEN);
                     AppSettings.sharedSettings(context).setToken(token);
                     setTokenCookie(context, token);
-                    AppSettings.sharedSettings(context).setToken(token);
                     loginHandler.onLoginSuccess();
                 }
             }
 
             @Override
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  java.lang.Throwable throwable,
-                                  org.json.JSONObject errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, java.lang.Throwable throwable, org.json.JSONObject errorResponse) {
                 if (loginHandler != null) {
-                    loginHandler.onLoginFailure(TalkersConstants.JUST_FAILURE);
+                    loginHandler.onLoginFailure(statusCode);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (loginHandler != null) {
+                    loginHandler.onLoginFailure(statusCode);
+                }
+            }
+        });
+    }
+
+    public void receivePassword(String username, final OnReceivePasswordRequestListener listener) {
+        RequestParams params = new RequestParams();
+        params.put(USERNAME, username);
+
+        String url = BASE_API_URL + USERS_URL;
+
+        asyncHttpClient.post(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                if (listener != null) {
+                    listener.onReceivePasswordRequestSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, java.lang.Throwable throwable, org.json.JSONObject errorResponse) {
+                if (listener != null) {
+                    listener.onReceivePasswordRequestFail(statusCode);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (listener != null) {
+                    listener.onReceivePasswordRequestFail(statusCode);
                 }
             }
         });
@@ -127,36 +174,47 @@ public class APITalker {
         asyncHttpClient.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                if (response.length() == 0) {
-                    listener.onGetCarCategoriesFail();
+                if (listener != null) {
+                    listener.onGetCarCategoriesSuccess(ModelFactory.makeCarCategories(response));
                 }
-
-                listener.onGetCarCategoriesSuccess(ModelFactory.makeCarCategories(response));
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                listener.onGetCarCategoriesFail();
+                if (listener != null) {
+                    listener.onGetCarCategoriesFail(statusCode);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (listener != null) {
+                    listener.onGetCarCategoriesFail(statusCode);
+                }
             }
         });
     }
 
-    public void getOwnOrders(Context context, String[] statuses, final boolean onlyCount, final GetOrdersHandler getOrdersHandler){
+    public void getOwnOrders(final Context context, final String[] statuses, Date fromDate, final GetOrdersHandler getOrdersHandler){
         if (!authenticate(context)) {
+            getOrdersHandler.onGetOrdersFailure(401);
+
             return;
         }
 
-        JSONArray statusArray = new JSONArray();
-
-        for (String status : statuses) {
-            statusArray.put(status);
-        }
-
         RequestParams params = new RequestParams();
-        params.put(STATUS, statusArray.toString());
+        params.put(LIMIT, 100);
 
-        if( onlyCount ){
-            params.put(ONLY_COUNT, TRUE);
+        if (fromDate != null) {
+            try {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
+                JSONObject dateJSON = new JSONObject();
+                dateJSON.put(START, simpleDateFormat.format(fromDate));
+                params.put(UPDATED, dateJSON);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
         }
 
         String url = BASE_API_URL + ORDERS_URL + OWN_URL;
@@ -165,41 +223,33 @@ public class APITalker {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 if (getOrdersHandler != null) {
-                    JSONArray orders = response.optJSONArray(ORDERS);
-                    int ordersCount = response.optInt(COUNT);
+                    JSONArray ordersArray = response.optJSONArray(ORDERS);
 
-                    if(onlyCount){
-                        getOrdersHandler.onGetOrdersSuccess( null , ordersCount );
-                    } else {
-                        getOrdersHandler.onGetOrdersSuccess(ModelFactory.makeOrders(orders), ordersCount);
-                    }
+                    ArrayList<Order> orders = ModelFactory.makeOrders(ordersArray);
+                    Database.sharedDatabase(context.getApplicationContext()).storeOrders(orders, statuses, getOrdersHandler);
                 }
             }
 
             @Override
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  java.lang.Throwable throwable,
-                                  org.json.JSONObject errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, java.lang.Throwable throwable, org.json.JSONObject errorResponse) {
                 if (getOrdersHandler != null) {
-                    getOrdersHandler.onGetOrdersFailure();
+                    getOrdersHandler.onGetOrdersFailure(statusCode);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (getOrdersHandler != null) {
-                    Log.d("STATUS CODE", statusCode + "");
-                    Log.d("RESPONSE STRING", responseString);
-                    getOrdersHandler.onGetOrdersFailure();
+                    getOrdersHandler.onGetOrdersFailure(statusCode);
                 }
             }
-
         });
     }
 
-    public void getOrder(Context context, String orderId, final GetOrderHandler getOrderHandler){
+    public void getOrder(final Context context, String orderId, final GetOrderHandler getOrderHandler){
         if (!authenticate(context)) {
+            getOrderHandler.onGetOrderFailure(401);
+
             return;
         }
 
@@ -208,91 +258,103 @@ public class APITalker {
         asyncHttpClient.get(context, url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
                 if (getOrderHandler != null) {
-                    getOrderHandler.onGetOrderSuccess(ModelFactory.makeOrder(response));
+                    Order order = ModelFactory.makeOrder(response);
+                    Database.sharedDatabase(context.getApplicationContext()).storeOrder(order);
+                    getOrderHandler.onGetOrderSuccess(order);
                 }
             }
 
             @Override
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  java.lang.Throwable throwable,
-                                  org.json.JSONObject errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, java.lang.Throwable throwable, org.json.JSONObject errorResponse) {
                 if (getOrderHandler!= null) {
-                    Log.d("STATUS CODE", statusCode + "");
-                    getOrderHandler.onGetOrderFailure();
+                    getOrderHandler.onGetOrderFailure(statusCode);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (getOrderHandler!= null) {
-                    Log.d("STATUS CODE", statusCode + "");
-                    Log.d("RESPONSE STRING", responseString);
-                    getOrderHandler.onGetOrderFailure();
+                    getOrderHandler.onGetOrderFailure(statusCode);
                 }
             }
-
         });
     }
 
-    public void getOwnTransactions(Context context, final GetOwnTransactionsHandler getOwnTransactionsHandler){
+    public void getOwnTransactions(final Context context, final GetOwnTransactionsHandler getOwnTransactionsHandler, Date fromDate) {
         if (!authenticate(context)) {
+            getOwnTransactionsHandler.onGetOwnTransactionsFailure(401);
+
             return;
         }
 
-        RequestParams params = new RequestParams();
+        RequestParams requestParams = new RequestParams();
+        requestParams.put(LIMIT, 100);
+
+        if (fromDate != null) {
+            try {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
+                JSONObject dateJSON = new JSONObject();
+                fromDate.setTime(fromDate.getTime() + 1);
+                dateJSON.put(START, simpleDateFormat.format(fromDate));
+                requestParams.put(DATE, dateJSON);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
 
         String url = BASE_API_URL + TRANSACTIONS_URL + OWN_URL;
 
-        asyncHttpClient.get(url, params, new JsonHttpResponseHandler() {
+        asyncHttpClient.get(url, requestParams, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers,
-                                  JSONObject response) {
-
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 if (getOwnTransactionsHandler != null) {
-                    JSONArray transactions = response.optJSONArray(TRANSACTIONS);
-                    getOwnTransactionsHandler.onGetOwnTransactionsSuccess(ModelFactory.makeTransactions(transactions));
+                    JSONArray transactionsArray = response.optJSONArray(TRANSACTIONS);
+                    ArrayList<Transaction> transactions = ModelFactory.makeTransactions(transactionsArray);
+                    getOwnTransactionsHandler.onGetOwnTransactionsSuccess(transactions);
+                    Database
+                            .sharedDatabase(context)
+                            .storeTransactions(
+                                    transactions,
+                                    UserData.sharedData(context).getUsername());
                 }
             }
 
             @Override
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  java.lang.Throwable throwable,
-                                  org.json.JSONObject errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, java.lang.Throwable throwable, org.json.JSONObject errorResponse) {
                 if (getOwnTransactionsHandler != null) {
-                    getOwnTransactionsHandler.onGetOwnTransactionsFailure();
+                    getOwnTransactionsHandler.onGetOwnTransactionsFailure(statusCode);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (getOwnTransactionsHandler != null) {
-                    Log.d("STATUS CODE", statusCode + "");
-                    Log.d("RESPONSE STRING", responseString);
-                    getOwnTransactionsHandler.onGetOwnTransactionsFailure();
+                    getOwnTransactionsHandler.onGetOwnTransactionsFailure(statusCode);
                 }
             }
-
         });
     }
 
-    public void makeOrder(Context context, String startingPointName, double startingPointLatitude, double startingPointLongitude, Date orderTime, String carCategory, String comments, final MakeOrderListener listener) {
+    public void makeOrder(final Context context, String startingPointName, double startingPointLatitude, double startingPointLongitude, Date orderTime, String carCategory, String comments, final MakeOrderListener listener) {
         if (!authenticate(context)) {
+            listener.onMakeOrderFail(401);
+
             return;
         }
 
         final JSONObject requestJSON = new JSONObject();
 
         try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
             JSONObject startingPointJSON = new JSONObject();
             startingPointJSON.put(NAME, startingPointName);
             startingPointJSON.put(GEO, locationToJsonArray(startingPointLatitude, startingPointLongitude));
             requestJSON.put(STARTING_POINT, startingPointJSON);
             requestJSON.put(DESCRIPTION, comments);
             requestJSON.put(CAR_CATEGORY, carCategory);
+            requestJSON.put(ORDER_TIME, simpleDateFormat.format(orderTime));
         } catch (JSONException e) {
             e.printStackTrace();
             return;
@@ -301,7 +363,7 @@ public class APITalker {
         StringEntity requestEntity;
 
         try {
-            requestEntity = new StringEntity(requestJSON.toString());
+            requestEntity = new StringEntity(requestJSON.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return;
@@ -312,22 +374,33 @@ public class APITalker {
         asyncHttpClient.post(context, url, requestEntity, "application/json", new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
+                if (listener != null) {
+                    Order order = ModelFactory.makeOrder(response);
+                    Database.sharedDatabase(context).storeOrder(order);
+                    listener.onMakeOrderSuccess(order);
+                }
+            }
 
-                listener.onMakeOrderSuccess(ModelFactory.makeOrder(response));
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (listener != null) {
+                    listener.onMakeOrderFail(statusCode);
+                }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-
-                listener.onMakeOrderFail();
+                if (listener != null) {
+                    listener.onMakeOrderFail(statusCode);
+                }
             }
         });
     }
 
     public void registerGCMToken(Context context, final String registrationId, String androidDeviceId, final OnGCMTokenRegisteredListener listener) {
         if (!authenticate(context)) {
+            listener.onGCMTokenRegistrationFailure(401);
+
             return;
         }
 
@@ -345,7 +418,7 @@ public class APITalker {
         StringEntity requestEntity;
 
         try {
-            requestEntity = new StringEntity(requestJSON.toString());
+            requestEntity = new StringEntity(requestJSON.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return;
@@ -356,65 +429,58 @@ public class APITalker {
         asyncHttpClient.post(context, url, requestEntity, "application/json", new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                if (listener == null) {
-                    return;
+                if (listener != null) {
+                    listener.onGCMTokenRegistrationSuccess(registrationId);
                 }
-
-                listener.onGCMTokenRegistrationSuccess(registrationId);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                if (listener == null) {
-                    return;
+                if (listener != null) {
+                    listener.onGCMTokenRegistrationFailure(statusCode);
                 }
-
-                listener.onGCMTokenRegistrationFailure();
             }
         });
     }
 
     public void getUser(Context context, final GetUserHandler getUserHandler){
         if (!authenticate(context)) {
+            getUserHandler.onGetUserFailure(401);
+
             return;
         }
 
-        String url = BASE_API_URL + USERS_URL + USER_URL;
+        String url = BASE_API_URL + USERS_URL + ME_URL;
 
         asyncHttpClient.get(context, url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
                 if (getUserHandler != null) {
                     getUserHandler.onGetUserSuccess(ModelFactory.makeUser(response));
                 }
             }
 
             @Override
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  Throwable throwable,
-                                  JSONObject errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 if (getUserHandler != null) {
-                    Log.d("STATUS CODE", statusCode + "");
-                    getUserHandler.onGetUserFailure();
+                    getUserHandler.onGetUserFailure(statusCode);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (getUserHandler != null) {
-                    Log.d("STATUS CODE", statusCode + "");
-                    Log.d("RESPONSE STRING", responseString);
-                    getUserHandler.onGetUserFailure();
+                    getUserHandler.onGetUserFailure(statusCode);
                 }
             }
 
         });
     }
 
-    public void changeUserPassword(final Context context, final String oldPassword, final String newPassword) {
+    public void changeUserPassword(final Context context, final String oldPassword, final String newPassword, final ChangePasswordRequestHandler handler) {
         if (!authenticate(context)) {
+            handler.onChangePasswordRequestFailure(401);
+
             return;
         }
 
@@ -422,33 +488,30 @@ public class APITalker {
         params.put(OLD_PASSWORD, oldPassword);
         params.put(NEW_PASSWORD, newPassword);
 
-        String url = BASE_API_URL + USERS_URL + USER_URL + PASSWORD_URL;
+        String url = BASE_API_URL + USERS_URL + ME_URL + PASSWORD_URL;
 
         asyncHttpClient.put(url, params, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers,
-                                  JSONObject response) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                handler.onChangePasswordRequestSuccess();
             }
 
             @Override
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  java.lang.Throwable throwable,
-                                  org.json.JSONObject errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, java.lang.Throwable throwable, org.json.JSONObject errorResponse) {
+                handler.onChangePasswordRequestFailure(statusCode);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("STATUS CODE", statusCode + "");
-                Log.d("RESPONSE STRING", responseString);
+                handler.onChangePasswordRequestFailure(statusCode);
             }
-
-
         });
     }
 
-    public void changeNameAndMail(final Context context, final String fullName,  final String email , final ChangeNameAndMailHandler changeNameAndMail) {
+    public void changeNameAndMail(final Context context, final String fullName,  final String email , final ChangeNameAndMailRequestListener changeNameAndMail) {
         if (!authenticate(context)) {
+            changeNameAndMail.onChangeNameAndMailFailure(401);
+
             return;
         }
 
@@ -456,7 +519,7 @@ public class APITalker {
         params.put(NAME, fullName);
         params.put(EMAIL, email);
 
-        String url = BASE_API_URL + USERS_URL + USER_URL;
+        String url = BASE_API_URL + USERS_URL + ME_URL;
 
         asyncHttpClient.put(url, params, new JsonHttpResponseHandler() {
             @Override
@@ -469,21 +532,16 @@ public class APITalker {
             }
 
             @Override
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  java.lang.Throwable throwable,
-                                  org.json.JSONObject errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, java.lang.Throwable throwable, org.json.JSONObject errorResponse) {
                 if (changeNameAndMail != null) {
-                    changeNameAndMail.onChangeNameAndMailFailure();
+                    changeNameAndMail.onChangeNameAndMailFailure(statusCode);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (changeNameAndMail != null) {
-                    Log.d("STATUS CODE", statusCode + "");
-                    Log.d("RESPONSE STRING", responseString);
-                    changeNameAndMail.onChangeNameAndMailFailure();
+                    changeNameAndMail.onChangeNameAndMailFailure(statusCode);
                 }
             }
         });
@@ -503,18 +561,119 @@ public class APITalker {
         asyncHttpClient.get(url, requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
+                if (listener != null) {
+                    listener.onGetPointsForOrderSuccess(response);
+                }
+            }
 
-                listener.onGetPointsForOrderSuccess(response);
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (listener != null) {
+                    listener.onGetPointsForOrderFail(statusCode);
+                }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-
-                listener.onGetPointsForOrderFail();
+                if (listener != null) {
+                    listener.onGetPointsForOrderFail(statusCode);
+                }
             }
         });
+    }
+
+    public void sendFeedback(final Context context, String comment, int rating, String orderId, final FeedbackRequestHandler handler) {
+        if (!authenticate(context)) {
+            handler.onFeedbackRequestFailure(401);
+
+            return;
+        }
+
+        RequestParams params = new RequestParams();
+        params.put(FEEDBACK, comment);
+        params.put(STARS, rating);
+
+        String url = BASE_API_URL + ORDERS_URL + "/" + orderId + FEEDBACK_URL;
+
+        asyncHttpClient.post(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                if (handler != null) {
+                    Database.sharedDatabase(context).storeOrder(ModelFactory.makeOrder(response));
+                    handler.onFeedbackRequestSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, java.lang.Throwable throwable, org.json.JSONObject errorResponse) {
+                if (handler != null) {
+                    handler.onFeedbackRequestFailure(statusCode);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (handler != null) {
+                    handler.onFeedbackRequestFailure(statusCode);
+                }
+            }
+        });
+    }
+
+    public void updateOrderStatus(final Context context,
+                                  String orderId, String status,
+                                   final UpdateOrderStatusHandler updateOrderStatusHandler) {
+        if (!authenticate(context)) {
+            updateOrderStatusHandler.onUpdateOrderStatusFailure(401);
+
+            return;
+        }
+
+        JSONObject requestJSON = new JSONObject();
+
+        try {
+            requestJSON.put(STATUS, status);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        StringEntity requestEntity;
+
+        try {
+            requestEntity = new StringEntity(requestJSON.toString(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String url = BASE_API_URL + ORDERS_URL + "/" + orderId + STATUS_URL;
+
+        asyncHttpClient.put(context, url, requestEntity, "application/json", new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                if (updateOrderStatusHandler != null) {
+                    Order order = ModelFactory.makeOrder(response);
+                    Database.sharedDatabase(context).storeOrder(order);
+                    updateOrderStatusHandler.onUpdateOrderStatusSuccess(ModelFactory.makeOrder(response));
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (updateOrderStatusHandler != null) {
+                    updateOrderStatusHandler.onUpdateOrderStatusFailure(statusCode);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (updateOrderStatusHandler != null) {
+                    updateOrderStatusHandler.onUpdateOrderStatusFailure(statusCode);
+                }
+            }
+        });
+
     }
 
     private void setTokenCookie(Context context, String token) {

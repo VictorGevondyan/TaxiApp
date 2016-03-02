@@ -22,7 +22,6 @@ public class OrderView extends View {
     private Paint textPaint;
     private Paint solidRhombusPaint;
     private Paint transparentRhombusPaint;
-    private Paint strokeRhombusPaint;
 
     private float density;
     private float scaledDensity;
@@ -52,7 +51,7 @@ public class OrderView extends View {
 
         textPaint = new Paint();
         textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setColor(Color.parseColor("#4D4D4D"));
+        textPaint.setColor(Color.parseColor("#00A99D"));
         textPaint.setTextSize(15 * scaledDensity);
         textPaint.setFakeBoldText(false);
         textPaint.setAntiAlias(true);
@@ -64,18 +63,13 @@ public class OrderView extends View {
         solidRhombusPaint.setColor(Color.parseColor("#00FFFF"));
         solidRhombusPaint.setStyle(Paint.Style.FILL);
         solidRhombusPaint.setAntiAlias(true);
+        solidRhombusPaint.setShadowLayer(shadowRadius / 2, 0.0f, 0.0f, Color.parseColor("#80000000"));
 
         transparentRhombusPaint = new Paint();
         transparentRhombusPaint.setColor(Color.parseColor("#00FFFF"));
         transparentRhombusPaint.setAlpha(51);
         transparentRhombusPaint.setStyle(Paint.Style.FILL);
         transparentRhombusPaint.setAntiAlias(true);
-
-        strokeRhombusPaint = new Paint();
-        strokeRhombusPaint.setColor(Color.parseColor("#00FFFF"));
-        strokeRhombusPaint.setStrokeWidth(1);
-        strokeRhombusPaint.setStyle(Paint.Style.STROKE);
-        strokeRhombusPaint.setAntiAlias(true);
     }
 
     @Override
@@ -107,7 +101,6 @@ public class OrderView extends View {
         setLayerType(LAYER_TYPE_SOFTWARE, solidRhombusPaint);
 
         canvas.drawPath(bigRhombus, transparentRhombusPaint);
-        canvas.drawPath(bigRhombus, strokeRhombusPaint);
         canvas.drawPath(smallRhombus, solidRhombusPaint);
 
         String order = getContext().getString(R.string.order);

@@ -32,16 +32,14 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
     private Activity activity;
     private CommentDialogListener listener;
     private EditText commentEditText;
-    private KeyboardStateListener keyboardStateListener;
 
-    public static CommentDialog initialize(String comment, CommentDialogListener listener, KeyboardStateListener keyboardStateListener) {
+    public static CommentDialog initialize(String comment, CommentDialogListener listener) {
         Bundle arguments = new Bundle();
         arguments.putString(COMMENT, comment);
 
         CommentDialog commentsDialog = new CommentDialog();
         commentsDialog.setArguments(arguments);
         commentsDialog.setListener(listener);
-        commentsDialog.setKeyboardStateListener(keyboardStateListener);
 
         return commentsDialog;
     }
@@ -167,17 +165,4 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
             return false;
         }
     }
-
-    /**
-     * Interface for sending keyboard state change event to MakeOrderFragment
-     */
-
-    public interface KeyboardStateListener{
-        public void onKeyboardStateChanged();
-    }
-
-    public void setKeyboardStateListener( KeyboardStateListener keyboardStateListener ){
-        this.keyboardStateListener = keyboardStateListener;
-    }
-
 }

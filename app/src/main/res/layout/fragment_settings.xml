@@ -5,9 +5,8 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:orientation="vertical"
-    android:scrollbars="vertical"
-    android:background="@color/base_grey_100"
-    android:overScrollMode="never">
+    android:overScrollMode="never"
+    android:background="@color/base_grey_100">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +19,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/settings_entry_margin"
             android:text="@string/icon_name"
-            android:textColor="@color/pure_white"
+            android:textColor="@color/white_100"
             android:textSize="40sp"
             android:gravity="center"/>
 
@@ -29,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/pure_white"
+            android:textColor="@color/white_100"
             android:textSize="@dimen/small_text_size"/>
 
         <LinearLayout
@@ -57,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/icon_name"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/cyan"
+                        android:textColor="@color/cyan_100"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
                         android:layout_marginRight="5dp"
@@ -66,7 +65,7 @@
                     <View
                         android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_100"/>
+                        android:background="@color/white_40"/>
 
                 </LinearLayout>
 
@@ -81,7 +80,7 @@
                     android:gravity="center"
                     android:hint="@string/name"
                     android:textColor="@color/white_80"
-                    android:textColorHint="@color/white_80"
+                    android:textColorHint="@color/white_40"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/medium_text_size"
                     android:inputType="text"
@@ -93,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_100"/>
+                android:background="@color/white_40"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -116,12 +115,12 @@
                         android:layout_marginEnd="5dp"
                         android:text="@string/icon_name"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/cyan"/>
+                        android:textColor="@color/cyan_100"/>
 
                     <View
                         android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_100"/>
+                        android:background="@color/white_40"/>
 
                 </LinearLayout>
 
@@ -136,7 +135,7 @@
                     android:gravity="center"
                     android:hint="@string/last_name"
                     android:textColor="@color/white_80"
-                    android:textColorHint="@color/white_80"
+                    android:textColorHint="@color/white_40"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/medium_text_size"
                     android:inputType="textWebPassword"
@@ -171,12 +170,12 @@
                         android:layout_marginEnd="5dp"
                         android:text="@string/icon_mail"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/cyan"/>
+                        android:textColor="@color/cyan_100"/>
 
                     <View
                         android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_100"/>
+                        android:background="@color/white_40"/>
 
                 </LinearLayout>
 
@@ -191,7 +190,7 @@
                     android:gravity="center"
                     android:hint="@string/email"
                     android:textColor="@color/white_80"
-                    android:textColorHint="@color/white_80"
+                    android:textColorHint="@color/white_40"
                     android:textSize="@dimen/medium_text_size"
                     android:inputType="textEmailAddress"
                     android:textCursorDrawable="@null"
@@ -203,7 +202,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_100"/>
+                android:background="@color/white_40"/>
 
             <com.flycode.paradox.taxiuser.views.GenericTriangleView
                 xmlns:flycode="http://schemas.android.com/apk/res-auto"
@@ -225,9 +224,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_centerInParent="true"
-                android:background="@color/cyan"/>
+                android:background="@color/cyan_100"/>
 
             <TextView
                 android:id="@+id/change_password"
@@ -240,7 +239,7 @@
                 android:paddingStart="20dp"
                 android:text="@string/change_password"
                 android:textColor="@color/white_100"
-                android:textSize="@dimen/settings_title_text_size"
+                android:textSize="@dimen/medium_text_size"
                 android:background="@color/base_grey_100"/>
 
         </RelativeLayout>
@@ -270,7 +269,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/icon_password"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/cyan"
+                        android:textColor="@color/cyan_100"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
                         android:layout_marginRight="5dp"
@@ -279,7 +278,7 @@
                     <View
                         android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_100"/>
+                        android:background="@color/white_40"/>
 
                 </LinearLayout>
 
@@ -294,7 +293,7 @@
                     android:gravity="center"
                     android:hint="@string/old_password"
                     android:textColor="@color/white_80"
-                    android:textColorHint="@color/white_80"
+                    android:textColorHint="@color/white_40"
                     android:inputType="textWebPassword"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/medium_text_size"
@@ -306,7 +305,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_100"/>
+                android:background="@color/white_40"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -324,7 +323,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/icon_password"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/cyan"
+                        android:textColor="@color/cyan_100"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
                         android:layout_marginRight="5dp"
@@ -333,7 +332,7 @@
                     <View
                         android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_100"/>
+                        android:background="@color/white_40"/>
 
                 </LinearLayout>
 
@@ -346,9 +345,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginEnd="5dp"
                     android:gravity="center"
-                    android:hint="@string/enter_password"
+                    android:hint="@string/new_password"
                     android:textColor="@color/white_80"
-                    android:textColorHint="@color/white_80"
+                    android:textColorHint="@color/white_40"
                     android:inputType="textWebPassword"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/medium_text_size"
@@ -360,7 +359,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_100"/>
+                android:background="@color/white_40"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -382,12 +381,12 @@
                         android:layout_marginEnd="5dp"
                         android:text="@string/icon_password"
                         android:textSize="@dimen/credentials_icon_size"
-                        android:textColor="@color/cyan"/>
+                        android:textColor="@color/cyan_100"/>
 
                     <View
                         android:layout_width="1px"
                         android:layout_height="match_parent"
-                        android:background="@color/white_100"/>
+                        android:background="@color/white_40"/>
 
                 </LinearLayout>
 
@@ -402,7 +401,7 @@
                     android:gravity="center"
                     android:hint="@string/confirm_password"
                     android:textColor="@color/white_80"
-                    android:textColorHint="@color/white_80"
+                    android:textColorHint="@color/white_40"
                     android:inputType="textWebPassword"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/medium_text_size"
@@ -414,7 +413,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="3dp"
-                android:background="@color/white_100"/>
+                android:background="@color/white_40"/>
 
             <com.flycode.paradox.taxiuser.views.GenericTriangleView
                 xmlns:flycode="http://schemas.android.com/apk/res-auto"
@@ -436,9 +435,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1px"
                 android:layout_centerInParent="true"
-                android:background="@color/cyan"/>
+                android:background="@color/cyan_100"/>
 
             <TextView
                 android:id="@+id/language"
@@ -451,7 +450,7 @@
                 android:paddingStart="20dp"
                 android:text="@string/language"
                 android:textColor="@color/white_100"
-                android:textSize="@dimen/settings_title_text_size"
+                android:textSize="@dimen/medium_text_size"
                 android:background="@color/base_grey_100"/>
 
         </RelativeLayout>
@@ -486,7 +485,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/armenian"
                     android:textSize="@dimen/small_text_size"
-                    android:textColor="@color/pure_white"/>
+                    android:textColor="@color/white_40"/>
 
             </LinearLayout>
 
@@ -511,7 +510,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/english"
                     android:textSize="@dimen/small_text_size"
-                    android:textColor="@color/pure_white"/>
+                    android:textColor="@color/white_40"/>
 
             </LinearLayout>
 
@@ -536,7 +535,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/russian"
                     android:textSize="@dimen/small_text_size"
-                    android:textColor="@color/pure_white"/>
+                    android:textColor="@color/white_40"/>
 
             </LinearLayout>
 

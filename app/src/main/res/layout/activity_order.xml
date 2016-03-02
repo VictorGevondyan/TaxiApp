@@ -6,16 +6,16 @@
     android:layout_height="match_parent"
     tools:context="com.flycode.paradox.taxiuser.activities.OrderActivity">
 
-    <!--<com.google.android.gms.maps.MapView-->
-        <!--android:id="@+id/map_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"/>-->
-
-    <com.mapbox.mapboxsdk.views.MapView
+    <com.google.android.gms.maps.MapView
         android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        mapbox:access_token="pk.eyJ1IjoiYW5oYXl0YW5hbnVuIiwiYSI6ImNpaWlxMmhmZjAwMjB2cW02aG4yZGlidzYifQ.7pbAdUjiyJFh7RTpsJhEVQ"/>
+        android:layout_height="match_parent"/>
+
+    <!--<com.mapbox.mapboxsdk.views.MapView-->
+        <!--android:id="@+id/map_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--mapbox:access_token="pk.eyJ1IjoiYW5oYXl0YW5hbnVuIiwiYSI6ImNpaWlxMmhmZjAwMjB2cW02aG4yZGlidzYifQ.7pbAdUjiyJFh7RTpsJhEVQ"/>-->
 
     <RelativeLayout
         android:id="@+id/action_bar"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/order"
-            android:textSize="@dimen/action_bar_title_text_size"
+            android:textSize="@dimen/title_text_size"
             android:textColor="@color/white_100"/>
 
         <Button
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/icon_date"
                     android:textSize="@dimen/credentials_icon_size"
-                    android:textColor="@color/cyan"
+                    android:textColor="@color/cyan_100"
                     android:layout_marginLeft="@dimen/orders_small_margin"
                     android:layout_marginStart="@dimen/orders_small_margin"
                     android:layout_marginRight="@dimen/orders_small_margin"
@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/icon_location"
                     android:textSize="@dimen/credentials_icon_size"
-                    android:textColor="@color/cyan"
+                    android:textColor="@color/cyan_100"
                     android:layout_marginLeft="@dimen/orders_small_margin"
                     android:layout_marginStart="@dimen/orders_small_margin"
                     android:layout_marginRight="@dimen/orders_small_margin"
@@ -207,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/icon_cost"
                     android:textSize="@dimen/credentials_icon_size"
-                    android:textColor="@color/cyan"
+                    android:textColor="@color/cyan_100"
                     android:layout_marginLeft="@dimen/orders_small_margin"
                     android:layout_marginStart="@dimen/orders_small_margin"
                     android:layout_marginRight="@dimen/orders_small_margin"
@@ -243,12 +243,14 @@
                         android:layout_marginLeft="-20dp"
                         android:layout_marginStart="-10dp"
                         android:layout_marginBottom="-8dp"
-                        android:layout_above="@+id/cost_value"
-                        android:layout_toRightOf="@+id/cost_value"
-                        android:layout_toEndOf="@+id/cost_value"
+                        android:layout_above="@id/cost_value"
+                        android:layout_toRightOf="@id/cost_value"
+                        android:layout_toEndOf="@id/cost_value"
                         android:text="@string/bonus"
-                        android:textSize="@dimen/tiny_text_size"
-                        android:textColor="@color/yellow"/>
+                        android:textSize="@dimen/super_small_text_size"
+                        android:textColor="@color/yellow"
+                        android:singleLine="true"
+                        android:lines="1"/>
 
                 </RelativeLayout>
 
@@ -272,7 +274,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/icon_distance"
                     android:textSize="@dimen/credentials_icon_size"
-                    android:textColor="@color/cyan"
+                    android:textColor="@color/cyan_100"
                     android:layout_marginLeft="@dimen/orders_small_margin"
                     android:layout_marginStart="@dimen/orders_small_margin"
                     android:layout_marginRight="@dimen/orders_small_margin"
@@ -315,7 +317,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/icon_status"
                     android:textSize="@dimen/credentials_icon_size"
-                    android:textColor="@color/cyan"
+                    android:textColor="@color/cyan_100"
                     android:layout_marginLeft="@dimen/orders_small_margin"
                     android:layout_marginStart="@dimen/orders_small_margin"
                     android:layout_marginRight="@dimen/orders_small_margin"
@@ -337,6 +339,34 @@
                     android:layout_marginStart="@dimen/orders_small_margin"
                     android:textSize="@dimen/small_text_size"
                     android:textColor="@color/white_80"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/white_40"/>
+
+            <LinearLayout
+                android:id="@+id/feedback_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/orders_small_margin"
+                android:layout_marginBottom="@dimen/orders_small_margin"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/feedback_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:onClick="onLeaveFeedback"
+                    android:text="@string/leave_feedback"
+                    android:textSize="@dimen/small_text_size"
+                    android:textColor="@color/white_40"
+                    android:background="@android:color/transparent"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"/>
 
             </LinearLayout>
 
@@ -381,7 +411,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/type"
-                    android:textColor="@color/cyan"
+                    android:textColor="@color/cyan_100"
                     android:textSize="@dimen/tiny_text_size"/>
 
                 <TextView
@@ -410,9 +440,10 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:minHeight="0dp"
-                    android:textColor="@color/cyan"
+                    android:textColor="@color/cyan_100"
                     android:textSize="@dimen/tiny_text_size"
-                    android:background="@android:color/transparent"/>
+                    android:background="@android:color/transparent"
+                    android:onClick="onCancelOrder"/>
 
                 <TextView
                     android:id="@+id/order_status"

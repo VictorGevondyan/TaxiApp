@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="@string/icon_name"
             android:textSize="@dimen/credentials_icon_size"
-            android:textColor="@color/cyan"
+            android:textColor="@color/cyan_100"
             android:layout_marginRight="@dimen/orders_tiny_margin"
             android:layout_marginEnd="@dimen/orders_tiny_margin"/>
 
@@ -33,10 +33,12 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/sender_username_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="5dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/from"
@@ -58,6 +60,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/recipient_username_section"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -97,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/icon_history"
-            android:textColor="@color/cyan"
+            android:textColor="@color/cyan_100"
             android:textSize="@dimen/credentials_icon_size"
             android:layout_marginRight="@dimen/orders_tiny_margin"
             android:layout_marginEnd="@dimen/orders_tiny_margin"/>
@@ -123,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/icon_cost"
-            android:textColor="@color/cyan"
+            android:textColor="@color/cyan_100"
             android:textSize="@dimen/credentials_icon_size"
             android:layout_marginRight="@dimen/orders_tiny_margin"
             android:layout_marginEnd="@dimen/orders_tiny_margin"/>
@@ -147,6 +150,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/transactions_description_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -157,7 +161,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/icon_status"
-            android:textColor="@color/cyan"
+            android:textColor="@color/cyan_100"
             android:textSize="@dimen/credentials_icon_size"
             android:layout_marginRight="@dimen/orders_tiny_margin"
             android:layout_marginEnd="@dimen/orders_tiny_margin"/>

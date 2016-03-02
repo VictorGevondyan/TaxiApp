@@ -13,7 +13,6 @@ public class User {
     private String name;
     private String sex;
     private String email;
-//    private Date dateOfBirth;
     private String status;
     private int balance;
     private int carNumber;
@@ -26,7 +25,6 @@ public class User {
         this.name = name;
         this.sex = sex;
         this.email = email;
-//        this.dateOfBirth = dateOfBirth;
         this.status = status;
         this.balance = balance;
         this.carNumber = carNumber;
@@ -51,10 +49,6 @@ public class User {
     public String getSex() {
         return sex;
     }
-
-//    public Date getDateOfBirth() {
-//        return dateOfBirth;
-//    }
 
     public String getStatus() {
         return status;

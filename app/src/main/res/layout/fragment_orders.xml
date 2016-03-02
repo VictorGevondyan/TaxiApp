@@ -5,11 +5,6 @@
     android:orientation="vertical"
     android:background="@color/base_grey_100">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_grey"/>
-
     <TextView
         android:id="@+id/no_order"
         android:layout_width="match_parent"
@@ -27,8 +22,11 @@
         android:id="@+id/orders_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:listSelector="@color/black_30"
-        android:divider="@drawable/divider_grey"/>
+        android:listSelector="@android:color/transparent"
+        android:divider="@drawable/divider_grey"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:overScrollMode="never"/>
 
 </LinearLayout>
 

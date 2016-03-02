@@ -6,18 +6,7 @@
         <item name="colorPrimary">#000000</item>
         <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">#000000</item>
-    </style>
-
-    <style name="OrderTimePicker" parent="AppTheme">
-        <item name="android:divider">@color/pure_white</item>
-        <item name="android:textColor">@color/pure_white</item>
-        <item name="android:textColorSecondary">@color/pure_white</item>
-        <item name="android:textColorPrimary">@color/pure_white</item>
-        <item name="android:textColorSecondaryInverse">@color/pure_white</item>
-        <item name="android:textColorPrimaryInverse">@color/pure_white</item>
-        <item name="android:color">@color/pure_white</item>
-        <item name="android:editTextColor">@color/pure_white</item>
-        <item name="android:editTextStyle">@android:style/Widget.Holo.EditText</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
 </resources>

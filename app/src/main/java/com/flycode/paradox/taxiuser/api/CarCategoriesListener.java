@@ -7,5 +7,5 @@ import com.flycode.paradox.taxiuser.models.CarCategory;
  */
 public interface CarCategoriesListener {
     void onGetCarCategoriesSuccess(CarCategory[] carCategories);
-    void onGetCarCategoriesFail();
+    void onGetCarCategoriesFail(int statusCode);
 }

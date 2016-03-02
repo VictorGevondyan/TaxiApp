@@ -3,8 +3,6 @@ package com.flycode.paradox.taxiuser.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.Date;
-
 /**
  * Created by victor on 12/25/15.
  */
@@ -15,13 +13,9 @@ public class UserData {
     private final String PREFERENCES_NAME = "DriverDataPreferences";
 
     private static final String ID = "_id";
-    private static final String ROLE = "role";
     private static final String USERNAME = "username";
     private static final String NAME = "name";
-    private static final String SEX = "sex";
     private static final String EMAIL = "email";
-    private static final String DATE_OF_BIRTH = "dateOfBirth";
-    private static final String STATUS = "status";
     private static final String BALANCE = "balance";
     private static final String ORDERS_COUNT = "onlyCount";
 
@@ -29,13 +23,9 @@ public class UserData {
     private final SharedPreferences.Editor dataEditor;
 
     private String id;
-    private String role;
     private String username;
     private String name;
-    private String sex;
     private String email;
-    private Date dateOfBirth;
-    private String status;
     private int balance;
     private int orderCount;
 
@@ -52,15 +42,11 @@ public class UserData {
         dataEditor = dataPreferences.edit();
 
         id = dataPreferences.getString(ID, "");
-        role = dataPreferences.getString(ROLE, "");
         username = dataPreferences.getString(USERNAME, "");
-        name = dataPreferences.getString(NAME,"");
-        sex = dataPreferences.getString(SEX, "");
+        name = dataPreferences.getString(NAME, "");
         email = dataPreferences.getString(EMAIL, "");
-//        ModelFactory.dateFromString(dataPreferences.getString(SEX, ""), dateOfBirth);
-        status = dataPreferences.getString(STATUS, "");
         balance = dataPreferences.getInt(BALANCE, 0);
-        balance = dataPreferences.getInt(ORDERS_COUNT, 0);
+        orderCount = dataPreferences.getInt(ORDERS_COUNT, 0);
     }
 
     public String getId() {
@@ -70,16 +56,6 @@ public class UserData {
     public void setId(String id) {
         this.id = id;
         dataEditor.putString(id, ID).commit();
-
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-        dataEditor.putString(ROLE, role).commit();
     }
 
     public String getUsername() {
@@ -98,33 +74,6 @@ public class UserData {
     public void setName(String name) {
         this.name = name;
         dataEditor.putString(NAME, name).commit();
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-        dataEditor.putString(SEX, sex).commit();
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-        dataEditor.putString(DATE_OF_BIRTH, dateOfBirth.toString()).commit();
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-        dataEditor.putString(STATUS, status).commit();
     }
 
     public String getEmail() {
@@ -151,6 +100,7 @@ public class UserData {
 
     public void setOrderCount(int orderCount) {
         this.orderCount = orderCount;
+        dataEditor.putInt(ORDERS_COUNT, orderCount).commit();
     }
 }
 

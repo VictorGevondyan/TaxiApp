@@ -1,0 +1,574 @@
+<com.flycode.paradox.taxiuser.layouts.FullScreenRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:flycode="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/order_fragment_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EBEBEB"
+    tools:context=".fragments.MakeOrderFragment">
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!--<com.mapbox.mapboxsdk.views.MapView-->
+        <!--android:id="@+id/map_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--mapbox:access_token="pk.eyJ1IjoiYW5oYXl0YW5hbnVuIiwiYSI6ImNpaWlxMmhmZjAwMjB2cW02aG4yZGlidzYifQ.7pbAdUjiyJFh7RTpsJhEVQ"-->
+        <!--android:background="@color/base_grey_90"/>-->
+
+    <com.flycode.paradox.taxiuser.views.LocationPickerView
+        android:id="@+id/picker_view"
+        android:layout_width="20dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"/>
+
+    <com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout
+        android:id="@+id/header_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/action_bar_height"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="@dimen/order_details_list_margin"
+        android:layout_marginEnd="@dimen/order_details_list_margin"
+        android:layout_marginStart="@dimen/order_details_list_margin"
+        android:layout_marginLeft="@dimen/order_details_list_margin"
+        android:gravity="center"
+        flycode:maxWidth="500dp">
+
+        <RelativeLayout
+            android:id="@+id/header_panel_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingRight="10dp"
+            android:paddingEnd="20dp"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:background="@drawable/rounded_rect_white">
+
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/black_70"
+                android:background="@android:color/transparent"
+                android:clickable="true"/>
+
+            <TextView
+                android:id="@+id/location_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="@string/icon_location"
+                android:textSize="@dimen/credentials_icon_size"
+                android:textColor="@color/cyan_100"/>
+
+            <Button
+                android:id="@+id/cancel_search_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:text="@string/cancel"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/cyan_100"
+                android:background="@android:color/transparent"
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/location_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|start"
+                android:layout_toRightOf="@id/location_icon"
+                android:layout_toEndOf="@id/location_icon"
+                android:layout_toLeftOf="@id/cancel_search_button"
+                android:layout_toStartOf="@id/cancel_search_button"
+                android:layout_marginLeft="@dimen/orders_tiny_margin"
+                android:layout_marginEnd="@dimen/orders_tiny_margin"
+                android:layout_marginRight="@dimen/orders_tiny_margin"
+                android:layout_marginStart="@dimen/orders_tiny_margin"
+                android:hint="@string/address"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/black_70"
+                android:textColorHint="@color/black_70"
+                android:background="@android:color/transparent"
+                android:visibility="gone"
+                android:singleLine="true"
+                android:lines="1"
+                android:ellipsize="end"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/search_results_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_rect_white"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/search_results_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/no_search_results"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_search_results"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/black_70"/>
+
+        </RelativeLayout>
+
+        <com.flycode.paradox.taxiuser.views.OrderView
+            android:id="@+id/order_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout>
+
+    <com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout
+        android:id="@+id/footer_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:background="@color/base_grey_90"
+        flycode:maxWidth="500dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/close_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="5dp"
+                android:paddingRight="5dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="10dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:text="@string/icon_close"
+                android:textColor="@color/cyan_100"
+                android:textSize="15sp"
+                android:gravity="end|top"
+                android:background="@android:color/transparent"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clipToPadding="true"
+            android:clipChildren="true">
+
+            <com.flycode.paradox.taxiuser.views.MaximalScrollView
+                android:id="@+id/order_details_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/order_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/order_details_list_margin"
+                    android:layout_marginStart="@dimen/order_details_list_margin"
+                    android:layout_marginRight="@dimen/order_details_list_margin"
+                    android:layout_marginEnd="@dimen/order_details_list_margin"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/order_details_delimiter_margin"
+                        android:layout_marginStart="@dimen/order_details_delimiter_margin"
+                        android:layout_marginRight="@dimen/order_details_delimiter_margin"
+                        android:layout_marginEnd="@dimen/order_details_delimiter_margin"
+                        android:layout_marginBottom="@dimen/order_details_delimiter_margin"
+                        android:weightSum="3"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/now"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true">
+
+                            <com.flycode.paradox.taxiuser.views.RhombusView
+                                android:id="@+id/now_rhombus"
+                                android:layout_width="@dimen/rhombus_size"
+                                android:layout_height="@dimen/rhombus_size"/>
+
+                            <TextView
+                                android:id="@+id/now_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/now"
+                                android:textSize="@dimen/small_text_size"
+                                android:textColor="@color/white_100"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/later"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true">
+
+                            <com.flycode.paradox.taxiuser.views.RhombusView
+                                android:id="@+id/later_rhombus"
+                                android:layout_width="@dimen/rhombus_size"
+                                android:layout_height="@dimen/rhombus_size" />
+
+                            <TextView
+                                android:id="@+id/later_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/later"
+                                android:textSize="@dimen/small_text_size"
+                                android:textColor="@color/white_100"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/only_cash"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true">
+
+                            <com.flycode.paradox.taxiuser.views.RhombusView
+                                android:id="@+id/only_cash_rhombus"
+                                android:layout_width="@dimen/rhombus_size"
+                                android:layout_height="@dimen/rhombus_size"/>
+
+                            <TextView
+                                android:id="@+id/only_cash_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/only_cash"
+                                android:textSize="@dimen/small_text_size"
+                                android:textColor="@color/white_100"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/time_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/order_details_delimiter_margin"
+                        android:gravity="center_vertical"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="@dimen/order_details_delimiter_margin"
+                        android:paddingStart="@dimen/order_details_delimiter_margin"
+                        android:paddingRight="@dimen/order_details_delimiter_margin"
+                        android:paddingEnd="@dimen/order_details_delimiter_margin"
+                        android:background="@color/black_10"
+                        android:clickable="true"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:id="@+id/minutes_section"
+                            android:layout_width="@dimen/order_time_width"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:clipChildren="false"
+                            android:clipToPadding="false">
+
+                            <TextView
+                                android:id="@+id/minutes"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white_100"
+                                android:textSize="@dimen/small_text_size"
+                                android:gravity="center"
+                                android:clipChildren="false"
+                                android:clipToPadding="false"/>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1px"
+                                android:layout_marginTop="1dp"
+                                android:background="@color/white_40"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/hours_section"
+                            android:layout_width="@dimen/order_time_width"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@id/minutes_section"
+                            android:layout_toStartOf="@id/minutes_section"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:clipChildren="false"
+                            android:clipToPadding="false">
+
+                            <TextView
+                                android:id="@+id/hours"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white_100"
+                                android:textSize="@dimen/small_text_size"
+                                android:gravity="center"
+                                android:clipChildren="false"
+                                android:clipToPadding="false"/>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1px"
+                                android:layout_marginTop="1dp"
+                                android:background="@color/white_40"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/day_section"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@id/hours_section"
+                            android:layout_toStartOf="@id/hours_section"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:clipChildren="false"
+                            android:clipToPadding="false">
+
+                            <TextView
+                                android:id="@+id/day"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white_100"
+                                android:textSize="@dimen/small_text_size"
+                                android:gravity="center"
+                                android:clipChildren="false"
+                                android:clipToPadding="false"/>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1px"
+                                android:layout_marginTop="1dp"
+                                android:background="@color/white_40"/>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/location_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_entry_margin"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/location_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/icon_location"
+                                android:textColor="@color/white_40"
+                                android:textSize="@dimen/small_text_size"/>
+
+                            <TextView
+                                android:id="@+id/location_text_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="10dp"
+                                android:paddingStart="10dp"
+                                android:text="@string/icon_location"
+                                android:textColor="@color/cyan_100"
+                                android:textSize="@dimen/credentials_icon_size"/>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/white_40"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/comment_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="vertical"
+                        android:clickable="true">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/comment_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:hint="@string/comments"
+                                android:textColor="@color/white_40"
+                                android:textColorHint="@color/white_40"
+                                android:textSize="@dimen/small_text_size"/>
+
+                            <TextView
+                                android:id="@+id/comment_text_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="10dp"
+                                android:paddingStart="10dp"
+                                android:text="@string/icon_status"
+                                android:textColor="@color/cyan_100"
+                                android:textSize="@dimen/credentials_icon_size"/>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/white_40"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.flycode.paradox.taxiuser.views.MaximalScrollView>
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <View
+                android:layout_width="5000dp"
+                android:layout_height="1px"
+                android:layout_centerVertical="true"
+                android:background="@color/divider_grey"/>
+
+            <LinearLayout
+                android:id="@+id/car_categories_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginEnd="25dp"
+                android:paddingBottom="@dimen/order_details_bottom_margin"
+                android:paddingTop="@dimen/order_details_bottom_margin"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout>
+
+    <LinearLayout
+        android:id="@+id/map_controls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/footer_panel"
+        android:layout_margin="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/zoom_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="@string/icon_plus"
+            android:textColor="@color/base_grey_90"
+            android:textSize="@dimen/credentials_icon_size"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:gravity="bottom"/>
+
+        <Button
+            android:id="@+id/zoom_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:text="@string/icon_minus"
+            android:textColor="@color/base_grey_90"
+            android:textSize="@dimen/credentials_icon_size"
+            android:includeFontPadding="false"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:gravity="top"/>
+
+        <Button
+            android:id="@+id/my_location_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/transparent"
+            android:text="@string/icon_gps_tiny"
+            android:textColor="@color/base_grey_90"
+            android:textSize="@dimen/credentials_icon_size"
+            android:minWidth="0dp"
+            android:minHeight="0dp"/>
+
+    </LinearLayout>
+
+</com.flycode.paradox.taxiuser.layouts.FullScreenRelativeLayout>

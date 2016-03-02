@@ -19,6 +19,14 @@ public class TypefaceUtils {
 
     public static Typeface getTypeface(Context context, String typefaceName){
         synchronized(cache){
+//            if (typefaceName.equals(AVAILABLE_FONTS.ROBOTO_THIN)
+//                    && AppSettings.sharedSettings(context).getLanguage().equals(AppSettings.LANGUAGES.HY)) {
+//                typefaceName = "arm_tumanyan_thin.ttf";
+//            } else if (typefaceName.equals(AVAILABLE_FONTS.ROBOTO_REGULAR)
+//                    && AppSettings.sharedSettings(context).getLanguage().equals(AppSettings.LANGUAGES.HY)) {
+//                typefaceName = "arm_tumanyan_regular.ttf";
+//            }
+
             if(!cache.containsKey(typefaceName)){
                 Typeface typeface = Typeface.createFromAsset(context.getAssets(), typefaceName);
                 cache.put(typefaceName, typeface);

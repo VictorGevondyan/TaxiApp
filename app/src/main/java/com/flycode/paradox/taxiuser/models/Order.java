@@ -1,11 +1,15 @@
 package com.flycode.paradox.taxiuser.models;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
+import com.flycode.paradox.taxiuser.database.Database;
+import com.flycode.paradox.taxiuser.settings.UserData;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -21,8 +25,10 @@ public class Order implements Parcelable {
     private Date finishTime;
     private Date orderTime;
     private Date userPickupTime;
+    private Date updatedTime;
 
     private int moneyAmount;
+    private int bonus;
     private double distance;
     private String paymentType;
 
@@ -34,12 +40,15 @@ public class Order implements Parcelable {
     private Driver driver;
     private String carCategory;
 
+    private boolean hasFeedback;
+
     public Order(String id, String status, String description, String username,
-                 Date orderTime, Date userPickupTime, Date finishTime,
+                 Date orderTime, Date userPickupTime, Date finishTime, Date update,
                  String startingPointName, String endingPointName,
                  Location startingPointGeo, Location endingPointGeo,
-                 String paymentType, int moneyAmount, double distance,
-                 Driver driver, String carCategory) {
+                 String paymentType, int moneyAmount, int bonus, double distance,
+                 Driver driver, String carCategory,
+                 boolean hasFeedback) {
         this.id = id;
         this.status = status;
         this.description = description;
@@ -48,6 +57,7 @@ public class Order implements Parcelable {
         this.orderTime = orderTime;
         this.userPickupTime = userPickupTime;
         this.finishTime = finishTime;
+        this.updatedTime = update;
 
         this.startingPointName = startingPointName;
         this.endingPointName = endingPointName;
@@ -57,10 +67,13 @@ public class Order implements Parcelable {
 
         this.paymentType = paymentType;
         this.moneyAmount = moneyAmount;
+        this.bonus = bonus;
         this.distance = distance;
 
         this.driver = driver;
         this.carCategory = carCategory;
+
+        this.hasFeedback = hasFeedback;
     }
 
     public Order(Parcel in) {
@@ -69,6 +82,7 @@ public class Order implements Parcelable {
         startingPointName = in.readString();
         endingPointName = in.readString();
         description = in.readString();
+        updatedTime = new Date(in.readLong());
         orderTime = new Date(in.readLong());
 
         long finishTimeMillis = in.readLong();
@@ -78,7 +92,9 @@ public class Order implements Parcelable {
         }
 
         moneyAmount = in.readInt();
+        bonus = in.readInt();
         paymentType = in.readString();
+        distance = in.readDouble();
 
         username = in.readString();
 
@@ -102,6 +118,8 @@ public class Order implements Parcelable {
         }
 
         carCategory = in.readString();
+
+        hasFeedback = in.readInt() == 1;
     }
 
     public String getId() {
@@ -148,12 +166,40 @@ public class Order implements Parcelable {
         return distance;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public Location getEndingPointGeo() {
+        return endingPointGeo;
+    }
+
     public Driver getDriver() {
         return driver;
     }
 
     public String getCarCategory(){
         return carCategory;
+    }
+
+    public int getBonus() {
+        return bonus;
+    }
+
+    public Date getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public boolean getHasFeedback() {
+        return hasFeedback;
+    }
+
+    public void setHasFeedback(boolean hasFeedback) {
+        this.hasFeedback = hasFeedback;
     }
 
     @Override
@@ -169,11 +215,14 @@ public class Order implements Parcelable {
         dest.writeString(endingPointName);
         dest.writeString(description);
 
+        dest.writeLong(updatedTime.getTime());
         dest.writeLong(orderTime.getTime());
         dest.writeLong(finishTime == null ? 0 : finishTime.getTime());
 
         dest.writeInt(moneyAmount);
+        dest.writeInt(bonus);
         dest.writeString(paymentType);
+        dest.writeDouble(distance);
 
         dest.writeString(username);
         dest.writeLong(userPickupTime == null ? 0 : userPickupTime.getTime());
@@ -187,6 +236,7 @@ public class Order implements Parcelable {
         }
 
         dest.writeString(carCategory);
+        dest.writeInt(hasFeedback ? 1 : 0);
     }
 
     public static final Creator CREATOR = new Creator() {
@@ -198,4 +248,25 @@ public class Order implements Parcelable {
             return new Order[size];
         }
     };
+
+    public static boolean isRealUpdate(Order updatedOrder, Context context) {
+        ArrayList<Order> orders = Database.sharedDatabase(context).getOrders(0, 1, new String[0], updatedOrder.getId(), UserData.sharedData(context).getUsername());
+
+        if (!orders.isEmpty()) {
+            return updatedOrder.getUpdatedTime().after(orders.get(0).getUpdatedTime())
+                    || updatedOrder.getUpdatedTime().equals(orders.get(0).getUpdatedTime());
+        }
+
+        return true;
+    }
+
+    public static boolean isOldVersion(Order updatedOrder, Context context) {
+        ArrayList<Order> orders = Database.sharedDatabase(context).getOrders(0, 1, new String[0], updatedOrder.getId(), UserData.sharedData(context).getUsername());
+
+        if (!orders.isEmpty()) {
+            return updatedOrder.getUpdatedTime().before(orders.get(0).getUpdatedTime());
+        }
+
+        return false;
+    }
 }

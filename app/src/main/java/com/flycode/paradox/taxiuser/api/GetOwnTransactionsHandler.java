@@ -9,5 +9,5 @@ import java.util.ArrayList;
  */
 public interface GetOwnTransactionsHandler {
     public void onGetOwnTransactionsSuccess(ArrayList<Transaction> ordersList);
-    public void onGetOwnTransactionsFailure();
+    public void onGetOwnTransactionsFailure(int statusCode);
 }

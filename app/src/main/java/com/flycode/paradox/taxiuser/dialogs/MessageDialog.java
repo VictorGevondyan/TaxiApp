@@ -12,51 +12,81 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
 public class MessageDialog extends DialogFragment implements View.OnClickListener {
-
     public static final String ERROR_DIALOG_TAG = "errorDialogTag";
 
     private static final String TITLE = "title";
     private static final String MESSAGE = "message";
+    private static final String NEGATIVE = "negative";
+    private static final String POSITIVE = "positive";
+    private static final String ADDITIONAL = "additional";
 
-    public static MessageDialog initialize( String title, String message ) {
+    private MessageDialogListener listener;
+
+    public static MessageDialog initialize(String title, String message, String negative, String positive) {
         Bundle arguments = new Bundle();
         arguments.putString(TITLE, title);
         arguments.putString(MESSAGE, message);
+        arguments.putString(NEGATIVE, negative);
+        arguments.putString(POSITIVE, positive);
 
-        MessageDialog errorDialog = new MessageDialog();
-        errorDialog.setArguments(arguments);
+        MessageDialog messageDialog = new MessageDialog();
+        messageDialog.setArguments(arguments);
 
-        return errorDialog;
+        return messageDialog;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_error, container, false);
+        View view = inflater.inflate(R.layout.dialog_message, container, false);
 
         setCancelable(false);
 
-        Button okButton = (Button) view.findViewById(R.id.ok);
-        okButton.setOnClickListener(this);
+        Button positiveButton = (Button) view.findViewById(R.id.positive);
+        positiveButton.setOnClickListener(this);
+        Button negativeButton = (Button) view.findViewById(R.id.negative);
+        negativeButton.setOnClickListener(this);
+
         TextView errorTitleTextView = (TextView) view.findViewById(R.id.error_title);
         TextView errorMessageTextView = (TextView) view.findViewById(R.id.error_message);
 
         Typeface robotoRegularTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR);
 
-        okButton.setTypeface(robotoRegularTypeface);
+        positiveButton.setTypeface(robotoRegularTypeface);
+        negativeButton.setTypeface(robotoRegularTypeface);
         errorTitleTextView.setTypeface(robotoRegularTypeface);
         errorMessageTextView.setTypeface(robotoRegularTypeface);
 
         Bundle arguments = getArguments();
 
-        if (arguments != null) {
-            errorTitleTextView.setText(arguments.getString(TITLE));
-            errorMessageTextView.setText(arguments.getString(MESSAGE));
+        errorTitleTextView.setText(arguments.getString(TITLE));
+        errorMessageTextView.setText(arguments.getString(MESSAGE));
+
+        String positive = arguments.getString(POSITIVE);
+        String negative = arguments.getString(NEGATIVE);
+
+        if (positive.isEmpty()) {
+            positiveButton.setVisibility(View.GONE);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) negativeButton.getLayoutParams();
+            params.weight = 2;
+            negativeButton.setLayoutParams(params);
+        } else {
+            positiveButton.setText(positive);
+        }
+
+        if (negative.isEmpty()) {
+            negativeButton.setVisibility(View.GONE);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) positiveButton.getLayoutParams();
+            params.weight = 2;
+            positiveButton.setLayoutParams(params);
+        } else {
+            negativeButton.setText(negative);
         }
 
         return view;
@@ -79,9 +109,36 @@ public class MessageDialog extends DialogFragment implements View.OnClickListene
     }
 
     @Override
-    public void onClick( View view ) {
-        if( view.getId() == R.id.ok ){
-            dismiss();
+    public void onClick(View view) {
+        if (listener != null) {
+            if (view.getId() == R.id.positive) {
+                listener.onPositiveClicked(this);
+            } else if (view.getId() == R.id.negative) {
+                listener.onNegativeClicked(this);
+            }
         }
+
+        dismiss();
+    }
+
+    public MessageDialog setAdditionalInfo(Bundle additionalInfo) {
+        getArguments().putBundle(ADDITIONAL, additionalInfo);
+
+        return this;
+    }
+
+    public Bundle getAdditionalInfo() {
+        return getArguments().getBundle(ADDITIONAL);
+    }
+
+    public MessageDialog setListener(MessageDialogListener listener) {
+        this.listener = listener;
+
+        return this;
+    }
+
+    public interface MessageDialogListener {
+        void onNegativeClicked(MessageDialog messageDialog);
+        void onPositiveClicked(MessageDialog messageDialog);
     }
 }

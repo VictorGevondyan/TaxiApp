@@ -32,7 +32,7 @@ public class TransactionsListAdapter extends ArrayAdapter<Transaction> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Transaction transaction = getItem(position);
+        Transaction transaction = transactionsList.get(position);
 
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -48,37 +48,52 @@ public class TransactionsListAdapter extends ArrayAdapter<Transaction> {
             userIconTextView.setTypeface(icomoonTypeface);
             commentIconTextView.setTypeface(icomoonTypeface);
 
-            TextView fromTextView = (TextView) convertView.findViewById(R.id.from);
             TextView toTextView = (TextView) convertView.findViewById(R.id.to);
-            fromTextView.setTypeface(robotoTypeface);
             toTextView.setTypeface(robotoTypeface);
         }
 
         TextView recipientUsername = (TextView) convertView.findViewById(R.id.recipient_username);
-        TextView senderUsername = (TextView) convertView.findViewById(R.id.sender_username);
         TextView transactionDate  = (TextView) convertView.findViewById(R.id.transaction_date);
         TextView transactionDescription = (TextView) convertView.findViewById(R.id.transaction_description);
         TextView paymentType = (TextView) convertView.findViewById(R.id.payment_type);
         TextView moneyAmount = (TextView) convertView.findViewById(R.id.money_amount);
 
         recipientUsername.setTypeface(robotoTypeface);
-        senderUsername.setTypeface(robotoTypeface);
         transactionDate.setTypeface(robotoTypeface);
         transactionDescription.setTypeface(robotoTypeface);
         paymentType.setTypeface(robotoTypeface);
         moneyAmount.setTypeface(robotoTypeface);
 
-        recipientUsername.setText(transaction.getRecipientUsername());
-        senderUsername.setText(transaction.getSenderUsername());
+        if (transaction.getRecipientUsername().isEmpty()) {
+            convertView.findViewById(R.id.recipient_username_section).setVisibility(View.GONE);
+        } else {
+            convertView.findViewById(R.id.recipient_username_section).setVisibility(View.VISIBLE);
+
+            if (transaction.getRecipientRole().equals("user")) {
+                recipientUsername.setText(R.string.me);
+            } else if (transaction.getRecipientRole().equals("driver")) {
+                recipientUsername.setText(context.getString(R.string.driver) + " (" + transaction.getRecipientUsername() + ")");
+            }
+        }
+
         transactionDate.setText(DateUtils.formatDateTime(
                 context,
                 transaction.getDate().getTime(),
-                DateUtils.FORMAT_SHOW_TIME|DateUtils.FORMAT_SHOW_DATE
+                DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE
                         | DateUtils.FORMAT_ABBREV_MONTH | DateUtils.FORMAT_SHOW_YEAR
                         | DateUtils.FORMAT_24HOUR));
-        transactionDescription.setText(transaction.getDescription());
+
+        String description = transaction.getDescription().replaceFirst("[0-9a-z]{24}", "").trim();
+        transactionDescription.setText(description);
+
+        if (description.isEmpty()) {
+            convertView.findViewById(R.id.transactions_description_section).setVisibility(View.GONE);
+        } else {
+            convertView.findViewById(R.id.transactions_description_section).setVisibility(View.VISIBLE);
+        }
+
         paymentType.setText(transaction.getPaymentType());
-        moneyAmount.setText(transaction.getMoneyAmount());
+        moneyAmount.setText(String.format("%.0f", transaction.getMoneyAmount()));
 
         return convertView;
     }
@@ -89,17 +104,18 @@ public class TransactionsListAdapter extends ArrayAdapter<Transaction> {
     }
 
     @Override
+    public void clear() {
+        transactionsList.clear();
+        notifyDataSetChanged();
+    }
+
+    @Override
     public Transaction getItem(int position) {
         return transactionsList.get(position);
     }
 
-    public void setItem( Transaction transaction) {
-        transactionsList.add(0, transaction);
-        notifyDataSetChanged();
-    }
-
-    public void setItems(ArrayList<Transaction> transactionsList) {
-        this.transactionsList = transactionsList;
+    public void addItems(ArrayList<Transaction> transactionsList) {
+        this.transactionsList.addAll(transactionsList);
         notifyDataSetChanged();
     }
 }

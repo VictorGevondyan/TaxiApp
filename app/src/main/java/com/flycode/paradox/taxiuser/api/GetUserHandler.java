@@ -7,5 +7,5 @@ import com.flycode.paradox.taxiuser.models.User;
  */
 public interface GetUserHandler {
     void onGetUserSuccess(User user);
-    void onGetUserFailure();
+    void onGetUserFailure(int statusCode);
 }
