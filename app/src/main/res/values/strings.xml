@@ -107,11 +107,11 @@
     <string name="driver">Driver</string>
 
     <!-- Push Notifications -->
-    <string name="your_order_taken">Your order is taken</string>
-    <string name="your_order_finished">Your order is finished</string>
-    <string name="your_order_started">Your order is started</string>
+    <string name="your_order_taken">Your order has been taken</string>
+    <string name="your_order_finished">Your order has been finished</string>
+    <string name="your_order_started">Your order has been started</string>
     <string name="your_driver_waiting">Your driver is waiting</string>
-    <string name="your_order_not_taken">Your order still not taken</string>
+    <string name="your_order_not_taken">Your order is still not taken</string>
     <string name="no_car_for_you">Seems there is no car that can serve you at the moment. Please, click \"Retry\" if you want to try ordering again, and \"Ok\" if you want to cancel the order.</string>
     <string name="something_happens">Whoa! Something happens!</string>
 
