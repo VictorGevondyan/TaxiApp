@@ -18,7 +18,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RatingBar;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
@@ -33,7 +33,9 @@ public class FeedbackDialog extends DialogFragment implements View.OnClickListen
     private Activity activity;
     private FeedbackDialogListener listener;
     private EditText commentEditText;
-    private RatingBar ratingBar;
+    private LinearLayout ratingBar;
+
+    private int rating = 5;
 
     public static FeedbackDialog initialize(FeedbackDialogListener listener) {
         FeedbackDialog commentsDialog = new FeedbackDialog();
@@ -55,7 +57,10 @@ public class FeedbackDialog extends DialogFragment implements View.OnClickListen
         Button doneButton = (Button) view.findViewById(R.id.done);
         doneButton.setOnClickListener(this);
         commentEditText = (EditText) view.findViewById(R.id.comment);
-        ratingBar = (RatingBar) view.findViewById(R.id.feedback_rating);
+
+        ratingBar = (LinearLayout) view.findViewById(R.id.feedback_rating);
+        setupRatingBar();
+
         TextView commentTitle = (TextView) view.findViewById(R.id.comment_title);
         commentTitle.setTypeface(robotoRegularTypeface);
 
@@ -97,6 +102,43 @@ public class FeedbackDialog extends DialogFragment implements View.OnClickListen
         super.onResume();
     }
 
+    public void setupRatingBar(){
+        int i;
+        TextView ratingStar;
+        Typeface icomoonTypeface = TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
+        int childCount = ratingBar.getChildCount();
+        for( i = 0; i < childCount; i++ ){
+            ratingStar = (TextView) ratingBar.getChildAt(i);
+            ratingStar.setOnClickListener(ratingBarStarClickListener);
+            ratingStar.setTypeface(icomoonTypeface);
+        }
+    }
+
+    View.OnClickListener ratingBarStarClickListener =new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            //
+
+            ViewGroup parentView = (ViewGroup)view.getParent();
+            int clickedViewIndex = ratingBar.indexOfChild(view);
+            int childCount = ratingBar.getChildCount();
+            rating = clickedViewIndex + 1;
+
+            int index;
+            TextView child;
+            for( index = 0; index <= clickedViewIndex; index++ ){
+                child = (TextView)ratingBar.getChildAt(index);
+                child.setText(R.string.icon_star_filled);
+            }
+
+            for ( index = clickedViewIndex +1 ; index < childCount; index++){
+                child = (TextView)ratingBar.getChildAt(index);
+                child.setText(R.string.icon_favorites);
+            }
+        }
+    };
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
@@ -111,7 +153,7 @@ public class FeedbackDialog extends DialogFragment implements View.OnClickListen
         if (listener != null) {
             String comment = commentEditText.getText().toString().trim();
 
-            listener.onFeedbackDone(comment, ratingBar.getNumStars());
+            listener.onFeedbackDone(comment, rating);
         }
 
         dismiss();

@@ -33,9 +33,9 @@ import java.util.Locale;
  */
 public class APITalker {
     // Url constants
-//    private final String BASE_URL = "http://taxivip.am:9001";
+    private final String BASE_URL = "http://taxivip.am:9001";
 //    private final String BASE_URL = "http://107.155.108.131:9000";
-    private final String BASE_URL = "http://192.168.0.110:9001";
+//    private final String BASE_URL = "http://192.168.0.110:9001";
 //    private final String BASE_URL = "http://192.168.1.110:9000";
     private final String BASE_API_URL = BASE_URL+ "/api";
     private final String LOGIN_URL = "/auth/local";

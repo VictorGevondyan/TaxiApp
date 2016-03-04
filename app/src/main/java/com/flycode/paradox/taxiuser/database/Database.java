@@ -61,6 +61,7 @@ public class Database extends SQLiteOpenHelper {
     private final String DRIVER = "driver";
     private final String UPDATED_TIME = "updatesTime";
     private final String HAS_FEEDBACK = "hasFeedback";
+    private final String FEEDBACK_RATING = "feedbackRating";
 
     private static Database sharedDatabase;
 
@@ -123,6 +124,7 @@ public class Database extends SQLiteOpenHelper {
                 + CAR_CATEGORY + " TEXT NOT NULL, "
                 + CAR_NUMBER + " TEXT NOT NULL, "
                 + DRIVER + " TEXT NOT NULL, "
+                + FEEDBACK_RATING + " INTEGER NOT NULL, "
                 + HAS_FEEDBACK + " INTEGER NOT NULL); ";
 
         db.execSQL(carCategoriesTable);
@@ -350,13 +352,13 @@ public class Database extends SQLiteOpenHelper {
             return;
         }
 
-        StringBuilder categoriesQuery = generateOrdersReplaceQuery();
-        categoriesQuery = appendOrderValues(order, categoriesQuery);
+        StringBuilder ordersQuery = generateOrdersReplaceQuery();
+        ordersQuery = appendOrderValues(order, ordersQuery);
 
-        categoriesQuery = categoriesQuery.append(";");
+        ordersQuery = ordersQuery.append(";");
         SQLiteDatabase db = getWritableDatabase();
 
-        db.execSQL(categoriesQuery.toString());
+        db.execSQL(ordersQuery.toString());
     }
 
     public CarCategory[] getCarCategories() {
@@ -509,6 +511,7 @@ public class Database extends SQLiteOpenHelper {
         int carNumberIndex = cursor.getColumnIndex(CAR_NUMBER);
         int driverIndex = cursor.getColumnIndex(DRIVER);
         int updateTimeIndex = cursor.getColumnIndex(UPDATED_TIME);
+        int feedbackRatingIndex = cursor.getColumnIndex(FEEDBACK_RATING);
         int hasFeedbackIndex = cursor.getColumnIndex(HAS_FEEDBACK);
 
         long orderTimeMillis;
@@ -567,6 +570,7 @@ public class Database extends SQLiteOpenHelper {
                             cursor.getString(driverIndex)
                     ),
                     cursor.getString(carCategoryIndex),
+                    cursor.getInt(feedbackRatingIndex),
                     cursor.getInt(hasFeedbackIndex) == 1
             ));
 
@@ -602,6 +606,7 @@ public class Database extends SQLiteOpenHelper {
                         + CAR_CATEGORY + " , "
                         + CAR_NUMBER + " , "
                         + DRIVER + " , "
+                        + FEEDBACK_RATING + " , "
                         + HAS_FEEDBACK + " )  VALUES ");
     }
 
@@ -629,6 +634,7 @@ public class Database extends SQLiteOpenHelper {
             .append(DatabaseUtils.sqlEscapeString(order.getCarCategory())).append(",")
             .append(DatabaseUtils.sqlEscapeString(order.getDriver() == null ? "" : order.getDriver().getCarNumber())).append(",")
             .append(DatabaseUtils.sqlEscapeString(order.getDriver() == null ? "" : order.getDriver().getUsername())).append(",")
+            .append(order.getFeedbackRating()).append(",")
             .append(order.getHasFeedback() ? 1 : 0).append(")");
     }
 }

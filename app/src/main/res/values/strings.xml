@@ -96,6 +96,7 @@
     <string name="not_taken">Not Taken</string>
     <string name="started">Started</string>
     <string name="leave_feedback">Leave Feedback</string>
+    <string name="feedback">Feedback</string>
 
     <!-- Transactions -->
     <string name="transactions">Transactions</string>
@@ -149,6 +150,7 @@
     <string name="icon_distance">&#xe904;</string>
     <string name="icon_exit">&#xe905;</string>
     <string name="icon_favorites">&#xe906;</string>
+    <string name="icon_star_filled">&#xe94a;</string>
     <string name="icon_history">&#xe907;</string>
     <string name="icon_location">&#xe908;</string>
     <string name="icon_mail">&#xe909;</string>
