@@ -36,6 +36,8 @@
 
     <!-- Dialogs -->
     <dimen name="error_message_margin">18dp</dimen>
+    <dimen name="feedback_dialog_star_size">30sp</dimen>
+    <dimen name="feedback_dialog_stars_margin">7dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

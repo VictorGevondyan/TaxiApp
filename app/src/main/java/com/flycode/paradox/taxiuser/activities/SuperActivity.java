@@ -43,19 +43,7 @@ public class SuperActivity extends Activity implements LocationListener {
             return;
         }
 
-        if (HardwareAccessibilityUtil.checkIfHasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 1000, this);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 1000, this);
-
-            onGPSStatusChanged(HardwareAccessibilityUtil.isGPSEnabled(SuperActivity.this));
-        } else {
-            onGPSPermissionChanged(false);
-        }
-
-        if (!HardwareAccessibilityUtil.isNetworkEnabled(this)) {
-            onNetworkStateChanged(false);
-        }
+        handleHardwareState();
     }
 
     @Override
@@ -69,6 +57,8 @@ public class SuperActivity extends Activity implements LocationListener {
         IntentFilter orderUpdateFilter = new IntentFilter();
         orderUpdateFilter.addAction(SuperActivity.ACTION_ORDER_STATUS_UPDATED);
         registerReceiver(orderUpdateBroadcastReceiver, orderUpdateFilter);
+
+        handleHardwareState();
     }
 
     @Override
@@ -82,6 +72,22 @@ public class SuperActivity extends Activity implements LocationListener {
         }
 
         super.onPause();
+    }
+
+    public void handleHardwareState(){
+        if (HardwareAccessibilityUtil.checkIfHasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 1000, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 1000, this);
+
+            onGPSStatusChanged(HardwareAccessibilityUtil.isGPSEnabled(SuperActivity.this));
+        } else {
+            onGPSPermissionChanged(false);
+        }
+
+        if (!HardwareAccessibilityUtil.isNetworkEnabled(this)) {
+            onNetworkStateChanged(false);
+        }
     }
 
     protected void onGPSStatusChanged(boolean isGPSEnabled) {
@@ -244,4 +250,5 @@ public class SuperActivity extends Activity implements LocationListener {
             getApplicationContext().startActivity(menuActivityIntent);
         }
     };
+
 }

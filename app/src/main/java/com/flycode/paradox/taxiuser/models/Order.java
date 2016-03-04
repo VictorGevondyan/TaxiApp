@@ -40,6 +40,7 @@ public class Order implements Parcelable {
     private Driver driver;
     private String carCategory;
 
+    private int feedbackRating;
     private boolean hasFeedback;
 
     public Order(String id, String status, String description, String username,
@@ -47,7 +48,7 @@ public class Order implements Parcelable {
                  String startingPointName, String endingPointName,
                  Location startingPointGeo, Location endingPointGeo,
                  String paymentType, int moneyAmount, int bonus, double distance,
-                 Driver driver, String carCategory,
+                 Driver driver, String carCategory, int feedbackRating,
                  boolean hasFeedback) {
         this.id = id;
         this.status = status;
@@ -73,6 +74,7 @@ public class Order implements Parcelable {
         this.driver = driver;
         this.carCategory = carCategory;
 
+        this.feedbackRating = feedbackRating;
         this.hasFeedback = hasFeedback;
     }
 
@@ -118,6 +120,8 @@ public class Order implements Parcelable {
         }
 
         carCategory = in.readString();
+
+        feedbackRating = in.readInt();
 
         hasFeedback = in.readInt() == 1;
     }
@@ -194,6 +198,10 @@ public class Order implements Parcelable {
         return updatedTime;
     }
 
+    public int getFeedbackRating() {
+        return feedbackRating;
+    }
+
     public boolean getHasFeedback() {
         return hasFeedback;
     }
@@ -236,6 +244,7 @@ public class Order implements Parcelable {
         }
 
         dest.writeString(carCategory);
+        dest.writeInt(feedbackRating);
         dest.writeInt(hasFeedback ? 1 : 0);
     }
 

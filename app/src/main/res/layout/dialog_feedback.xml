@@ -26,13 +26,88 @@
             android:textColor="@color/white_100"
             android:gravity="center_horizontal"/>
 
-        <RatingBar
+        <!--<RatingBar-->
+            <!--android:id="@+id/feedback_rating"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:numStars="5"-->
+            <!--android:stepSize="1"-->
+            <!--android:rating="5"/>-->
+
+        <LinearLayout
             android:id="@+id/feedback_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="1"
-            android:rating="5"/>
+            android:orientation="horizontal"
+            android:weightSum="5"
+            >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_star_filled"
+                    android:textSize="@dimen/feedback_dialog_star_size"
+                    android:textColor="@color/cyan_100"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_star_filled"
+                    android:textSize="@dimen/feedback_dialog_star_size"
+                    android:textColor="@color/cyan_100"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_star_filled"
+                    android:textSize="@dimen/feedback_dialog_star_size"
+                    android:textColor="@color/cyan_100"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_star_filled"
+                    android:textSize="@dimen/feedback_dialog_star_size"
+                    android:textColor="@color/cyan_100"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_star_filled"
+                    android:textSize="@dimen/feedback_dialog_star_size"
+                    android:textColor="@color/cyan_100"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                    android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                    />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

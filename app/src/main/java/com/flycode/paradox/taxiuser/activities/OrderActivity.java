@@ -61,6 +61,9 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
     private MapView mapView;
     private GoogleMap googleMap;
     private LinearLayout leaveFeedbackLinearLayout;
+    private LinearLayout feedbackStarsLinearLayout;
+    private LinearLayout feedbackResultLinearLayout;
+
     private LoadingDialog loadingDialog;
     private Order order;
 
@@ -76,6 +79,9 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
     private Marker locationMarker;
     private Polyline pathPolyline;
 
+    // The rating of driver that user set in feedback dialog. The default is the highest rating
+    private int feedbackRating = 5;
+    private int totalStarsCount = 5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LocaleUtils.setLocale(this, AppSettings.sharedSettings(this).getLanguage());
@@ -356,6 +362,26 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
             Button leaveFeedbackButton = (Button) leaveFeedbackLinearLayout.findViewById(R.id.feedback_button);
             leaveFeedbackButton.setTypeface(robotoRegularTypeface);
             leaveFeedbackLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+            feedbackResultLinearLayout = (LinearLayout)findViewById(R.id.feedback_result);
+            feedbackStarsLinearLayout = (LinearLayout)findViewById(R.id.feedback_result_stars);
+
+            feedbackResultLinearLayout.setVisibility(View.VISIBLE);
+            feedbackRating = order.getFeedbackRating();
+            initFeedbackStars();
+            setFeedbackResult();
+        }
+    }
+
+    private void initFeedbackStars(){
+        totalStarsCount = feedbackStarsLinearLayout.getChildCount();
+        Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
+
+        int index;
+        TextView feedbackStar;
+        for( index = 0; index < totalStarsCount; index++){
+            feedbackStar = (TextView)feedbackStarsLinearLayout.getChildAt(index);
+            feedbackStar.setTypeface(icomoonTypeface);
         }
     }
 
@@ -698,8 +724,9 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
 
     @Override
     public void onFeedbackDone(String comment, int rating) {
-        loadingDialog.show();
+        feedbackRating = rating;
 
+        loadingDialog.show();
         APITalker.sharedTalker().sendFeedback(this, comment, rating, order.getId(), this);
     }
 
@@ -719,6 +746,26 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
         order.setHasFeedback(true);
         MessageHandlerUtil.showMessage(R.string.success, R.string.thank_you_for_feedback, this);
         leaveFeedbackLinearLayout.setVisibility(View.GONE);
+        feedbackResultLinearLayout.setVisibility(View.VISIBLE);
+
+        setFeedbackResult();
+    }
+
+    public void setFeedbackResult(){
+        int totalStarNumber = feedbackStarsLinearLayout.getChildCount();
+
+        int index;
+        TextView feedbackStar;
+        for( index = 0; index < feedbackRating; index++){
+            feedbackStar = (TextView)feedbackStarsLinearLayout.getChildAt(index);
+            ( (TextView)feedbackStar ).setText(getResources().getString(R.string.icon_star_filled));
+        }
+
+        for( index = feedbackRating; index < totalStarNumber; index++ ){
+            feedbackStar = (TextView)feedbackStarsLinearLayout.getChildAt(index);
+            ( (TextView)feedbackStar ).setText(getResources().getString(R.string.icon_favorites));
+        }
+
     }
 
     @Override

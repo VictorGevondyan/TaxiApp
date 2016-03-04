@@ -370,6 +370,110 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/feedback_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/orders_small_margin"
+                android:layout_marginBottom="@dimen/orders_small_margin"
+                android:visibility="gone"
+                android:weightSum="2"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/feedback"
+                    android:textSize="@dimen/small_text_size"
+                    android:textColor="@color/white_40"
+                    android:background="@android:color/transparent"
+                    android:layout_marginLeft="@dimen/orders_small_margin"
+                    android:layout_marginStart="@dimen/orders_small_margin"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/feedback_result_stars"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="5"
+                    android:layout_marginRight="@dimen/orders_small_margin"
+                    android:layout_marginEnd="@dimen/orders_small_margin"
+                    >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/icon_star_filled"
+                            android:textSize="@dimen/small_text_size"
+                            android:textColor="@color/cyan_100"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/icon_star_filled"
+                            android:textSize="@dimen/small_text_size"
+                            android:textColor="@color/cyan_100"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/icon_star_filled"
+                            android:textSize="@dimen/small_text_size"
+                            android:textColor="@color/cyan_100"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/icon_star_filled"
+                            android:textSize="@dimen/small_text_size"
+                            android:textColor="@color/cyan_100"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/icon_star_filled"
+                            android:textSize="@dimen/small_text_size"
+                            android:textColor="@color/cyan_100"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
+                            />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </com.flycode.paradox.taxiuser.views.MaximalScrollView>

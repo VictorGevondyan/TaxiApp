@@ -39,6 +39,8 @@ public class ModelFactory {
     private static final String DESCRIPTION = "description";
     private static final String BONUS = "bonus";
     private static final String FEEDBACK = "feedback";
+    private static final String FEEDBACK_RATING = "stars";
+
 
     private static final String TRANSACTION = "transaction";
     private static final String PAYMENT_TYPE = "paymentType";
@@ -169,13 +171,18 @@ public class ModelFactory {
         JSONObject feedbackJSONJsonObject = orderJSON.optJSONObject(FEEDBACK);
         boolean hasFeedback = feedbackJSONJsonObject != null && feedbackJSONJsonObject.keys().hasNext();
 
+        int feedbackRating = 0;
+        if(hasFeedback) {
+            feedbackRating = feedbackJSONJsonObject.optInt(FEEDBACK_RATING, 0);
+        }
+
         return new Order(
                 id, status, description, username,
                 orderTime, userPickupTime, finishTime, updatedTime,
                 startingPointName, endingPointName,
                 startingPointGeo, endingPointGeo,
                 paymentType, moneyAmount, bonus, distance,
-                driver, carCategory,
+                driver, carCategory, feedbackRating,
                 hasFeedback);
     }
 
