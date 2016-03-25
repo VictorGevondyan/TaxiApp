@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 public class GeocodeUtil {
     private static AutocompleteFilter autocompleteFilter;
     private static LatLngBounds placesBounds;
+    private static Geocoder geocoder;
 
     static {
         autocompleteFilter = new AutocompleteFilter
@@ -43,8 +45,8 @@ public class GeocodeUtil {
                 .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
                 .build();
         placesBounds = new LatLngBounds(
-                new LatLng(38.875873, 43.443942),
-                new LatLng(41.262133, 47.293271)
+                new LatLng(40.057913, 44.106212),
+                new LatLng(40.369111, 44.807486)
         );
     }
 
@@ -56,7 +58,10 @@ public class GeocodeUtil {
                     return "";
                 }
 
-                Geocoder geocoder = new Geocoder(context);
+                if (geocoder == null) {
+                    geocoder = new Geocoder(context, Locale.ENGLISH);
+                }
+
                 List<Address> addresses;
 
                 try {

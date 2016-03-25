@@ -212,8 +212,9 @@
                 android:layout_marginTop="@dimen/settings_entry_margin"
                 android:layout_marginBottom="@dimen/settings_entry_margin"
                 flycode:text="@string/submit"
-                flycode:borderColor="#00FFFF"
-                flycode:borderHoverColor="#00FFFF" />
+                flycode:colorString="#00FFFF"
+                flycode:hoverColorString="#00FFFF"
+                flycode:textColorString="#4D4D4D"/>
 
         </LinearLayout>
 
@@ -423,8 +424,9 @@
                 android:layout_marginTop="@dimen/settings_entry_margin"
                 android:layout_marginBottom="@dimen/settings_entry_margin"
                 flycode:text="@string/submit"
-                flycode:borderColor="#00FFFF"
-                flycode:borderHoverColor="#00FFFF" />
+                flycode:colorString="#00FFFF"
+                flycode:hoverColorString="#00FFFF"
+                flycode:textColorString="#4D4D4D" />
 
         </LinearLayout>
 

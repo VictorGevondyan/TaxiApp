@@ -73,6 +73,8 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
     private static final String SAVED_RESULT_PLACE_IDS = "savedPlaceIds";
     private static final String SAVED_MANUAL_QUERY_VISIBILITY = "savedManualQueryVisibility";
 
+    private String locatingString;
+
     private MapView mapView;
     private GoogleMap googleMap;
     private boolean hasMyLocationDetermined;
@@ -123,6 +125,8 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
     private int savedCarCategoryIndex = 0;
 
+    private long orderLastClickTime = 0;
+
     private CarCategory currentCarCategory;
     private String[] resultPlaceIds;
     private String[] resultAddresses;
@@ -164,6 +168,8 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         String savedAddress = "";
         String savedQuery = "";
         boolean isManualQueryVisible = false;
+
+        locatingString = getString(R.string.locating);
 
         if (savedInstanceState != null) {
             isFromSaveInstanceState = true;
@@ -231,7 +237,7 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         commentsTextView.setTypeface(robotoThinTypeface);
         locationTopTextView.setTypeface(robotoThinTypeface);
 
-        locationTopTextView.setText(savedAddress);
+        locationTopTextView.setText(savedAddress.isEmpty() ? locatingString : savedAddress);
         locationTextView.setText(savedAddress);
 
         locationTopTextView.setOnClickListener(this);
@@ -409,6 +415,21 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         if (Database.sharedDatabase(getActivity()).getCarCategories().length == 0) {
             APITalker.sharedTalker().getCarCategories(this);
         }
+
+        if (locationTopTextView.getText().toString().equals(locatingString) && isConnected) {
+            synchronized (LOCKER) {
+                try {
+                    GeocodeUtil.geocode(
+                            getActivity(),
+                            googleMap.getCameraPosition().target.latitude,
+                            googleMap.getCameraPosition().target.longitude,
+                            MakeOrderFragment.this);
+                } catch (Exception e) {
+                    // TODO: Investigate Reason
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -442,7 +463,7 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
         for (int index = 0; index < carCategoriesSectionLinearLayout.getChildCount(); index++) {
             View carCategorySection = carCategoriesSectionLinearLayout.getChildAt(index);
             RhombusView rhombus = (RhombusView) carCategorySection.findViewById(R.id.rhombus);
-            TextView carCategoryInfoTextView = (TextView) carCategorySection.findViewById(R.id.info);
+            TextView carCategoryInfoTextView = (TextView) carCategorySection.findViewById(R.id.info_text);
             TextView carCategoryTitleTextView = (TextView) carCategorySection.findViewById(R.id.text);
 
             if (chosenSection.equals(carCategorySection)) {
@@ -472,6 +493,12 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
             setupCarCategoryRhombus(view);
         } else if (view.getId() == R.id.now) {
             isLater = false;
+
+            Calendar calendar = Calendar.getInstance();
+            hour = calendar.get(Calendar.HOUR_OF_DAY);
+            minute = calendar.get(Calendar.MINUTE);
+            isToday = true;
+
             setupTimeRhombus();
         } else if (view.getId() == R.id.later) {
             isLater = true;
@@ -487,6 +514,22 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
             }
             PickTimeDialog.initialize(isToday, hour, minute, this).show(getFragmentManager(), TIME_DIALOG_TAG);
         } else if (view.getId() == R.id.order_button) {
+            if (orderLastClickTime > System.currentTimeMillis() - 2000) {
+                return;
+            }
+
+            if (locationTopTextView.getText().toString().equals(locatingString)) {
+                MessageHandlerUtil.showMessage(
+                        R.string.attention,
+                        R.string.please_wait_address_determined,
+                        getActivity()
+                );
+
+                return;
+            }
+
+            orderLastClickTime = System.currentTimeMillis();
+
             if (orderStage == 0) {
                 orderStage++;
                 orderDetailsLinerLayout.setVisibility(View.VISIBLE);
@@ -550,9 +593,12 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
                 googleMap.animateCamera(CameraUpdateFactory.zoomTo(currentZoom - 1));
             }
         } else if (view.getId() == R.id.location) {
+            searchResultContainerLinearLayout.removeAllViews();
+
             locationTopTextView.setVisibility(View.GONE);
             locationEditText.setVisibility(View.VISIBLE);
             noSearchResultsTextView.setVisibility(View.VISIBLE);
+            noSearchResultsTextView.setText(getString(R.string.type_to_search));
             cancelButton.setVisibility(View.VISIBLE);
             searchResultsRelativeLayout.setVisibility(View.VISIBLE);
             orderButton.setVisibility(View.GONE);
@@ -606,6 +652,7 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
                 calendar.getTime(),
                 currentCarCategory.getId(),
                 comment,
+                isCashOnly,
                 this
         );
     }
@@ -681,7 +728,7 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
             carCategoryView.setClickable(true);
             carCategoryView.setOnClickListener(this);
 
-            TextView carCategoryInfoTextView = (TextView) carCategoryView.findViewById(R.id.info);
+            TextView carCategoryInfoTextView = (TextView) carCategoryView.findViewById(R.id.info_text);
             carCategoryInfoTextView.setTypeface(TypefaceUtils.getTypeface(getActivity(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN));
 
             TextView carCategoryTitleTextView = (TextView) carCategoryView.findViewById(R.id.text);
@@ -723,10 +770,16 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
     @Override
     public void onGeocodeSuccess(String address, double latitude, double longitude) {
         locationTopTextView.setText(address);
+
+        if (loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
     }
 
     @Override
     public void onPlaceLocationDetermined(String address, LatLng placeLocation) {
+        loadingDialog.dismiss();
+
         locationTopTextView.setText(address);
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(placeLocation));
         onClick(cancelButton);
@@ -745,6 +798,7 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
         if (addresses == null || addresses.length == 0) {
             noSearchResultsTextView.setVisibility(View.VISIBLE);
+            noSearchResultsTextView.setText(R.string.no_search_results);
             searchResultsRelativeLayout.requestLayout();
 
             return;
@@ -904,7 +958,10 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
+        hasMyLocationDetermined = true;
+
         synchronized (LOCKER) {
+            locationTopTextView.setText(locatingString);
             mapInteractionHandler.removeCallbacks(mapInteractionRunnable);
             mapInteractionHandler.postDelayed(mapInteractionRunnable, 500);
         }
@@ -927,7 +984,7 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
     }
 
     /**
-     * TextChangedListener Methods
+     * TextWatcher Methods
      */
 
     @Override
@@ -939,9 +996,16 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         synchronized (LOCKER) {
             if (s.length() > 2) {
+                noSearchResultsTextView.setText(getString(R.string.searching));
+
                 mapInteractionHandler.removeCallbacks(searchInteractionRunnable);
                 mapInteractionHandler.postDelayed(searchInteractionRunnable, 500);
+            } else {
+                noSearchResultsTextView.setText(getString(R.string.type_to_search));
             }
+
+            searchResultContainerLinearLayout.removeAllViews();
+            noSearchResultsTextView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -977,6 +1041,8 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
         @Override
         public void onClick(View view) {
+            loadingDialog.show();
+
             GeocodeUtil.getPlaceDetailsByPlaceId(placeId, MakeOrderFragment.this);
         }
     }

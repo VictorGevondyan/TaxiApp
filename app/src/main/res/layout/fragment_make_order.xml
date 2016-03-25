@@ -72,7 +72,7 @@
                 android:layout_alignParentStart="true"
                 android:text="@string/icon_location"
                 android:textSize="@dimen/credentials_icon_size"
-                android:textColor="@color/cyan_100"/>
+                android:textColor="@color/base_grey_90"/>
 
             <Button
                 android:id="@+id/cancel_search_button"
@@ -84,7 +84,7 @@
                 android:minWidth="0dp"
                 android:text="@string/cancel"
                 android:textSize="@dimen/small_text_size"
-                android:textColor="@color/cyan_100"
+                android:textColor="@color/base_grey_90"
                 android:background="@android:color/transparent"
                 android:visibility="gone"/>
 
@@ -133,7 +133,9 @@
                 android:id="@+id/no_search_results"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/no_search_results"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:text="@string/type_to_search"
                 android:textSize="@dimen/small_text_size"
                 android:textColor="@color/black_70"/>
 

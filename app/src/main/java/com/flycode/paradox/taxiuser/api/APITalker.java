@@ -35,8 +35,9 @@ public class APITalker {
     // Url constants
     private final String BASE_URL = "http://taxivip.am:9001";
 //    private final String BASE_URL = "http://107.155.108.131:9000";
+//    private final String BASE_URL = "http://192.168.0.105:9001";
 //    private final String BASE_URL = "http://192.168.0.110:9001";
-//    private final String BASE_URL = "http://192.168.1.110:9000";
+//    private final String BASE_URL = "http://192.168.1.110:9001";
     private final String BASE_API_URL = BASE_URL+ "/api";
     private final String LOGIN_URL = "/auth/local";
     private final String ORDERS_URL = "/orders";
@@ -144,23 +145,16 @@ public class APITalker {
 
         String url = BASE_API_URL + USERS_URL;
 
-        asyncHttpClient.post(url, params, new JsonHttpResponseHandler() {
+        asyncHttpClient.post(url, params, new AsyncHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (listener != null) {
                     listener.onReceivePasswordRequestSuccess();
                 }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, java.lang.Throwable throwable, org.json.JSONObject errorResponse) {
-                if (listener != null) {
-                    listener.onReceivePasswordRequestFail(statusCode);
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 if (listener != null) {
                     listener.onReceivePasswordRequestFail(statusCode);
                 }
@@ -337,7 +331,7 @@ public class APITalker {
         });
     }
 
-    public void makeOrder(final Context context, String startingPointName, double startingPointLatitude, double startingPointLongitude, Date orderTime, String carCategory, String comments, final MakeOrderListener listener) {
+    public void makeOrder(final Context context, String startingPointName, double startingPointLatitude, double startingPointLongitude, Date orderTime, String carCategory, String comments, boolean isCashOnly, final MakeOrderListener listener) {
         if (!authenticate(context)) {
             listener.onMakeOrderFail(401);
 

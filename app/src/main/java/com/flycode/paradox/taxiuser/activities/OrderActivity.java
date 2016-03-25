@@ -1,6 +1,7 @@
 package com.flycode.paradox.taxiuser.activities;
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
@@ -12,6 +13,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.flycode.paradox.taxiuser.R;
@@ -24,6 +26,7 @@ import com.flycode.paradox.taxiuser.constants.DriverStatusConstants;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
 import com.flycode.paradox.taxiuser.dialogs.FeedbackDialog;
 import com.flycode.paradox.taxiuser.dialogs.LoadingDialog;
+import com.flycode.paradox.taxiuser.dialogs.MessageDialog;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.utils.HardwareAccessibilityUtil;
@@ -58,11 +61,14 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
     private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 0;
     private static final String TAG_FEEDBACK_DIALOG = "tagFeedbackDialog";
 
+    private static final int STAR_COUNT = 5;
+    private static final String CANCEL_DIALOG_TAG = "cancelDialogTag";
+
     private MapView mapView;
     private GoogleMap googleMap;
     private LinearLayout leaveFeedbackLinearLayout;
     private LinearLayout feedbackStarsLinearLayout;
-    private LinearLayout feedbackResultLinearLayout;
+    private RelativeLayout feedbackResultRelativeLayout;
 
     private LoadingDialog loadingDialog;
     private Order order;
@@ -79,9 +85,6 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
     private Marker locationMarker;
     private Polyline pathPolyline;
 
-    // The rating of driver that user set in feedback dialog. The default is the highest rating
-    private int feedbackRating = 5;
-    private int totalStarsCount = 5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LocaleUtils.setLocale(this, AppSettings.sharedSettings(this).getLanguage());
@@ -114,12 +117,11 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
             order = savedInstanceState.getParcelable(ORDER);
         }
 
-        String orderStatus = order.getStatus();
-        boolean setPhoneButtonVisible = (order.getDriver() != null)
-                && (orderStatus.equals(OrderStatusConstants.STARTED)
-                || orderStatus.equals(OrderStatusConstants.TAKEN));
-        if (setPhoneButtonVisible) {
-            actionBarRightButton.setVisibility(View.VISIBLE);
+        Fragment fragment = getFragmentManager().findFragmentByTag(CANCEL_DIALOG_TAG);
+
+        if (fragment instanceof MessageDialog) {
+            MessageDialog messageDialog = (MessageDialog) fragment;
+            messageDialog.setListener(cancelDialogListener);
         }
     }
 
@@ -200,7 +202,7 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if ( requestCode == MY_PERMISSIONS_REQUEST_CALL_PHONE ) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_CALL_PHONE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startActivity(callIntent);
@@ -219,10 +221,32 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
         init(order);
     }
 
+    private void setupPhoneIcon() {
+        String orderStatus = order.getStatus();
+        boolean setPhoneButtonVisible = (order.getDriver() != null)
+                && (orderStatus.equals(OrderStatusConstants.STARTED)
+                || orderStatus.equals(OrderStatusConstants.TAKEN)
+                || orderStatus.equals(OrderStatusConstants.WAITING));
+        findViewById(R.id.action_bar_right_button).setVisibility(setPhoneButtonVisible ? View.VISIBLE : View.GONE);
+    }
+
+    private void setupCancelButton() {
+        String orderStatus = order.getStatus();
+        boolean setCancelButtonVisible = (order.getDriver() != null)
+                && (orderStatus.equals(OrderStatusConstants.NOT_TAKEN)
+                || orderStatus.equals(OrderStatusConstants.TAKEN)
+                || orderStatus.equals(OrderStatusConstants.WAITING));
+        findViewById(R.id.cancel_button).setVisibility(setCancelButtonVisible ? View.VISIBLE : View.GONE);
+    }
+
     public void init(Order order) {
         if (order.getStatus().equals(OrderStatusConstants.TAKEN)
                 || order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)
                 || order.getStatus().equals(OrderStatusConstants.WAITING)) {
+            if (order.getStartingPointGeo() == null) {
+                return;
+            }
+
             LatLng pickupCoordinate = new LatLng(
                     order.getStartingPointGeo().getLatitude(),
                     order.getStartingPointGeo().getLongitude());
@@ -259,10 +283,11 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
                 || order.getStatus().equals(OrderStatusConstants.WAITING)) {
             initDriverDetails(order);
         } else {
-            Button actionBarRightButton = (Button) findViewById(R.id.action_bar_right_button);
-            actionBarRightButton.setVisibility(View.GONE);
             initOrderDetails(order);
         }
+
+        setupPhoneIcon();
+        setupCancelButton();
     }
 
     public void initOrderDetails(Order order) {
@@ -357,30 +382,36 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
         distanceValueTextView.setText(distanceString + " - " + durationString);
         statusValueTextView.setText(order.getStatus());
 
-        if (!order.getHasFeedback()) {
-            leaveFeedbackLinearLayout = (LinearLayout) findViewById(R.id.feedback_section);
-            Button leaveFeedbackButton = (Button) leaveFeedbackLinearLayout.findViewById(R.id.feedback_button);
-            leaveFeedbackButton.setTypeface(robotoRegularTypeface);
-            leaveFeedbackLinearLayout.setVisibility(View.VISIBLE);
-        } else {
-            feedbackResultLinearLayout = (LinearLayout)findViewById(R.id.feedback_result);
-            feedbackStarsLinearLayout = (LinearLayout)findViewById(R.id.feedback_result_stars);
+        leaveFeedbackLinearLayout = (LinearLayout) findViewById(R.id.feedback_section);
+        feedbackResultRelativeLayout = (RelativeLayout) findViewById(R.id.feedback_result);
+        feedbackStarsLinearLayout = (LinearLayout) findViewById(R.id.feedback_result_stars);
 
-            feedbackResultLinearLayout.setVisibility(View.VISIBLE);
-            feedbackRating = order.getFeedbackRating();
-            initFeedbackStars();
-            setFeedbackResult();
+        Button leaveFeedbackButton = (Button) leaveFeedbackLinearLayout.findViewById(R.id.feedback_button);
+        leaveFeedbackButton.setTypeface(robotoThinTypeface);
+        TextView feedbackTextView = (TextView) feedbackResultRelativeLayout.findViewById(R.id.feedback_text);
+        feedbackTextView.setTypeface(robotoThinTypeface);
+
+        if (order.getStatus().equals(OrderStatusConstants.CANCELED)) {
+            leaveFeedbackLinearLayout.setVisibility(View.GONE);
+            feedbackResultRelativeLayout.setVisibility(View.GONE);
+        } else {
+            if (!order.getHasFeedback()) {
+                leaveFeedbackLinearLayout.setVisibility(View.VISIBLE);
+            } else {
+                feedbackResultRelativeLayout.setVisibility(View.VISIBLE);
+                initFeedbackStars();
+                setFeedbackResult();
+            }
         }
     }
 
-    private void initFeedbackStars(){
-        totalStarsCount = feedbackStarsLinearLayout.getChildCount();
+    private void initFeedbackStars() {
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
 
         int index;
         TextView feedbackStar;
-        for( index = 0; index < totalStarsCount; index++){
-            feedbackStar = (TextView)feedbackStarsLinearLayout.getChildAt(index);
+        for (index = 0; index < STAR_COUNT; index++) {
+            feedbackStar = (TextView) feedbackStarsLinearLayout.getChildAt(index);
             feedbackStar.setTypeface(icomoonTypeface);
         }
     }
@@ -409,13 +440,13 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
 
         TextView orderStatusTextView = (TextView) driverInfoView.findViewById(R.id.order_status);
         TextView typeLabelTextView = (TextView) driverInfoView.findViewById(R.id.type_label);
+        TextView orderStatusLabelTextView = (TextView) driverInfoView.findViewById(R.id.order_status_label);
         TextView typeValueTextView = (TextView) driverInfoView.findViewById(R.id.type_value);
-        Button cancelButton = (Button) driverInfoView.findViewById(R.id.cancel_button);
 
         orderStatusTextView.setTypeface(robotoRegularTypeface);
         typeValueTextView.setTypeface(robotoRegularTypeface);
+        orderStatusLabelTextView.setTypeface(robotoThinTypeface);
         typeLabelTextView.setTypeface(robotoThinTypeface);
-        cancelButton.setTypeface(robotoThinTypeface);
 
         String orderStatus = order.getStatus();
         if (orderStatus.equals(OrderStatusConstants.TAKEN)) {
@@ -424,12 +455,9 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
             orderStatusTextView.setText(getString(R.string.not_taken));
         } else if (orderStatus.equals(OrderStatusConstants.STARTED)) {
             orderStatusTextView.setText(getString(R.string.started));
-            cancelButton.setVisibility(View.GONE);
         }
 
         typeValueTextView.setText(order.getCarCategory());
-
-        cancelButton.setText(getString(R.string.cancel).toUpperCase());
     }
 
     public void onActionBarLeftButtonClicked(View view) {
@@ -437,7 +465,7 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
     }
 
     public void onActionBarRightButtonClicked(View view) {
-        driverPhoneNumber = order.getDriver().getUsername();
+        driverPhoneNumber = "+" + order.getDriver().getUsername();
         callIntent = new Intent(Intent.ACTION_CALL);
 
         callIntent.setData(Uri.parse("tel:" + driverPhoneNumber));
@@ -459,8 +487,14 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
     }
 
     public void onCancelOrder(View view) {
-        loadingDialog.show();
-        APITalker.sharedTalker().updateOrderStatus(this, order.getId(), OrderStatusConstants.CANCELED, this);
+        MessageDialog.initialize(
+                getString(R.string.attention),
+                getString(R.string.sure_to_cancel),
+                getString(android.R.string.no),
+                getString(android.R.string.yes)
+        )
+        .setListener(cancelDialogListener)
+        .show(getFragmentManager(), CANCEL_DIALOG_TAG);
     }
 
     /**
@@ -475,7 +509,7 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
 
     @Override
     public void onGetOrderFailure(int statusCode) {
-        MessageHandlerUtil.showErrorForStatusCode(statusCode, this);
+//        MessageHandlerUtil.showErrorForStatusCode(statusCode, this);
     }
 
     /**
@@ -526,13 +560,13 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
             east = longitude;
         }
 
-        if (north - south < 0.0005) {
-            north = north + 0.0005;
-            south = south - 0.0005;
+        if (north - south < 0.001) {
+            north = north + 0.001;
+            south = south - 0.001;
         }
-        if (east - west < 0.0005) {
-            east = east + 0.0005;
-            west = west - 0.0005;
+        if (east - west < 0.001) {
+            east = east + 0.001;
+            west = west - 0.001;
         }
 
         if (taxiMarker != null) {
@@ -724,9 +758,8 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
 
     @Override
     public void onFeedbackDone(String comment, int rating) {
-        feedbackRating = rating;
-
         loadingDialog.show();
+        order.setFeedbackRating(rating);
         APITalker.sharedTalker().sendFeedback(this, comment, rating, order.getId(), this);
     }
 
@@ -746,26 +779,27 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
         order.setHasFeedback(true);
         MessageHandlerUtil.showMessage(R.string.success, R.string.thank_you_for_feedback, this);
         leaveFeedbackLinearLayout.setVisibility(View.GONE);
-        feedbackResultLinearLayout.setVisibility(View.VISIBLE);
+        feedbackResultRelativeLayout.setVisibility(View.VISIBLE);
 
+        initFeedbackStars();
         setFeedbackResult();
     }
 
-    public void setFeedbackResult(){
-        int totalStarNumber = feedbackStarsLinearLayout.getChildCount();
+    public void setFeedbackResult() {
+        feedbackStarsLinearLayout.setVisibility(View.VISIBLE);
 
         int index;
         TextView feedbackStar;
-        for( index = 0; index < feedbackRating; index++){
-            feedbackStar = (TextView)feedbackStarsLinearLayout.getChildAt(index);
-            ( (TextView)feedbackStar ).setText(getResources().getString(R.string.icon_star_filled));
+
+        for (index = 0; index < order.getFeedbackRating(); index++) {
+            feedbackStar = (TextView) feedbackStarsLinearLayout.getChildAt(index);
+            feedbackStar.setText(R.string.icon_star_filled);
         }
 
-        for( index = feedbackRating; index < totalStarNumber; index++ ){
-            feedbackStar = (TextView)feedbackStarsLinearLayout.getChildAt(index);
-            ( (TextView)feedbackStar ).setText(getResources().getString(R.string.icon_favorites));
+        for (index = order.getFeedbackRating(); index < STAR_COUNT; index++) {
+            feedbackStar = (TextView) feedbackStarsLinearLayout.getChildAt(index);
+            feedbackStar.setText(R.string.icon_favorites);
         }
-
     }
 
     @Override
@@ -794,4 +828,21 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
 
         MessageHandlerUtil.showErrorForStatusCode(statusCode, this);
     }
+
+    /**
+     * MessageDialogListener
+     */
+
+    MessageDialog.MessageDialogListener cancelDialogListener = new MessageDialog.MessageDialogListener() {
+        @Override
+        public void onNegativeClicked(MessageDialog messageDialog) {
+
+        }
+
+        @Override
+        public void onPositiveClicked(MessageDialog messageDialog) {
+            loadingDialog.show();
+            APITalker.sharedTalker().updateOrderStatus(OrderActivity.this, order.getId(), OrderStatusConstants.CANCELED, OrderActivity.this);
+        }
+    };
 }

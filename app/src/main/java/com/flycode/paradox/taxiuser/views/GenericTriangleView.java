@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -15,14 +14,22 @@ import android.view.View;
 import com.flycode.paradox.taxiuser.R;
 import com.flycode.paradox.taxiuser.utils.TypefaceUtils;
 
+import java.util.Locale;
+
 /**
  * Created by anhaytananun on 22.12.15.
  */
 public class GenericTriangleView extends View {
     private String text;
-    private String borderColor;
-    private String borderHoverColor;
+    private String colorString;
+    private String hoverColorString;
+    private String textColorString;
+
     private boolean isTouched = false;
+    private boolean isUp = false;
+
+    private Paint textPaint;
+    private Path trianglePath;
 
     public GenericTriangleView(Context context) {
         super(context);
@@ -42,7 +49,7 @@ public class GenericTriangleView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (borderColor == null
+        if (colorString == null
                 || text == null) {
             return;
         }
@@ -50,57 +57,75 @@ public class GenericTriangleView extends View {
         int width = canvas.getWidth();
         int height = canvas.getHeight();
 
-        Point a = new Point(0, 0);
-        Point b = new Point(width / 2, height);
-        Point c = new Point(width, 0);
+        trianglePath.reset();
 
-        Path trianglePath = new Path();
-        trianglePath.moveTo(a.x, a.y);
-        trianglePath.lineTo(b.x, b.y);
-        trianglePath.lineTo(c.x, c.y);
-        trianglePath.lineTo(a.x, a.y);
-
-        Paint paint = new Paint();
-        paint.setStrokeWidth(2);
-
-        if (isTouched) {
-            paint.setColor(Color.parseColor(borderHoverColor));
+        if (isUp) {
+            trianglePath.moveTo(0, height);
+            trianglePath.lineTo(width / 2, 0);
+            trianglePath.lineTo(width, height);
+            trianglePath.lineTo(0, height);
         } else {
-            paint.setColor(Color.parseColor(borderColor));
+            trianglePath.moveTo(0, 0);
+            trianglePath.lineTo(width / 2, height);
+            trianglePath.lineTo(width, 0);
+            trianglePath.lineTo(0, 0);
         }
 
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        Paint paint = new Paint();
+        paint.setStrokeWidth(0);
+
+        if (isTouched) {
+            paint.setColor(Color.parseColor(hoverColorString));
+        } else {
+            paint.setColor(Color.parseColor(colorString));
+        }
+
+        paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
 
         canvas.drawPath(trianglePath, paint);
 
-        Paint textPaint = new Paint();
-        textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setColor(Color.parseColor("#4D4D4D"));
-        textPaint.setTextSize(height / 4);
-        textPaint.setFakeBoldText(false);
-        textPaint.setAntiAlias(true);
-        textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setLinearText(true);
-        textPaint.setTypeface(TypefaceUtils.getTypeface(getContext(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR));
-
         Rect textBounds = new Rect();
+        textPaint.setTextSize(height / 4);
         textPaint.getTextBounds(text, 0, text.length(), textBounds);
 
-        canvas.drawText(
-                text,
-                (width - textBounds.width()) / 2,
-                height / 2 - textBounds.height() / 2,
-                textPaint);
+        if (isUp) {
+            canvas.drawText(
+                    text,
+                    (width - textBounds.width()) / 2,
+                    height / 2 + 3 * textBounds.height() / 2,
+                    textPaint);
+        } else {
+            canvas.drawText(
+                    text,
+                    (width - textBounds.width()) / 2,
+                    height / 2 - textBounds.height() / 2,
+                    textPaint);
+        }
 
         canvas.scale(1, 1);
     }
 
     private void extractAttributes(Context context, AttributeSet attrs) {
         TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.genericTriangle);
-        text = arr.getText(R.styleable.genericTriangle_text).toString();
-        borderColor = arr.getText(R.styleable.genericTriangle_borderColor).toString();
-        borderHoverColor = arr.getText(R.styleable.genericTriangle_borderHoverColor).toString();
+        text = arr.getText(R.styleable.genericTriangle_text).toString().toUpperCase(Locale.ENGLISH);
+        colorString = arr.getText(R.styleable.genericTriangle_colorString).toString();
+        hoverColorString = arr.getText(R.styleable.genericTriangle_hoverColorString).toString();
+        textColorString = arr.getText(R.styleable.genericTriangle_textColorString).toString();
+
+        isUp = arr.getBoolean(R.styleable.genericTriangle_isUp, false);
+
+        textPaint = new Paint();
+        textPaint.setStyle(Paint.Style.FILL);
+        textPaint.setColor(Color.parseColor(textColorString));
+        textPaint.setFakeBoldText(false);
+        textPaint.setAntiAlias(true);
+        textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setLinearText(true);
+        textPaint.setTypeface(TypefaceUtils.getTypeface(getContext(), TypefaceUtils.AVAILABLE_FONTS.ROBOTO_REGULAR));
+
+        trianglePath = new Path();
+
         arr.recycle();
     }
 

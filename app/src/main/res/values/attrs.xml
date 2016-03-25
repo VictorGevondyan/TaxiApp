@@ -2,8 +2,10 @@
 <resources>
     <declare-styleable name="genericTriangle">
         <attr name="text" format="string" />
-        <attr name="borderColor" format="string" />
-        <attr name="borderHoverColor" format="string" />
+        <attr name="colorString" format="string" />
+        <attr name="hoverColorString" format="string" />
+        <attr name="textColorString" format="string" />
+        <attr name="isUp" format="boolean" />
     </declare-styleable>
     <declare-styleable name="maximalDimension">
         <attr name="maxWidth" format="dimension" />

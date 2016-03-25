@@ -58,6 +58,7 @@ public class ModelFactory {
     private static final String FROM = "from";
     private static final String ROLE = "role";
     private static final String DATE = "date";
+    private static final String CASH_ONLY = "cashOnly";
 
     private static final String TIME_PRICE = "timePrice";
     private static final String ROUT_PRICE = "routPrice";
@@ -176,6 +177,8 @@ public class ModelFactory {
             feedbackRating = feedbackJSONJsonObject.optInt(FEEDBACK_RATING, 0);
         }
 
+        boolean cashOnly = orderJSON.optBoolean(CASH_ONLY, false);
+
         return new Order(
                 id, status, description, username,
                 orderTime, userPickupTime, finishTime, updatedTime,
@@ -183,7 +186,7 @@ public class ModelFactory {
                 startingPointGeo, endingPointGeo,
                 paymentType, moneyAmount, bonus, distance,
                 driver, carCategory, feedbackRating,
-                hasFeedback);
+                hasFeedback, cashOnly);
     }
 
     public static CarCategory[] makeCarCategories(JSONArray carCategoriesArray) {

@@ -24,6 +24,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     private static final String MESSAGE = "message";
     private static final String TYPE = "type";
     private static final String ORDER = "order";
+    private static final String ARRIVAL_TIME = "arrivalTime";
 
     private static int idCounter = 0;
 
@@ -52,7 +53,9 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
                         return;
                     }
 
-                    generateUserNotification(context, order, messageObject.optString(TYPE));
+                    int arrivalTime = messageObject.optInt(ARRIVAL_TIME, -1);
+
+                    generateUserNotification(context, order, arrivalTime, messageObject.optString(TYPE));
                 }
 
                 @Override
@@ -63,7 +66,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         }
     }
 
-    private void generateUserNotification(final Context context, final Order order, final String type) {
+    private void generateUserNotification(final Context context, final Order order, final int arrivalTime, final String type) {
         Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
         notificationIntent.setClass(context.getApplicationContext(), OrderActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
@@ -114,6 +117,11 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
                     .setContentText(context.getString(R.string.no_car_for_you))
                     .addAction(0, context.getString(R.string.cancel), cancelPendingIntent)
                     .addAction(0, context.getString(R.string.retry), retryPendingIntent);
+        }
+
+        if (type.equals(OrderStatusConstants.TAKEN) && arrivalTime > 0) {
+            notificationBuilder
+                    .setContentText(context.getString(R.string.your_car_will_be_in_minutes, arrivalTime));
         }
 
         Notification notification = notificationBuilder.build();

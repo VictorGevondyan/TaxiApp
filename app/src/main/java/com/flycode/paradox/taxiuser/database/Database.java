@@ -62,6 +62,7 @@ public class Database extends SQLiteOpenHelper {
     private final String UPDATED_TIME = "updatesTime";
     private final String HAS_FEEDBACK = "hasFeedback";
     private final String FEEDBACK_RATING = "feedbackRating";
+    private final String CASH_ONLY = "cashOnly";
 
     private static Database sharedDatabase;
 
@@ -125,7 +126,8 @@ public class Database extends SQLiteOpenHelper {
                 + CAR_NUMBER + " TEXT NOT NULL, "
                 + DRIVER + " TEXT NOT NULL, "
                 + FEEDBACK_RATING + " INTEGER NOT NULL, "
-                + HAS_FEEDBACK + " INTEGER NOT NULL); ";
+                + HAS_FEEDBACK + " INTEGER NOT NULL, "
+                + CASH_ONLY + " INTEGER NOT NULL); ";
 
         db.execSQL(carCategoriesTable);
         db.execSQL(transactionTable);
@@ -513,6 +515,7 @@ public class Database extends SQLiteOpenHelper {
         int updateTimeIndex = cursor.getColumnIndex(UPDATED_TIME);
         int feedbackRatingIndex = cursor.getColumnIndex(FEEDBACK_RATING);
         int hasFeedbackIndex = cursor.getColumnIndex(HAS_FEEDBACK);
+        int cashOnlyIndex = cursor.getColumnIndex(CASH_ONLY);
 
         long orderTimeMillis;
         long pickupTimeMillis;
@@ -571,7 +574,8 @@ public class Database extends SQLiteOpenHelper {
                     ),
                     cursor.getString(carCategoryIndex),
                     cursor.getInt(feedbackRatingIndex),
-                    cursor.getInt(hasFeedbackIndex) == 1
+                    cursor.getInt(hasFeedbackIndex) == 1,
+                    cursor.getInt(cashOnlyIndex) == 1
             ));
 
             cursor.moveToNext();
@@ -607,7 +611,8 @@ public class Database extends SQLiteOpenHelper {
                         + CAR_NUMBER + " , "
                         + DRIVER + " , "
                         + FEEDBACK_RATING + " , "
-                        + HAS_FEEDBACK + " )  VALUES ");
+                        + HAS_FEEDBACK + " , "
+                        + CASH_ONLY + " )  VALUES ");
     }
 
     private StringBuilder appendOrderValues(Order order, StringBuilder query) {
@@ -635,6 +640,7 @@ public class Database extends SQLiteOpenHelper {
             .append(DatabaseUtils.sqlEscapeString(order.getDriver() == null ? "" : order.getDriver().getCarNumber())).append(",")
             .append(DatabaseUtils.sqlEscapeString(order.getDriver() == null ? "" : order.getDriver().getUsername())).append(",")
             .append(order.getFeedbackRating()).append(",")
-            .append(order.getHasFeedback() ? 1 : 0).append(")");
+            .append(order.getHasFeedback() ? 1 : 0).append(",")
+            .append(order.getCashOnly() ? 1 : 0).append(")");
     }
 }

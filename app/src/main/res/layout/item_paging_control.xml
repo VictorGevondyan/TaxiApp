@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="30dp"
+    android:layout_height="35dp">
+
+    <com.flycode.paradox.taxiuser.views.RhombusView
+        android:id="@+id/outer_rhombus"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+
+    <com.flycode.paradox.taxiuser.views.RhombusView
+        android:id="@+id/inner_rhombus"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_margin="8dp"
+        android:visibility="gone"/>
+
+</RelativeLayout>

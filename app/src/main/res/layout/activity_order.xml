@@ -363,47 +363,45 @@
                     android:onClick="onLeaveFeedback"
                     android:text="@string/leave_feedback"
                     android:textSize="@dimen/small_text_size"
-                    android:textColor="@color/white_40"
+                    android:textColor="@color/white_90"
                     android:background="@android:color/transparent"
                     android:minHeight="0dp"
                     android:minWidth="0dp"/>
 
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/feedback_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/orders_small_margin"
                 android:layout_marginBottom="@dimen/orders_small_margin"
-                android:visibility="gone"
-                android:weightSum="2"
-                >
+                android:visibility="gone">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:id="@+id/feedback_text"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/feedback"
-                    android:textSize="@dimen/small_text_size"
-                    android:textColor="@color/white_40"
-                    android:background="@android:color/transparent"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/orders_small_margin"
                     android:layout_marginStart="@dimen/orders_small_margin"
+                    android:text="@string/feedback"
+                    android:textSize="@dimen/small_text_size"
+                    android:textColor="@color/white_90"
+                    android:background="@android:color/transparent"
                     android:minHeight="0dp"
-                    android:minWidth="0dp"
-                    />
+                    android:minWidth="0dp"/>
 
                 <LinearLayout
                     android:id="@+id/feedback_result_stars"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="5"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/orders_small_margin"
                     android:layout_marginEnd="@dimen/orders_small_margin"
-                    >
+                    android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -411,12 +409,10 @@
                             android:text="@string/icon_star_filled"
                             android:textSize="@dimen/small_text_size"
                             android:textColor="@color/cyan_100"
-                            android:layout_weight="1"
                             android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
-                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
-                            />
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -424,12 +420,10 @@
                             android:text="@string/icon_star_filled"
                             android:textSize="@dimen/small_text_size"
                             android:textColor="@color/cyan_100"
-                            android:layout_weight="1"
                             android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
-                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
-                            />
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -437,12 +431,10 @@
                             android:text="@string/icon_star_filled"
                             android:textSize="@dimen/small_text_size"
                             android:textColor="@color/cyan_100"
-                            android:layout_weight="1"
                             android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
-                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
-                            />
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -450,12 +442,10 @@
                             android:text="@string/icon_star_filled"
                             android:textSize="@dimen/small_text_size"
                             android:textColor="@color/cyan_100"
-                            android:layout_weight="1"
                             android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
-                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
-                            />
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -463,16 +453,14 @@
                             android:text="@string/icon_star_filled"
                             android:textSize="@dimen/small_text_size"
                             android:textColor="@color/cyan_100"
-                            android:layout_weight="1"
                             android:layout_marginLeft="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginStart="@dimen/feedback_dialog_stars_margin"
                             android:layout_marginRight="@dimen/feedback_dialog_stars_margin"
-                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"
-                            />
+                            android:layout_marginEnd="@dimen/feedback_dialog_stars_margin"/>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -538,16 +526,14 @@
                 android:gravity="center"
                 android:background="@color/base_grey_90">
 
-                <Button
-                    android:id="@+id/cancel_button"
+                <TextView
+                    android:id="@+id/order_status_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
+                    android:text="@string/status"
+                    android:textAllCaps="true"
                     android:textColor="@color/cyan_100"
-                    android:textSize="@dimen/tiny_text_size"
-                    android:background="@android:color/transparent"
-                    android:onClick="onCancelOrder"/>
+                    android:textSize="@dimen/tiny_text_size"/>
 
                 <TextView
                     android:id="@+id/order_status"
@@ -601,5 +587,19 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <com.flycode.paradox.taxiuser.views.GenericTriangleView
+        android:id="@+id/cancel_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_above="@id/driver_info"
+        android:layout_centerHorizontal="true"
+        android:onClick="onCancelOrder"
+        android:clickable="true"
+        flycode:text="@string/cancel"
+        flycode:colorString="#4D4D4D"
+        flycode:hoverColorString="#4D4D4D"
+        flycode:textColorString="#00FFFF"
+        flycode:isUp="true"/>
 
 </RelativeLayout>

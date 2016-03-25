@@ -18,7 +18,7 @@ public class UserData {
     private static final String EMAIL = "email";
     private static final String BALANCE = "balance";
     private static final String ORDERS_COUNT = "onlyCount";
-
+    private static final String PASSWORD = "password";
 
     private final SharedPreferences.Editor dataEditor;
 
@@ -26,6 +26,7 @@ public class UserData {
     private String username;
     private String name;
     private String email;
+    private String password;
     private int balance;
     private int orderCount;
 
@@ -45,6 +46,7 @@ public class UserData {
         username = dataPreferences.getString(USERNAME, "");
         name = dataPreferences.getString(NAME, "");
         email = dataPreferences.getString(EMAIL, "");
+        password = dataPreferences.getString(PASSWORD, "");
         balance = dataPreferences.getInt(BALANCE, 0);
         orderCount = dataPreferences.getInt(ORDERS_COUNT, 0);
     }
@@ -83,6 +85,15 @@ public class UserData {
     public void setEmail(String email) {
         this.email = email;
         dataEditor.putString(EMAIL, email).commit();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+        dataEditor.putString(PASSWORD, password).commit();
     }
 
     public int getBalance() {

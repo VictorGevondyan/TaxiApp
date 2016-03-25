@@ -68,9 +68,14 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
 //        codeSpinner.setSelection(codeSpinnerAdapter.getDefaultPosition());
 
         String username = UserData.sharedData(this).getUsername();
+        String cashedPassword = UserData.sharedData(this).getPassword();
 
         if (username != null && !username.isEmpty()) {
             numberEditText.setText(username.replaceFirst("374", ""));
+        }
+
+        if (cashedPassword != null && !cashedPassword.isEmpty()) {
+            passwordEditText.setText(cashedPassword);
         }
 
         TextView phoneCodeTextView = (TextView) findViewById(R.id.phone_code);
@@ -167,6 +172,7 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
         finish();
         GCMUtils.removeRegistrationId(this);
         AppSettings.sharedSettings(this).setIsUserLoggedIn(true);
+        UserData.sharedData(this).setPassword(passwordEditText.getText().toString());
         setUserData(user);
     }
 

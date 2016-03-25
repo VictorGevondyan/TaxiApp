@@ -14,16 +14,6 @@
         android:scaleType="fitXY"
         android:adjustViewBounds="true"/>
 
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/map"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"/>
-
     <TextView
         android:id="@+id/powered_by"
         android:layout_width="match_parent"
@@ -34,6 +24,16 @@
         android:textSize="@dimen/tiny_text_size"
         android:textColor="@color/white_100"
         android:gravity="center_horizontal"/>
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-5dp"
+        android:layout_above="@id/powered_by"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/splash_map"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"/>
 
     <TextView
         android:id="@+id/logo"

@@ -48,6 +48,9 @@
     <string name="one_km">1km/</string>
     <string name="address">Address</string>
     <string name="no_search_results">No Results</string>
+    <string name="searching">Searching…</string>
+    <string name="type_to_search">Type to Search</string>
+    <string name="locating">Locating…</string>
 
     <!-- Orders List -->
     <string name="date">Date</string>
@@ -75,7 +78,7 @@
     <string name="no_internet_title">NETWORK ERROR</string>
     <string name="connect">Connect</string>
     <string name="success">Success</string>
-    <string name="you_will_receive_sms">You will soon receive sms with your new password. If sms does not arrive, please, check phone number you enter, or contact us.</string>
+    <string name="you_will_receive_sms">You will soon receive SMS with your new password. If SMS does not arrive, please, check phone number, or contact us.</string>
     <string name="thank_you_for_feedback">Thank you for you feedback.</string>
     <string name="congratulation">Congratulation</string>
     <string name="password_changed">Your password has been changed.</string>
@@ -107,6 +110,12 @@
     <string name="me">Me</string>
     <string name="driver">Driver</string>
 
+    <!-- Services -->
+    <string name="business">Business</string>
+    <string name="minivan">Minivan</string>
+    <string name="standard">Standard</string>
+    <string name="delivery">Delivery</string>
+
     <!-- Push Notifications -->
     <string name="your_order_taken">Your order has been taken</string>
     <string name="your_order_finished">Your order has been finished</string>
@@ -115,6 +124,7 @@
     <string name="your_order_not_taken">Your order is still not taken</string>
     <string name="no_car_for_you">Seems there is no car that can serve you at the moment. Please, click \"Retry\" if you want to try ordering again, and \"Ok\" if you want to cancel the order.</string>
     <string name="something_happens">Whoa! Something happens!</string>
+    <string name="your_car_will_be_in_minutes">Your car will be in %d minutes</string>
 
     <!-- Splash Screen -->
     <string name="blazon">The best app for ordering a taxi</string>
@@ -141,6 +151,8 @@
     <string name="phone_pass_combination_wrong">This phone and password combination does not exist. You can get new password for this phone number by clicking \"Receive Password\" button.</string>
     <string name="invalid_password">Invalid Password</string>
     <string name="password_does_not_match">New Password and Confirm Password fields do not match.</string>
+    <string name="please_wait_address_determined">Please wait while your address is being determined.</string>
+    <string name="sure_to_cancel">Are you sude you want to cancel this order?</string>
 
     <!-- Icons -->
     <string name="icon_about_us">&#xe900;</string>

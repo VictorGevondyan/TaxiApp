@@ -43,13 +43,15 @@ public class Order implements Parcelable {
     private int feedbackRating;
     private boolean hasFeedback;
 
+    private boolean cashOnly;
+
     public Order(String id, String status, String description, String username,
                  Date orderTime, Date userPickupTime, Date finishTime, Date update,
                  String startingPointName, String endingPointName,
                  Location startingPointGeo, Location endingPointGeo,
                  String paymentType, int moneyAmount, int bonus, double distance,
                  Driver driver, String carCategory, int feedbackRating,
-                 boolean hasFeedback) {
+                 boolean hasFeedback, boolean cashOnly) {
         this.id = id;
         this.status = status;
         this.description = description;
@@ -76,6 +78,8 @@ public class Order implements Parcelable {
 
         this.feedbackRating = feedbackRating;
         this.hasFeedback = hasFeedback;
+
+        this.cashOnly = cashOnly;
     }
 
     public Order(Parcel in) {
@@ -124,6 +128,7 @@ public class Order implements Parcelable {
         feedbackRating = in.readInt();
 
         hasFeedback = in.readInt() == 1;
+        cashOnly = in.readInt() == 1;
     }
 
     public String getId() {
@@ -206,8 +211,16 @@ public class Order implements Parcelable {
         return hasFeedback;
     }
 
+    public boolean getCashOnly() {
+        return cashOnly;
+    }
+
     public void setHasFeedback(boolean hasFeedback) {
         this.hasFeedback = hasFeedback;
+    }
+
+    public void setFeedbackRating(int feedbackRating) {
+        this.feedbackRating = feedbackRating;
     }
 
     @Override
@@ -246,6 +259,7 @@ public class Order implements Parcelable {
         dest.writeString(carCategory);
         dest.writeInt(feedbackRating);
         dest.writeInt(hasFeedback ? 1 : 0);
+        dest.writeInt(cashOnly ? 1 : 0);
     }
 
     public static final Creator CREATOR = new Creator() {

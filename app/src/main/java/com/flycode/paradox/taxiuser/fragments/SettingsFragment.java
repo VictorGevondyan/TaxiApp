@@ -290,6 +290,8 @@ public class SettingsFragment extends SuperFragment implements View.OnClickListe
     public void onChangePasswordRequestSuccess() {
         loadingDialog.dismiss();
 
+        UserData.sharedData(getActivity()).setPassword(passwordEditText.getText().toString());
+
         MessageHandlerUtil.showMessage(R.string.congratulation, R.string.password_changed, getActivity());
     }
 

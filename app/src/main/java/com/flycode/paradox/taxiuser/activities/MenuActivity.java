@@ -22,8 +22,11 @@ import com.flycode.paradox.taxiuser.api.MakeOrderListener;
 import com.flycode.paradox.taxiuser.constants.OrderStatusConstants;
 import com.flycode.paradox.taxiuser.database.Database;
 import com.flycode.paradox.taxiuser.dialogs.LoadingDialog;
+import com.flycode.paradox.taxiuser.fragments.AboutUsFragment;
+import com.flycode.paradox.taxiuser.fragments.HelpFragment;
 import com.flycode.paradox.taxiuser.fragments.MakeOrderFragment;
 import com.flycode.paradox.taxiuser.fragments.OrdersFragment;
+import com.flycode.paradox.taxiuser.fragments.ServicesFragment;
 import com.flycode.paradox.taxiuser.fragments.SettingsFragment;
 import com.flycode.paradox.taxiuser.fragments.SuperFragment;
 import com.flycode.paradox.taxiuser.fragments.TransactionsFragment;
@@ -52,6 +55,9 @@ public class MenuActivity extends SuperActivity implements MakeOrderFragment.Ord
     private final int INDEX_ORDER = 2;
     private final int INDEX_HISTORY = 3;
     private final int INDEX_SETTINGS = 5;
+    private final int INDEX_ABOUT_US = 6;
+    private final int INDEX_SERVIVES = 7;
+    private final int INDEX_HELP = 8;
     private final int INDEX_LOGOUT = 9;
 
     private SideMenuLayout sideMenu;
@@ -165,6 +171,7 @@ public class MenuActivity extends SuperActivity implements MakeOrderFragment.Ord
                     order.getOrderTime(),
                     carCategoryId,
                     order.getDescription(),
+                    order.getCashOnly(),
                     new MakeOrderListener() {
                         @Override
                         public void onMakeOrderSuccess(Order order) {
@@ -329,10 +336,8 @@ public class MenuActivity extends SuperActivity implements MakeOrderFragment.Ord
         } else if (position == INDEX_ORDER) {
             setIsActionBarTransparent(true);
 
-            actionBarRightButton.setVisibility(View.VISIBLE);
             actionBarOverlayView.setVisibility(View.GONE);
             actionBarTitleTextView.setText(R.string.order);
-            actionBarRightButton.setText(R.string.icon_phone);
 
             fragment = MakeOrderFragment.initialize(this);
         } else if (position == INDEX_ONGOING) {
@@ -351,6 +356,18 @@ public class MenuActivity extends SuperActivity implements MakeOrderFragment.Ord
             actionBarTitleTextView.setText(R.string.settings);
 
             fragment = new SettingsFragment();
+        } else if (position == INDEX_ABOUT_US) {
+            actionBarTitleTextView.setText(R.string.about_us);
+
+            fragment = new AboutUsFragment();
+        } else if (position == INDEX_SERVIVES) {
+            actionBarTitleTextView.setText(R.string.services);
+
+            fragment = new ServicesFragment();
+        } else if (position == INDEX_HELP) {
+            actionBarTitleTextView.setText(R.string.help);
+
+            fragment = new HelpFragment();
         } else if (position == INDEX_LOGOUT) {
             AppSettings.sharedSettings(this).setIsUserLoggedIn(false);
             AppSettings.sharedSettings(this).setToken(null);
