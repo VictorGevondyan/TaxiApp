@@ -6,6 +6,7 @@ import com.flycode.paradox.taxiuser.database.Database;
 import com.flycode.paradox.taxiuser.factory.ModelFactory;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.models.Transaction;
+import com.flycode.paradox.taxiuser.models.Translation;
 import com.flycode.paradox.taxiuser.settings.AppSettings;
 import com.flycode.paradox.taxiuser.settings.UserData;
 import com.loopj.android.http.AsyncHttpClient;
@@ -51,6 +52,7 @@ public class APITalker {
     private final String ME_URL = "/me";
     private final String USERS_URL = "/users";
     private final String PASSWORD_URL = "/password";
+    private final String TRANSLATION_URL = "/translations";
 
     private final String USERNAME = "username";
     private final String PASSWORD = "password";
@@ -80,6 +82,8 @@ public class APITalker {
     private final String TRUE = "true";
     private final String UPDATED = "updated";
     private final String ORDER_TIME = "orderTime";
+    private final String CASH_ONLY = "onlyCash";
+    private final String KEY = "key";
 
     /*
 	 * Singletone
@@ -91,6 +95,9 @@ public class APITalker {
 
     private APITalker() {
         asyncHttpClient = new AsyncHttpClient();
+        asyncHttpClient.setMaxRetriesAndTimeout(0, 10000);
+        asyncHttpClient.setConnectTimeout(10000);
+            asyncHttpClient.setResponseTimeout(10000);
     }
 
     public static APITalker sharedTalker() {
@@ -201,7 +208,7 @@ public class APITalker {
 
         if (fromDate != null) {
             try {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
+                SimpleDateFormat simpleDateFormat                                                                                                                                                                                                                                                                                                                                                                                                                                                                = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
                 JSONObject dateJSON = new JSONObject();
                 dateJSON.put(START, simpleDateFormat.format(fromDate));
                 params.put(UPDATED, dateJSON);
@@ -210,7 +217,7 @@ public class APITalker {
                 return;
             }
         }
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
         String url = BASE_API_URL + ORDERS_URL + OWN_URL;
 
         asyncHttpClient.get(url, params, new JsonHttpResponseHandler() {
@@ -349,6 +356,7 @@ public class APITalker {
             requestJSON.put(DESCRIPTION, comments);
             requestJSON.put(CAR_CATEGORY, carCategory);
             requestJSON.put(ORDER_TIME, simpleDateFormat.format(orderTime));
+            requestJSON.put(CASH_ONLY, isCashOnly);
         } catch (JSONException e) {
             e.printStackTrace();
             return;
@@ -667,7 +675,46 @@ public class APITalker {
                 }
             }
         });
+    }
 
+    public void getTranslation(final Context context, final String[] keys, final OnGetTranslationResultHandler handler) {
+        if (!authenticate(context)) {
+            handler.onGetTranslationFailure(401);
+
+            return;
+        }
+
+        RequestParams requestParams = new RequestParams();
+        requestParams.put(KEY, keys);
+
+        String url = BASE_API_URL + TRANSLATION_URL;
+
+        asyncHttpClient.get(url, requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Translation[] translations = ModelFactory.makeTranslations(response);
+
+                Database.sharedDatabase(context).storeTranslations(translations);
+
+                if (handler != null) {
+                    handler.onGetTranslationSuccess(translations);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (handler != null) {
+                    handler.onGetTranslationFailure(statusCode);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                if (handler != null) {
+                    handler.onGetTranslationFailure(statusCode);
+                }
+            }
+        });
     }
 
     private void setTokenCookie(Context context, String token) {

@@ -20,12 +20,6 @@
         <!--mapbox:access_token="pk.eyJ1IjoiYW5oYXl0YW5hbnVuIiwiYSI6ImNpaWlxMmhmZjAwMjB2cW02aG4yZGlidzYifQ.7pbAdUjiyJFh7RTpsJhEVQ"-->
         <!--android:background="@color/base_grey_90"/>-->
 
-    <com.flycode.paradox.taxiuser.views.LocationPickerView
-        android:id="@+id/picker_view"
-        android:layout_width="20dp"
-        android:layout_height="30dp"
-        android:layout_centerInParent="true"/>
-
     <com.flycode.paradox.taxiuser.layouts.MaximalLinearLayout
         android:id="@+id/header_panel"
         android:layout_width="match_parent"
@@ -572,5 +566,11 @@
             android:minHeight="0dp"/>
 
     </LinearLayout>
+
+    <com.flycode.paradox.taxiuser.views.LocationPickerView
+        android:id="@+id/picker_view"
+        android:layout_width="20dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"/>
 
 </com.flycode.paradox.taxiuser.layouts.FullScreenRelativeLayout>

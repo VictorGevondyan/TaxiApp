@@ -1,0 +1,21 @@
+<resources>
+
+    <!-- Generic -->
+    <dimen name="credentials_icon_size">20sp</dimen>
+    <dimen name="small_text_size">15sp</dimen>
+    <dimen name="tiny_text_size">13sp</dimen>
+    <dimen name="super_small_text_size">10sp</dimen>
+    <dimen name="medium_text_size">17sp</dimen>
+    <dimen name="title_text_size">17sp</dimen>
+
+    <!-- Action Bar -->
+    <dimen name="action_bar_button_text_size">30sp</dimen>
+
+    <!-- Menu Grid -->
+    <dimen name="close_menu_text_size">40sp</dimen>
+    <dimen name="menu_title_text_size">16sp</dimen>
+
+    <!-- Dialogs -->
+    <dimen name="feedback_dialog_star_size">30sp</dimen>
+
+</resources>

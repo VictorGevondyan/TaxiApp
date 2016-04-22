@@ -54,6 +54,7 @@ public class MenuActivity extends SuperActivity implements MakeOrderFragment.Ord
     private final int INDEX_BALANCE = 1;
     private final int INDEX_ORDER = 2;
     private final int INDEX_HISTORY = 3;
+    private final int INDEX_FAVORITES = 4;
     private final int INDEX_SETTINGS = 5;
     private final int INDEX_ABOUT_US = 6;
     private final int INDEX_SERVIVES = 7;
@@ -373,6 +374,10 @@ public class MenuActivity extends SuperActivity implements MakeOrderFragment.Ord
             AppSettings.sharedSettings(this).setToken(null);
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+            return;
+        } else if (position == INDEX_FAVORITES) {
+            MessageHandlerUtil.showMessage(R.string.favorites, R.string.coming_soon, this);
+
             return;
         } else {
             return;

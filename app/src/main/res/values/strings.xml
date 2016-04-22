@@ -1,10 +1,10 @@
 <resources>
     <!-- Generic -->
-    <string name="app_name">TaxiUser</string>
+    <string name="app_name">Taxi VIP</string>
 
     <!-- Login -->
-    <string name="number">number</string>
-    <string name="password">password</string>
+    <string name="number">Number</string>
+    <string name="password">Password</string>
     <string name="login">LOGIN</string>
     <string name="or">or</string>
     <string name="receive_password">RECEIVE\nPASSWORD</string>
@@ -24,7 +24,7 @@
 
     <!-- Settings -->
     <string name="name">Full Name</string>
-    <string name="last_name">last name</string>
+    <string name="last_name">Last Name</string>
     <string name="email">Email</string>
     <string name="submit">SUBMIT</string>
     <string name="change_password">CHANGE PASSWORD</string>
@@ -42,7 +42,7 @@
     <string name="only_cash">Only Cash</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="comments">comments</string>
+    <string name="comments">Comments</string>
     <string name="confirm">Confirm</string>
     <string name="min">min/</string>
     <string name="one_km">1km/</string>
@@ -57,7 +57,7 @@
     <string name="location">Location</string>
     <string name="status">Status</string>
     <string name="no_ongoing_orders">No Ongoing Orders</string>
-    <string name="no_history">No History</string>
+    <string name="no_history">History is Empty</string>
 
     <!-- Dialogs -->
     <string name="cancel">Cancel</string>
@@ -85,6 +85,7 @@
     <string name="info_changed">Your info has been changed.</string>
     <string name="hey">Hey!</string>
     <string name="already_have_orders">You already have %d active orders. Do you really want to do another?</string>
+    <string name="coming_soon">Coming Soon…</string>
 
     <!-- Order -->
     <string name="cost">Cost</string>
@@ -95,7 +96,10 @@
     <string name="minute">m</string>
     <string name="second">s</string>
     <string name="km">km</string>
+    <string name="waiting">Waiting</string>
     <string name="taken">Taken</string>
+    <string name="canceled">Canceled</string>
+    <string name="finished">Finished</string>
     <string name="not_taken">Not Taken</string>
     <string name="started">Started</string>
     <string name="leave_feedback">Leave Feedback</string>
@@ -153,6 +157,29 @@
     <string name="password_does_not_match">New Password and Confirm Password fields do not match.</string>
     <string name="please_wait_address_determined">Please wait while your address is being determined.</string>
     <string name="sure_to_cancel">Are you sude you want to cancel this order?</string>
+
+    <!-- About Us -->
+
+    <string name="about_us_info">Default about us</string>
+
+    <!-- Services -->
+
+    <string-array name="services_info">
+        <item>Default Business Info</item>
+        <item>Default Standard Info</item>
+        <item>Default Minivan Info</item>
+        <item>Default Delivery Info</item>
+    </string-array>
+
+    <!-- Help -->
+
+    <string-array name="help_info">
+        <item>Default Order Help</item>
+        <item>Default Order Details Help</item>
+        <item>Default Confirm Help</item>
+        <item>Default Driver Details Help</item>
+        <item>Default Feedback Help</item>
+    </string-array>
 
     <!-- Icons -->
     <string name="icon_about_us">&#xe900;</string>

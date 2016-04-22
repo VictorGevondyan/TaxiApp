@@ -6,7 +6,9 @@ import com.flycode.paradox.taxiuser.models.CarCategory;
 import com.flycode.paradox.taxiuser.models.Driver;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.models.Transaction;
+import com.flycode.paradox.taxiuser.models.Translation;
 import com.flycode.paradox.taxiuser.models.User;
+import com.flycode.paradox.taxiuser.settings.AppSettings;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,7 +43,6 @@ public class ModelFactory {
     private static final String FEEDBACK = "feedback";
     private static final String FEEDBACK_RATING = "stars";
 
-
     private static final String TRANSACTION = "transaction";
     private static final String PAYMENT_TYPE = "paymentType";
     private static final String MONEY_AMOUNT = "moneyAmount";
@@ -58,19 +59,21 @@ public class ModelFactory {
     private static final String FROM = "from";
     private static final String ROLE = "role";
     private static final String DATE = "date";
-    private static final String CASH_ONLY = "cashOnly";
+    private static final String CASH_ONLY = "onlyCash";
 
     private static final String TIME_PRICE = "timePrice";
     private static final String ROUT_PRICE = "routPrice";
     private static final String MIN_PRICE = "minimumPrice";
 
     private static final String SEX = "sex";
-    private static   final String DATE_OF_BIRTH = "dateOfBirth";
+    private static final String DATE_OF_BIRTH = "dateOfBirth";
     private static final String BALANCE = "balance";
     private static final String CAR_NUMBER = "carNumber";
     private static final String DRIVER = "driver";
     private static final String EMAIL = "email";
     private static final String CAR_CATEGORY= "carCategory";
+
+    private static final String KEY = "key";
 
     public static ArrayList<Order> makeOrders(JSONArray ordersJSONArray) {
         ArrayList<Order> orders = new ArrayList<>();
@@ -266,6 +269,33 @@ public class ModelFactory {
         }
 
         return transactions;
+    }
+
+    public static Translation[] makeTranslations(JSONArray translationsJSONJsonArray) {
+        String[] locales = {
+                AppSettings.LANGUAGES.EN,
+                AppSettings.LANGUAGES.RU,
+                "am"
+        };
+
+        Translation[] translations = new Translation[translationsJSONJsonArray.length() * locales.length];
+
+        int translationIndex = 0;
+
+        for (int index = 0 ; index < translationsJSONJsonArray.length() ; index++) {
+            JSONObject translationObject = translationsJSONJsonArray.optJSONObject(index);
+
+            String id = translationObject.optString(ID);
+            String key = translationObject.optString(KEY);
+
+            for (String locale : locales) {
+                String value = translationObject.optString(locale, "");
+                translations[translationIndex] = new Translation(id, locale, key, value);
+                translationIndex++;
+            }
+        }
+
+        return translations;
     }
 
     public static Date dateFromString(String dateString) {

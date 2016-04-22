@@ -73,6 +73,11 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra(OrderActivity.ORDER, order);
+
+        if (type.equals(OrderStatusConstants.CANCELED)) {
+            notificationIntent.putExtra(OrderActivity.CAN_RETRY, true);
+        }
+
         PendingIntent contentIntent = PendingIntent.getActivity(context,
                 (int) System.currentTimeMillis(),
                 notificationIntent, 0

@@ -3,6 +3,8 @@ package com.flycode.paradox.taxiuser.utils;
 import android.content.Context;
 import android.graphics.Typeface;
 
+import com.flycode.paradox.taxiuser.settings.AppSettings;
+
 import java.util.Hashtable;
 
 /**
@@ -19,16 +21,14 @@ public class TypefaceUtils {
 
     public static Typeface getTypeface(Context context, String typefaceName){
         synchronized(cache){
-//            if (typefaceName.equals(AVAILABLE_FONTS.ROBOTO_THIN)
-//                    && AppSettings.sharedSettings(context).getLanguage().equals(AppSettings.LANGUAGES.HY)) {
-//                typefaceName = "arm_tumanyan_thin.ttf";
-//            } else if (typefaceName.equals(AVAILABLE_FONTS.ROBOTO_REGULAR)
-//                    && AppSettings.sharedSettings(context).getLanguage().equals(AppSettings.LANGUAGES.HY)) {
-//                typefaceName = "arm_tumanyan_regular.ttf";
-//            }
-
             if(!cache.containsKey(typefaceName)){
+                if (AppSettings.sharedSettings(context).getLanguage().equals(AppSettings.LANGUAGES.HY)
+                    && typefaceName.contains("Roboto")) {
+                    typefaceName = "Noh45_Am.ttf";
+                }
+
                 Typeface typeface = Typeface.createFromAsset(context.getAssets(), typefaceName);
+
                 cache.put(typefaceName, typeface);
             }
             return cache.get(typefaceName);

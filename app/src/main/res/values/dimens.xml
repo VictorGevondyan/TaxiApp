@@ -18,6 +18,7 @@
 
     <!-- Menu Grid -->
     <dimen name="close_menu_text_size">40sp</dimen>
+    <dimen name="menu_title_text_size">20sp</dimen>
 
     <!-- Settings -->
     <dimen name="settings_entry_margin">20dp</dimen>
@@ -42,6 +43,5 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
 
 </resources>

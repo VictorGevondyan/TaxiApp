@@ -92,7 +92,18 @@ public class OrdersListAdapter extends ArrayAdapter<Order> {
         } else {
             convertView.findViewById(R.id.cost_section).setVisibility(View.GONE);
             convertView.findViewById(R.id.status_section).setVisibility(View.VISIBLE);
-            statusValueTextView.setText(order.getStatus());
+
+            if (order.getStatus().equals(OrderStatusConstants.CANCELED)) {
+                statusValueTextView.setText(R.string.canceled);
+            } else if (order.getStatus().equals(OrderStatusConstants.TAKEN)) {
+                statusValueTextView.setText(R.string.taken);
+            } else if (order.getStatus().equals(OrderStatusConstants.NOT_TAKEN)) {
+                statusValueTextView.setText(R.string.not_taken);
+            } else if (order.getStatus().equals(OrderStatusConstants.STARTED)) {
+                statusValueTextView.setText(R.string.started);
+            } else if (order.getStatus().equals(OrderStatusConstants.WAITING)) {
+                statusValueTextView.setText(R.string.waiting);
+            }
         }
 
         return convertView;

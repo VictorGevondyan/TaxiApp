@@ -1,0 +1,220 @@
+<resources>
+    <!-- Generic -->
+    <string name="app_name">Taxi VIP</string>
+
+    <!-- Login -->
+    <string name="number">Номер</string>
+    <string name="password">Пароль</string>
+    <string name="login">ВХОД</string>
+    <string name="or">или</string>
+    <string name="receive_password">ПОЛУЧИТЬ\nПАРОЛЬ</string>
+
+    <!-- Menu -->
+    <string name="menu">МЕНЮ</string>
+    <string name="ongoing">Активные</string>
+    <string name="balance">Баланс</string>
+    <string name="order">Заказ</string>
+    <string name="history">История</string>
+    <string name="favorites">Любимые</string>
+    <string name="settings">Настройки</string>
+    <string name="about_us">О Нас</string>
+    <string name="services">Сервисы</string>
+    <string name="help">Помощь</string>
+    <string name="logout">Выход</string>
+
+    <!-- Settings -->
+    <string name="name">Полное Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="email">Email</string>
+    <string name="submit">SUBMIT</string>
+    <string name="change_password">ПОМЕНЯТЬ ПАРОЛЬ</string>
+    <string name="old_password">Старый Пароль</string>
+    <string name="new_password">Новый Пароль</string>
+    <string name="confirm_password">Подтвердить Пароль</string>
+    <string name="language">ЯЗЫК</string>
+    <string name="english">English</string>
+    <string name="armenian">Հայերեն</string>
+    <string name="russian">Русский</string>
+
+    <!-- Ordering -->
+    <string name="now">Сейчас</string>
+    <string name="later">Потом</string>
+    <string name="only_cash">Только Кеш</string>
+    <string name="today">Сегодня</string>
+    <string name="tomorrow">Завтра</string>
+    <string name="comments">Комменты</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="min">мин/</string>
+    <string name="one_km">1км/</string>
+    <string name="address">Адрес</string>
+    <string name="no_search_results">Нет Результатов</string>
+    <string name="searching">Поиск…</string>
+    <string name="type_to_search">Пишите чтобы искать</string>
+    <string name="locating">Находим…</string>
+
+    <!-- Orders List -->
+    <string name="date">Дата</string>
+    <string name="location">Адрес</string>
+    <string name="status">Статус</string>
+    <string name="no_ongoing_orders">Нет активных заказов</string>
+    <string name="no_history">История пуста</string>
+
+    <!-- Dialogs -->
+    <string name="cancel">Cancel</string>
+    <string name="retry">Retry</string>
+    <string name="done">Done</string>
+    <string name="ok">OK</string>
+    <string name="comments_title">Комменты</string>
+    <string name="feedback_title">Отзыв</string>
+    <string name="error_title">Ошибка</string>
+    <string name="order_time">Время заказа</string>
+    <string name="no_internet_description">Нет сети. Если вы не подсоединены к сети, пожалуйста, перейдине к настройкам wifi или mobile data с помощю кнопки внизу и выбирите подходящее подключение. Если это не помогает, обратитесь к своемы провайдеру. Если проблема возникает часто, обратитесь к нам.</string>
+    <string name="gps_disabled_title">GPS Отключен</string>
+    <string name="gps_not_permitted_title">Нет Допуска к GPS</string>
+    <string name="gps_disabled_message">Невозможно выяснить ваше местоположение. Пожалуйста, перейдите к настройкам местоположения с помощю кнопки внизу и разрешите использование местоположения.</string>
+    <string name="gps_not_permitted_message">Невозможно выяснить ваше местоположение. Пожалуйста, перейдите к настройкам местоположения с помощю кнопки внизу и разрешите использование местоположения.</string>
+    <string name="permit">Разрешить</string>
+    <string name="enable">Включить</string>
+    <string name="no_internet_title">ОШИБКА СЕТИ</string>
+    <string name="connect">Подсоединиться</string>
+    <string name="success">Успех</string>
+    <string name="you_will_receive_sms">Сейчас вы получите SMS с вашим паролем. Если SMS не приходит, пожалуйста, проверьте ваш номер, или обратитесь к нам.</string>
+    <string name="thank_you_for_feedback">Спасибо за ваш отзыв.</string>
+    <string name="congratulation">Поздравляем</string>
+    <string name="password_changed">Ваш пароль изменен.</string>
+    <string name="info_changed">Ваши данные изменены.</string>
+    <string name="hey">Hey!</string>
+    <string name="already_have_orders">У вас уже есть %d активных заказов. Вы точно хотите сделать еще один?</string>
+    <string name="coming_soon">Скоро…</string>
+
+    <!-- Order -->
+    <string name="cost">Цена</string>
+    <string name="distance">Расстояние</string>
+    <string name="type">ТИП</string>
+    <string name="bonus">+БОНУС</string>
+    <string name="hour">ч</string>
+    <string name="minute">м</string>
+    <string name="second">с</string>
+    <string name="km">км</string>
+    <string name="canceled">Отменен</string>
+    <string name="taken">Принят</string>
+    <string name="waiting">Ожидание</string>
+    <string name="finished">Окончен</string>
+    <string name="not_taken">Не Принят</string>
+    <string name="started">Начат</string>
+    <string name="leave_feedback">Оставить отзыв</string>
+    <string name="feedback">Отзыв</string>
+
+    <!-- Transactions -->
+    <string name="transactions">Транзакции</string>
+    <string name="from">От</string>
+    <string name="to">Кому</string>
+    <string name="loading">Загрызка</string>
+    <string name="no_transaction">Нет Транзакций</string>
+    <string name="me">Мне</string>
+    <string name="driver">Водитель</string>
+
+    <!-- Services -->
+    <string name="business">Business</string>
+    <string name="minivan">Minivan</string>
+    <string name="standard">Standard</string>
+    <string name="delivery">Delivery</string>
+
+    <!-- Push Notifications -->
+    <string name="your_order_taken">Ваш заказ принят</string>
+    <string name="your_order_finished">Ваш заказ окончен</string>
+    <string name="your_order_started">Ваш заказ исполняется</string>
+    <string name="your_driver_waiting">Ваш автомобиль ждет</string>
+    <string name="your_order_not_taken">Ваш заказ все еще не принят</string>
+    <string name="no_car_for_you">Похоже в данный момент нет машин способных обслужить вас. Пожалуйста, нажмите \"Retry\" если хотите повторить заказ, и \"Ok\" в противном случае.</string>
+    <string name="something_happens">Whoa! Something happens!</string>
+    <string name="your_car_will_be_in_minutes">Ваша машина будет через %d минут</string>
+
+    <!-- Splash Screen -->
+    <string name="blazon">The best app for ordering a taxi</string>
+    <string name="powered_by">POWERED BY PARADOX LLC</string>
+
+    <!-- Map Controls -->
+    <string name="plus">+</string>
+    <string name="minus">—</string>
+
+    <!-- Error Messages -->
+    <string name="cannot_complete_request_title">Сервер недоступен</string>
+    <string name="cannot_complete_request_message">Невозможно подсоединение к серверу. Пожалуйцта, проверьте наличие сети. Если проблема возникает часто, обратитесь к нам.</string>
+    <string name="server_error_title">Ошибка Сервера</string>
+    <string name="server_error_message">Сервер не может выполнить запрос. Если проблема возникает часто, обратитесь к нам.</string>
+    <string name="invalid_data_title">Неверные Данные</string>
+    <string name="invalid_data_message">Пожалуйста, проверьте ввод. Если проблема возникает часто, обратитесь к нам.</string>
+    <string name="unknown_error_title">Неизвестная ошибка</string>
+    <string name="unknown_error_message">Произошла неизвестная ошибка. Если проблема возникает часто, обратитесь к нам и сообщите следующий код - </string>
+    <string name="attention">Внимание</string>
+    <string name="empty_phone_number">Номер не может быть пустым.</string>
+    <string name="empty_password">Пароль не может быть пустым.</string>
+    <string name="invalid_phone_number">Телефон неверен. Он должен иметь 8 чисел, без нуля в начале.</string>
+    <string name="wrong_credentials">Неверные Данные</string>
+    <string name="phone_pass_combination_wrong">Такой комбинации пароля и номера не существует. Вы можете получить новый пароль нажав кнопку \"ПОЛУЧИТЬ ПАРОЛЬ\".</string>
+    <string name="invalid_password">Неверный Пароль</string>
+    <string name="password_does_not_match">Поля Новый Пароль и Подтвердить Пароль должны совподать.</string>
+    <string name="please_wait_address_determined">Пожалуйста, подождите, пока ваше местоположетине уточняется.</string>
+    <string name="sure_to_cancel">Вы точно хотите отменить заказ?</string>
+
+    <!-- About Us -->
+
+    <string name="about_us_info">Default about us</string>
+
+    <!-- Services -->
+
+    <string-array name="services_info">
+        <item>Default Business Info</item>
+        <item>Default Standard Info</item>
+        <item>Default Minivan Info</item>
+        <item>Default Delivery Info</item>
+    </string-array>
+
+    <!-- Help -->
+
+    <string-array name="help_info">
+        <item>Default Order Help</item>
+        <item>Default Order Details Help</item>
+        <item>Default Confirm Help</item>
+        <item>Default Driver Details Help</item>
+        <item>Default Feedback Help</item>
+    </string-array>
+
+    <!-- Icons -->
+    <string name="icon_about_us">&#xe900;</string>
+    <string name="icon_close">&#xe901;</string>
+    <string name="icon_cost">&#xe902;</string>
+    <string name="icon_date">&#xe903;</string>
+    <string name="icon_distance">&#xe904;</string>
+    <string name="icon_exit">&#xe905;</string>
+    <string name="icon_favorites">&#xe906;</string>
+    <string name="icon_star_filled">&#xe94a;</string>
+    <string name="icon_history">&#xe907;</string>
+    <string name="icon_location">&#xe908;</string>
+    <string name="icon_mail">&#xe909;</string>
+    <string name="icon_menu">&#xe90a;</string>
+    <string name="icon_name">&#xe90b;</string>
+    <string name="icon_order">&#xe90c;</string>
+    <string name="icon_password">&#xe90d;</string>
+    <string name="icon_phone">&#xe90e;</string>
+    <string name="icon_refresh">&#xe90f;</string>
+    <string name="icon_services">&#xe910;</string>
+    <string name="icon_settings">&#xe911;</string>
+    <string name="icon_mobile_phone">&#xe912;</string>
+    <string name="icon_arrow">&#xe913;</string>
+    <string name="icon_balance">&#xe914;</string>
+    <string name="icon_help">&#xe915;</string>
+    <string name="icon_status">&#xe916;</string>
+    <string name="icon_logo">&#xe917;</string>
+    <string name="icon_person_tile">&#xe921;</string>
+    <string name="icon_logo_filled">&#xe930;</string>
+    <string name="icon_gps">&#xe935;</string>
+    <string name="icon_no_gps">&#xe934;</string>
+    <string name="icon_gaz">&#xe936;</string>
+    <string name="icon_car">&#xe937;</string>
+    <string name="icon_gps_tiny">&#xe93e;</string>
+    <string name="icon_plus">&#xe93f;</string>
+    <string name="icon_minus">&#xe940;</string>
+
+</resources>

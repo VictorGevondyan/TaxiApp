@@ -14,6 +14,7 @@ import com.flycode.paradox.taxiuser.models.CarCategory;
 import com.flycode.paradox.taxiuser.models.Driver;
 import com.flycode.paradox.taxiuser.models.Order;
 import com.flycode.paradox.taxiuser.models.Transaction;
+import com.flycode.paradox.taxiuser.models.Translation;
 import com.flycode.paradox.taxiuser.settings.UserData;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class Database extends SQLiteOpenHelper {
     private final String TABLE_CAR_CATEGORY = "carCategory";
     private final String TABLE_TRANSACTION = "transactions";
     private final String TABLE_ORDERS = "orders";
+    private final String TABLE_TRANSLATIONS = "translations";
     private final String ID = "id";
     private final String NAME = "name";
     private final String USERNAME = "username";
@@ -63,6 +65,9 @@ public class Database extends SQLiteOpenHelper {
     private final String HAS_FEEDBACK = "hasFeedback";
     private final String FEEDBACK_RATING = "feedbackRating";
     private final String CASH_ONLY = "cashOnly";
+    private final String LOCALITY = "locality";
+    private final String KEY = "key";
+    private final String VALUE = "value";
 
     private static Database sharedDatabase;
 
@@ -128,10 +133,17 @@ public class Database extends SQLiteOpenHelper {
                 + FEEDBACK_RATING + " INTEGER NOT NULL, "
                 + HAS_FEEDBACK + " INTEGER NOT NULL, "
                 + CASH_ONLY + " INTEGER NOT NULL); ";
+        String translationsTable = "CREATE TABLE IF NOT EXISTS " + TABLE_TRANSLATIONS + " ( "
+                + ID + " TEXT NOT NULL, "
+                + LOCALITY + " TEXT NOT NULL, "
+                + KEY + " TEXT NOT NULL, "
+                + VALUE + " TEXT NOT NULL," +
+                "PRIMARY KEY (" + ID + " , " + LOCALITY + "));";
 
         db.execSQL(carCategoriesTable);
         db.execSQL(transactionTable);
         db.execSQL(orderTable);
+        db.execSQL(translationsTable);
     }
 
     @Override
@@ -347,6 +359,46 @@ public class Database extends SQLiteOpenHelper {
                 listener.onGetOrdersSuccess(dbOrders, dbOrders.size());
             }
         }.execute();
+    }
+
+    public void storeTranslations(Translation[] translations) {
+        if (translations.length == 0) {
+            return;
+        }
+
+        SQLiteDatabase db = getWritableDatabase();
+        String replacementStatement =
+                "REPLACE INTO " + TABLE_TRANSLATIONS + " ( "
+                        + ID + ","
+                        + LOCALITY + ","
+                        + KEY + ","
+                        + VALUE + " )  VALUES ";
+        StringBuilder query = new StringBuilder(replacementStatement);
+
+        boolean multiQueryAvailable = Build.VERSION.SDK_INT > 15;
+
+        for (int index = 0 ; index < translations.length ; index++) {
+            Translation translation = translations[index];
+
+            query
+                    .append("(")
+                    .append(DatabaseUtils.sqlEscapeString(translation.getId())).append(",")
+                    .append(DatabaseUtils.sqlEscapeString(translation.getLocality())).append(",")
+                    .append(DatabaseUtils.sqlEscapeString(translation.getKey())).append(",")
+                    .append(DatabaseUtils.sqlEscapeString(translation.getValue())).append(")");
+
+            if (!multiQueryAvailable) {
+                db.execSQL(query.append(";").toString());
+                query.setLength(0);
+                query.append(replacementStatement);
+            } else if (index != translations.length - 1) {
+                query.append(",");
+            }
+        }
+
+        if (multiQueryAvailable) {
+            db.execSQL(query.append(";").toString());
+        }
     }
 
     public void storeOrder(final Order order) {
@@ -584,6 +636,28 @@ public class Database extends SQLiteOpenHelper {
         cursor.close();
 
         return orders;
+    }
+
+    public String getTranslation(String language, String key) {
+        if (language.equals("hy")) {
+            language = "am";
+        }
+
+        String query = "SELECT * FROM " + TABLE_TRANSLATIONS
+                + " WHERE " + KEY + " = " + DatabaseUtils.sqlEscapeString(key)
+                + " AND " + LOCALITY + " = " + DatabaseUtils.sqlEscapeString(language);
+
+        String value = "";
+        Cursor cursor = getReadableDatabase().rawQuery(query, null);
+        cursor.moveToFirst();
+
+        if (cursor.getCount() > 0) {
+            value = cursor.getString(cursor.getColumnIndex(VALUE));
+        }
+
+        cursor.close();
+
+        return value;
     }
 
     private StringBuilder generateOrdersReplaceQuery() {

@@ -56,6 +56,7 @@ import java.util.Calendar;
 public class MakeOrderFragment extends SuperFragment implements View.OnClickListener, CommentDialog.CommentDialogListener, CarCategoriesListener,
         GeocodeUtil.GeocodeListener, MakeOrderListener,
         PickTimeDialog.PickTimeDialogListener, OnMapReadyCallback, GoogleMap.OnCameraChangeListener, GoogleMap.OnMyLocationChangeListener, TextWatcher, MessageDialog.MessageDialogListener {
+    private static final LatLng DEFAULT_COORDINATE = new LatLng(40.17756994777982, 44.512549079954624);
     private static final Object LOCKER = new Object();
     private static final String COMMENT_DIALOG_TAG = "commentDialogTag";
     private static final String TIME_DIALOG_TAG = "timeDialogTag";
@@ -934,7 +935,7 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
             if (myLocation != null) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
             } else {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(40.177570, 44.512549)));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_COORDINATE));
             }
         }
 
@@ -958,7 +959,9 @@ public class MakeOrderFragment extends SuperFragment implements View.OnClickList
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-        hasMyLocationDetermined = true;
+        if (!cameraPosition.target.equals(DEFAULT_COORDINATE)) {
+            hasMyLocationDetermined = true;
+        }
 
         synchronized (LOCKER) {
             locationTopTextView.setText(locatingString);

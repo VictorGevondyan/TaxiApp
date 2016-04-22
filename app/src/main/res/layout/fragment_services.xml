@@ -3,13 +3,13 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:scrollbars="none"
-    android:overScrollMode="never">
+    android:overScrollMode="never"
+    android:background="@color/white_100">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white_100">
+        android:layout_height="wrap_content">
 
         <com.flycode.paradox.taxiuser.layouts.RhombusLayout
             android:id="@+id/control"

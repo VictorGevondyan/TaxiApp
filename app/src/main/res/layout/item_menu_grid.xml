@@ -55,7 +55,7 @@
             android:paddingEnd="10dp"
             android:gravity="center"
             android:textColor="@color/white_100"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/menu_title_text_size"/>
 
         <View
             android:id="@+id/horizontal_space"

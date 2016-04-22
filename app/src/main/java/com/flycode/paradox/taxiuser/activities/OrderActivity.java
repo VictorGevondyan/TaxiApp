@@ -57,6 +57,7 @@ import java.util.TimerTask;
 public class OrderActivity extends SuperActivity implements GetOrderHandler, PointsForOrderListener, OnMapReadyCallback, FeedbackDialog.FeedbackDialogListener, FeedbackRequestHandler, UpdateOrderStatusHandler {
     public static final String ORDER = "order";
     public static final String RETRY = "retry";
+    public static final String CAN_RETRY = "carRetry";
 
     private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 0;
     private static final String TAG_FEEDBACK_DIALOG = "tagFeedbackDialog";
@@ -112,6 +113,11 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
 
         Intent orderIntent = getIntent();
         order = orderIntent.getParcelableExtra(ORDER);
+
+        if (orderIntent.getBooleanExtra(CAN_RETRY, false)
+                && order.getStatus().equals(OrderStatusConstants.CANCELED)) {
+            super.onOrderUpdated(order);
+        }
 
         if (savedInstanceState != null) {
             order = savedInstanceState.getParcelable(ORDER);
@@ -232,10 +238,9 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
 
     private void setupCancelButton() {
         String orderStatus = order.getStatus();
-        boolean setCancelButtonVisible = (order.getDriver() != null)
-                && (orderStatus.equals(OrderStatusConstants.NOT_TAKEN)
+        boolean setCancelButtonVisible = orderStatus.equals(OrderStatusConstants.NOT_TAKEN)
                 || orderStatus.equals(OrderStatusConstants.TAKEN)
-                || orderStatus.equals(OrderStatusConstants.WAITING));
+                || orderStatus.equals(OrderStatusConstants.WAITING);
         findViewById(R.id.cancel_button).setVisibility(setCancelButtonVisible ? View.VISIBLE : View.GONE);
     }
 
@@ -380,7 +385,12 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
 
         costValueTextView.setText(order.getMoneyAmount() + " / " + order.getPaymentType() + " / " + order.getBonus());
         distanceValueTextView.setText(distanceString + " - " + durationString);
-        statusValueTextView.setText(order.getStatus());
+
+        if (order.getStatus().equals(OrderStatusConstants.CANCELED)) {
+            statusValueTextView.setText(R.string.canceled);
+        } else if (order.getStatus().equals(OrderStatusConstants.CANCELED)) {
+            statusValueTextView.setText(R.string.finished);
+        }
 
         leaveFeedbackLinearLayout = (LinearLayout) findViewById(R.id.feedback_section);
         feedbackResultRelativeLayout = (RelativeLayout) findViewById(R.id.feedback_result);
@@ -455,6 +465,8 @@ public class OrderActivity extends SuperActivity implements GetOrderHandler, Poi
             orderStatusTextView.setText(getString(R.string.not_taken));
         } else if (orderStatus.equals(OrderStatusConstants.STARTED)) {
             orderStatusTextView.setText(getString(R.string.started));
+        } else if (orderStatus.equals(OrderStatusConstants.WAITING)) {
+            orderStatusTextView.setText(getString(R.string.waiting));
         }
 
         typeValueTextView.setText(order.getCarCategory());
