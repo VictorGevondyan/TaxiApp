@@ -1,6 +1,7 @@
 package com.flycode.paradox.taxiuser.api;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.flycode.paradox.taxiuser.database.Database;
 import com.flycode.paradox.taxiuser.factory.ModelFactory;
@@ -217,7 +218,7 @@ public class APITalker {
                 return;
             }
         }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
         String url = BASE_API_URL + ORDERS_URL + OWN_URL;
 
         asyncHttpClient.get(url, params, new JsonHttpResponseHandler() {
@@ -412,6 +413,8 @@ public class APITalker {
             requestJSON.put(TOKEN, registrationId);
             requestJSON.put(DEVICE_ID, androidDeviceId);
             requestJSON.put(TYPE, ANDROID);
+            requestJSON.put("osVersion", Build.VERSION.RELEASE);
+            requestJSON.put("deviceInfo", Build.MANUFACTURER + " " + Build.MODEL);
         } catch (JSONException e) {
             e.printStackTrace();
             return;
