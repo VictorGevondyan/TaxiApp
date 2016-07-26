@@ -40,10 +40,14 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Switch to MenuActivity is user is already logged in
+
         if (AppSettings.sharedSettings(this).isUserLoggedIn()) {
             startActivity(new Intent(this, MenuActivity.class));
             finish();
         }
+
+        // Initialize
 
         loadingDialog = new LoadingDialog(this);
 
@@ -67,19 +71,21 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
 //        codeSpinner.setAdapter(codeSpinnerAdapter);
 //        codeSpinner.setSelection(codeSpinnerAdapter.getDefaultPosition());
 
+        // Auto fill number and password if cached
+
+        TextView phoneCodeTextView = (TextView) findViewById(R.id.phone_code);
+        phoneCodeTextView.setTypeface(robotoThinTypeface);
+
         String username = UserData.sharedData(this).getUsername();
-        String cashedPassword = UserData.sharedData(this).getPassword();
+        String cachedPassword = UserData.sharedData(this).getPassword();
 
         if (username != null && !username.isEmpty()) {
             numberEditText.setText(username.replaceFirst("374", ""));
         }
 
-        if (cashedPassword != null && !cashedPassword.isEmpty()) {
-            passwordEditText.setText(cashedPassword);
+        if (cachedPassword != null && !cachedPassword.isEmpty()) {
+            passwordEditText.setText(cachedPassword);
         }
-
-        TextView phoneCodeTextView = (TextView) findViewById(R.id.phone_code);
-        phoneCodeTextView.setTypeface(robotoThinTypeface);
 
 //        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 //        String number = telephonyManager.getLine1Number();
@@ -93,6 +99,10 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
      * Button Click Methods
      */
 
+    /**
+     * Triggered when Login button is clicked. Sends login request to server, if both mobile number and password are valid.
+     * @param view Login button
+     */
     public void onLoginClicked(View view) {
         String number = numberEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -115,6 +125,10 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
         APITalker.sharedTalker().login(this, "374" + number, password, this);
     }
 
+    /**
+     * Triggered when Receive Password button is clicked. Sens receive password request to server, if mobile number is valid
+     * @param view Receive Password button
+     */
     public void onReceivePasswordClicked(View view) {
         String number = numberEditText.getText().toString();
 
@@ -140,12 +154,15 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
     public void onLoginSuccess() {
         loadingDialog.dismiss();
 
+        // Get user, to continue login process
         APITalker.sharedTalker().getUser(this, this);
     }
 
     @Override
     public void onLoginFailure(int statusCode) {
         loadingDialog.dismiss();
+
+        // Display appropriate error
 
         if (statusCode == 401 || statusCode == 403 || statusCode == 404) {
             MessageHandlerUtil.showMessage(R.string.wrong_credentials, R.string.phone_pass_combination_wrong, this);
@@ -160,6 +177,9 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
 
     @Override
     public void onGetUserSuccess(User user) {
+        // Now user data is also retrieved, so user is logged in.
+        // Open Menu Activity
+
         if (Build.VERSION.SDK_INT >= 16) {
             ActivityOptions options = ActivityOptions.makeCustomAnimation(this, 0, R.anim.slide_down_out);
             startActivity(new Intent(this, MenuActivity.class), options.toBundle());
@@ -170,6 +190,8 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
         loadingDialog.dismiss();
 
         finish();
+
+        // Do initial application setup
         GCMUtils.removeRegistrationId(this);
         AppSettings.sharedSettings(this).setIsUserLoggedIn(true);
         UserData.sharedData(this).setPassword(passwordEditText.getText().toString());
@@ -180,10 +202,13 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
     public void onGetUserFailure(int statusCode) {
         loadingDialog.dismiss();
 
+        // Display appropriate error
         MessageHandlerUtil.showErrorForStatusCode(statusCode, this);
     }
 
     private void setUserData(User user) {
+        // Save user data
+
         UserData userData = UserData.sharedData(this);
 
         userData.setId(user.getId());
@@ -200,12 +225,15 @@ public class LoginActivity extends SuperActivity implements LoginHandler, GetUse
     public void onReceivePasswordRequestSuccess() {
         loadingDialog.dismiss();
 
+        // Display appropriate message
         MessageHandlerUtil.showMessage(R.string.success, R.string.you_will_receive_sms, this);
     }
 
     @Override
     public void onReceivePasswordRequestFail(int statusCode) {
         loadingDialog.dismiss();
+
+        // Display appropriate error
 
         if (statusCode == 422 || statusCode == 200 || statusCode == 201) {
             MessageHandlerUtil.showMessage(R.string.success, R.string.you_will_receive_sms, this);

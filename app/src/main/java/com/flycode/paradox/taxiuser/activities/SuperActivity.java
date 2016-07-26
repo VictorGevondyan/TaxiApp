@@ -50,9 +50,13 @@ public class SuperActivity extends Activity implements LocationListener {
     protected void onResume() {
         super.onResume();
 
+        // Register for network status updates
+
         IntentFilter networkFilter = new IntentFilter();
         networkFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkStateReceiver, networkFilter);
+
+        // Register for order status updates
 
         IntentFilter orderUpdateFilter = new IntentFilter();
         orderUpdateFilter.addAction(SuperActivity.ACTION_ORDER_STATUS_UPDATED);
@@ -63,8 +67,12 @@ public class SuperActivity extends Activity implements LocationListener {
 
     @Override
     protected void onPause() {
+        // Unregister from events
+
         unregisterReceiver(networkStateReceiver);
         unregisterReceiver(orderUpdateBroadcastReceiver);
+
+        // Remove location updates. Check for permission to avoid no permission error.
 
         if (HardwareAccessibilityUtil.checkIfHasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -76,25 +84,40 @@ public class SuperActivity extends Activity implements LocationListener {
 
     public void handleHardwareState(){
         if (HardwareAccessibilityUtil.checkIfHasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            // Register for location updates.
+
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 1000, this);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 1000, this);
 
+            // Show appropriate dialog if GPS is not enabled.
+
             onGPSStatusChanged(HardwareAccessibilityUtil.isGPSEnabled(SuperActivity.this));
         } else {
+            // No GPS permissions. Show appropriate dialog.
+
             onGPSPermissionChanged(false);
         }
 
         if (!HardwareAccessibilityUtil.isNetworkEnabled(this)) {
+            // No network. Show appropriate dialog.
+
             onNetworkStateChanged(false);
         }
     }
 
+    /**
+     * Show appropriate dialog if GPS is not enabled. Remove shown dialog, if GPS access has been restored.
+     * @param isGPSEnabled true if GPS is enabled, false otherwise
+     */
     protected void onGPSStatusChanged(boolean isGPSEnabled) {
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(NO_GPS_TAG);
 
         if (isGPSEnabled) {
+            // GPS is enabled, dismiss dialog if it is presented.
+
             if (fragment instanceof NoGPSDialog) {
                 noGpsDialogsShown--;
 
@@ -102,6 +125,9 @@ public class SuperActivity extends Activity implements LocationListener {
                 noGPSDialog.dismiss();
             }
         } else {
+            // GPS is not enabled.
+            // Check if dialog is already presented.
+
             if (noGpsDialogsShown > 0) {
                 return;
             }
@@ -111,6 +137,8 @@ public class SuperActivity extends Activity implements LocationListener {
             }
 
             noGpsDialogsShown++;
+
+            // Present dialog.
 
             NoGPSDialog
                     .initialize(NoGPSDialog.ISSUE_DISABLED)
@@ -118,11 +146,17 @@ public class SuperActivity extends Activity implements LocationListener {
         }
     }
 
+    /**
+     * Show appropriate dialog if GPS usage is not permitted. Remove shown dialog, if GPS usage permission has been restored.
+     * @param isGPSEnabled true if GPS usage is not permitted, false otherwise
+     */
     protected void onGPSPermissionChanged(boolean isGPSPermitted) {
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(NO_GPS_TAG);
 
         if (isGPSPermitted) {
+            // Have GPS permission, dismiss dialog if it is presented.
+
             if (fragment instanceof NoGPSDialog) {
                 noGpsDialogsShown--;
 
@@ -130,6 +164,9 @@ public class SuperActivity extends Activity implements LocationListener {
                 noGPSDialog.dismiss();
             }
         } else {
+            // No GPS Permission.
+            // Check if dialog is already presented.
+
             if (noGpsDialogsShown > 0) {
                 return;
             }
@@ -140,29 +177,47 @@ public class SuperActivity extends Activity implements LocationListener {
 
             noGpsDialogsShown++;
 
+            // Present dialog.
+
             NoGPSDialog
                     .initialize(NoGPSDialog.ISSUE_PERMISSION)
                     .show(fragmentManager, NO_GPS_TAG);
         }
     }
 
+    /**
+     * Called on location change
+     * @param latitude New latitude
+     * @param longitude New longitude
+     */
     protected void onLocationChange(double latitude, double longitude) {
 
     }
 
+    /**
+     * Called on network state change. Shows appropriate dialog if there is not network connected, dismisses shown dialog if network has been restored.
+     * @param isConnected true if connected to network, false otherwise
+     */
     protected void onNetworkStateChanged(boolean isConnected) {
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(NO_NETWORK_TAG);
 
         if (isConnected) {
+            // Have connection. Dismiss dialog if shown.
+
             if (fragment instanceof NoInternetDialog) {
                 NoInternetDialog noInternetDialog = (NoInternetDialog) fragment;
                 noInternetDialog.dismiss();
             }
         } else {
+            // No connection.
+            // Check if dialog is already shown
+
             if (fragment instanceof NoInternetDialog) {
                 return;
             }
+
+            // Show dialog.
 
             NoInternetDialog
                     .initialize()
@@ -170,6 +225,10 @@ public class SuperActivity extends Activity implements LocationListener {
         }
     }
 
+    /**
+     * Called when order has been updated. Show appropriate message if order was canceled.
+     * @param order
+     */
     protected void onOrderUpdated(Order order) {
         if (order.getStatus().equals(OrderStatusConstants.CANCELED)) {
             Bundle additionalInfo = new Bundle();
@@ -235,10 +294,16 @@ public class SuperActivity extends Activity implements LocationListener {
 
         @Override
         public void onPositiveClicked(MessageDialog messageDialog) {
+            // User chooses to retry order.
+
             Order order = messageDialog.getAdditionalInfo().getParcelable(OrderActivity.ORDER);
+
+            // Remove notification from notification center.
 
             NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(order.getId(), 0);
+
+            // Reopen MenuActivity with appropriate extras.
 
             Intent menuActivityIntent = new Intent(getApplicationContext(), MenuActivity.class);
             menuActivityIntent.putExtra(OrderActivity.ORDER, order);
@@ -250,5 +315,4 @@ public class SuperActivity extends Activity implements LocationListener {
             getApplicationContext().startActivity(menuActivityIntent);
         }
     };
-
 }

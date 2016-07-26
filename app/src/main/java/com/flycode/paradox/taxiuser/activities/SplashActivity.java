@@ -22,6 +22,8 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        // Initialize
+
         Typeface robotoThinTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ROBOTO_THIN);
         Typeface icomoonTypeface = TypefaceUtils.getTypeface(this, TypefaceUtils.AVAILABLE_FONTS.ICOMOON);
 
@@ -36,14 +38,18 @@ public class SplashActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
+        // Set timer for 1.5 seconds. Open application when timer expires.
+
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 if (AppSettings.sharedSettings(SplashActivity.this).isUserLoggedIn()) {
+                    // Open MenuActivity if user is already logged in.
                     Intent intent = new Intent(SplashActivity.this, MenuActivity.class);
                     startActivity(intent);
                 } else {
+                    // Open LoginActivity, if user needs to log in.
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
 
                     if (android.os.Build.VERSION.SDK_INT >= 16) {
@@ -61,6 +67,8 @@ public class SplashActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        // Cancel timer.
 
         if (timer != null) {
             timer.cancel();
